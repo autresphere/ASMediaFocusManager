@@ -12,11 +12,10 @@ Because orientation management is different between iOS 5 and 6, this class is f
 ## Use It
 * Create a ASMediaFocusManager
 * Implement its delegate
-* Declare all your views that you want to be focusable by calling [ASASMediaFocusManager installOnViews:]
+* Declare all your views that you want to be focusable by calling `[ASMediaFocusManager installOnViews:]`
 
 ## ARC
 ASMediaFocusManager needs ARC.
-
 
 ## Licence
 ASMediaFocusManager is available under the MIT license. See the LICENSE file for more info.
