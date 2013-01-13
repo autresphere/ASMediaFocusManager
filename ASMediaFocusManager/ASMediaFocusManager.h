@@ -19,7 +19,7 @@
 // Returns the view controller in which the focus controller is going to ba added. This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager;
 // Returns a local media path, it must be an image path. This path is used to create an image at full screen.
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaPathForView:(UIView *)view;
+- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaPathForView:(UIView *)view;
 
 @end
 

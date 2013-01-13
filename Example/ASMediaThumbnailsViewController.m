@@ -49,15 +49,9 @@
     return self.parentViewController;
 }
 
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediafocus mediaPathForView:(UIView *)view
+- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediafocus mediaPathForView:(UIView *)view
 {
-    NSString *path;
-    NSString *name;
-    
-    name = [NSString stringWithFormat:@"%df", ([self.imageViews indexOfObject:view] + 1)];
-    path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-    
-    return path;
+    return ((UIImageView *)view).image;
 }
 
 @end

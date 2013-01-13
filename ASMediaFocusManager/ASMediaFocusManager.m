@@ -87,10 +87,8 @@
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         UIImage *image;
-        NSString *path;
         
-        path = [self.delegate mediaFocusManager:self mediaPathForView:mediaView];
-        image = [[UIImage alloc] initWithContentsOfFile:path];
+        image = [self.delegate mediaFocusManager:self mediaPathForView:mediaView];
         image = [self decodedImageWithImage:image];
         dispatch_async(dispatch_get_main_queue(), ^{
             viewController.mainImageView.image = image;
