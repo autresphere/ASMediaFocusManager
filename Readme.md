@@ -36,26 +36,26 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 #pragma mark - ASMediaFocusDelegate
 // Returns an image that represents the media view. This image is used in the focusing animation view.
 // It is usually a small image.
-- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediafocus imageForView:(UIView *)view
+- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageForView:(UIView *)view
 {
     return ((UIImageView *)view).image;
 }
 
 // Returns the final focused frame for this media view. This frame is usually a full screen frame.
-- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediafocus finalFrameforView:(UIView *)view
+- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view
 {
     return self.parentViewController.view.bounds;
 }
 
 // Returns the view controller in which the focus controller is going to be added.
 // This can be any view controller, full screen or not.
-- (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediafocus
+- (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
 {
     return self.parentViewController;
 }
 
 // Returns a local media path, it must be an image path. This path is used to create an image at full screen.
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediafocus mediaPathForView:(UIView *)view
+- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaPathForView:(UIView *)view
 {
     NSString *path;
     NSString *name;
@@ -70,7 +70,7 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 ```
 
 ###Configure
-You can change the main background color as well as the animation duration.
+You can change the focused background color as well as the animation duration.
 
 ## ARC
 ASMediaFocusManager needs ARC.
