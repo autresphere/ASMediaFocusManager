@@ -12,8 +12,8 @@ Because orientation management is different between iOS 5 and 6, this class is f
 ## Use It
 Copy the whole `ASMediaFocusManager` folder in your project.
 
-* Create a ASMediaFocusManager
-* Implement its delegate (ASMediaFocusDelegate)
+* Create a `ASMediaFocusManager`
+* Implement its delegate (`ASMediaFocusDelegate`)
 * Declare all your views that you want to be focusable by calling `[ASMediaFocusManager installOnViews:]`
 
 ###Implementing
@@ -34,7 +34,8 @@ In your View Controller where some image views need focus feature, add this code
 Here is an example of a delegate implementation. Please adapt the code to your context.
 ```objc
 #pragma mark - ASMediaFocusDelegate
-// Returns an image that represents the media view. This image is used in the focusing animation view. It is usually a small image.
+// Returns an image that represents the media view. This image is used in the focusing animation view.
+// It is usually a small image.
 - (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediafocus imageForView:(UIView *)view
 {
     return ((UIImageView *)view).image;
@@ -46,7 +47,8 @@ Here is an example of a delegate implementation. Please adapt the code to your c
     return self.parentViewController.view.bounds;
 }
 
-// Returns the view controller in which the focus controller is going to be added. This can be any view controller, full screen or not.
+// Returns the view controller in which the focus controller is going to be added.
+// This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediafocus
 {
     return self.parentViewController;
