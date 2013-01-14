@@ -16,7 +16,7 @@
 - (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageForView:(UIView *)view;
 // Returns the final focused frame for this media view. This frame is usually a full screen frame.
 - (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view;
-// Returns the view controller in which the focus controller is going to ba added. This can be any view controller, full screen or not.
+// Returns the view controller in which the focus controller is going to be added. This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager;
 // Returns a local media path, it must be an image path. This path is used to create an image at full screen.
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaPathForView:(UIView *)view;

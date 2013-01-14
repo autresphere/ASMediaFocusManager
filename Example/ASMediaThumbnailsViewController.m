@@ -19,13 +19,15 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
-    self.mediaFocusManager.delegate = self;
-    [self.mediaFocusManager installOnViews:self.imageViews];
     if(self.scrollView)
     {
         self.scrollView.contentSize = self.contentView.bounds.size;
     }
+
+    self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
+    self.mediaFocusManager.delegate = self;
+    // Tells which views need to be focusable. You can put your image views in an array and give it to the focus manager.
+    [self.mediaFocusManager installOnViews:self.imageViews];
 }
 
 - (NSUInteger)supportedInterfaceOrientations
@@ -54,6 +56,7 @@
     NSString *path;
     NSString *name;
     
+    // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
     name = [NSString stringWithFormat:@"%df", ([self.imageViews indexOfObject:view] + 1)];
     path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
     
