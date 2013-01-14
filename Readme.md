@@ -72,6 +72,12 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 ###Configure
 You can change the focused background color as well as the animation duration.
 
+##Todo
+* Add an elastic (ie natural) effect on focus and defocus rotation.
+* Support initial transform on image views.
+* Support movie media.
+* Media browsing by swipe in fullscreen.
+
 ## ARC
 ASMediaFocusManager needs ARC.
 
