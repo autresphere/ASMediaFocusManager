@@ -3,7 +3,7 @@ ASMediaFocusManager gives the ability to focus on any image by a simple tap. The
 
 Works on iPhone and iPad.
 
-![](Screenshots/video.gif) 
+![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/video.gif) 
 
 ## Orientation
 The focused view is automatically adapted to the screen orientation even if your main view controller is portrait only.
