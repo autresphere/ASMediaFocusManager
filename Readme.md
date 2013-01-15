@@ -72,9 +72,10 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 ###Configure
 You can change the focused background color as well as the animation duration.
 
+You can choose whether the animation has an elastic effect or not.
 ##Todo
-* Add an elastic (ie natural) effect on focus and defocus rotation.
 * Support initial transform on image views.
+* Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
 * Media browsing by swipe in fullscreen.
 

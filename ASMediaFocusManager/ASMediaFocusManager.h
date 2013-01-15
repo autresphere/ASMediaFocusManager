@@ -27,8 +27,12 @@
 @interface ASMediaFocusManager : NSObject
 
 @property (nonatomic, assign) id<ASMediasFocusDelegate> delegate;
+// The animation duration. Defaults to 0.5.
 @property (nonatomic, assign) NSTimeInterval animationDuration;
+// The background color. Defaults to transparent black.
 @property (nonatomic, strong) UIColor *backgroundColor;
+// Returns whether the animation has an elastic effect. Defaults to YES.
+@property (assign, nonatomic) BOOL elasticAnimation;
 
 - (void)installOnViews:(NSArray *)views;
 

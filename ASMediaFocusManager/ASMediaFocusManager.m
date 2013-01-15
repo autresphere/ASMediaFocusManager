@@ -9,6 +9,10 @@
 #import "ASMediaFocusManager.h"
 #import "ASMediaFocusController.h"
 
+static CGFloat const kAnimateElasticSizeRatio = 0.03;
+static CGFloat const kAnimateElasticDurationRatio = 0.6;
+static CGFloat const kAnimationDuration = 0.5;
+
 @interface ASMediaFocusManager ()
 // The media view being focused.
 @property (nonatomic, strong) UIView *mediaView;
@@ -46,8 +50,9 @@
     self = [super init];
     if(self)
     {
-        self.animationDuration = 0.5;
+        self.animationDuration = kAnimationDuration;
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+        self.elasticAnimation = YES;
     }
     
     return self;
@@ -100,6 +105,17 @@
     return viewController;
 }
 
+- (CGRect)rectInsetsForRect:(CGRect)frame ratio:(CGFloat)ratio
+{
+    CGFloat dx;
+    CGFloat dy;
+    
+    dx = frame.size.width*ratio;
+    dy = frame.size.height*ratio;
+    
+    return CGRectInset(frame, dx, dy);
+}
+
 - (void)handleFocusGesture:(UIGestureRecognizer *)gesture
 {
     UIViewController *parentViewController;
@@ -125,42 +141,54 @@
     focusViewController.mainImageView.frame = frame;
     
     [UIView animateWithDuration:self.animationDuration
-                          delay:0
-                        options:0
                      animations:^{
                          CGRect frame;
                          
                          frame = [self.delegate mediaFocusManager:self finalFrameforView:mediaView];
-                         [focusViewController setImageFrame:frame];
+                         [focusViewController setImageFrame:(self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio]:frame)];
                          focusViewController.view.backgroundColor = self.backgroundColor;
                      }
                      completion:^(BOOL finished) {
+                         if(self.elasticAnimation)
+                         {
+                             [UIView animateWithDuration:self.animationDuration*kAnimateElasticDurationRatio
+                                              animations:^{
+                                                  focusViewController.mainImageView.frame = focusViewController.contentView.bounds;
+                                              }];
+                         }
                      }];
 }
 
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
 {
     UIView *contentView;
+    CGRect __block frame;
     
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:self.animationDuration
-                          delay:0
-                        options:0
                      animations:^{
                          CGAffineTransform transform;
-                         CGRect frame;
                          
                          transform = self.mediaView.transform;
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          frame = [contentView.superview convertRect:self.mediaView.frame fromView:self.mediaView.superview];
-                         contentView.frame = frame;
+                         contentView.frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio]:frame);
                          gesture.view.backgroundColor = [UIColor clearColor];
                      }
                      completion:^(BOOL finished) {
-                         self.mediaView.hidden = NO;
-                         [self.focusViewController.view removeFromSuperview];
-                         [self.focusViewController removeFromParentViewController];
-                         self.focusViewController = nil;
+                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio:0)
+                                          animations:^{
+                                              if(self.elasticAnimation)
+                                              {
+                                                  contentView.frame = frame;
+                                              }
+                                          }
+                                          completion:^(BOOL finished) {
+                                              self.mediaView.hidden = NO;
+                                              [self.focusViewController.view removeFromSuperview];
+                                              [self.focusViewController removeFromParentViewController];
+                                              self.focusViewController = nil;
+                                          }];
                      }];
 }
 @end
