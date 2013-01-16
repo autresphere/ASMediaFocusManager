@@ -1,7 +1,7 @@
 ## ASMediaFocusManager
 ASMediaFocusManager gives the ability to focus on any thumbnail image by a simple tap. The thumbnail image is automatically animated to a focused fullscreen image view. Another tap on the focused view shrinks the image back to its initial position.
 
-Each of the thumbnail image views may have their own transform, the focus and defocus animations take care of any initial transform.
+Each thumbnail image view may have its own transform, the focus and defocus animations take care of any initial transform.
 
 Works on iPhone and iPad.
 
