@@ -7,12 +7,43 @@
 //
 
 #import "ASMediaThumbnailsViewController.h"
+#import <QuartzCore/QuartzCore.h>
+
+static CGFloat const kMaxAngle = 0.1;
+static CGFloat const kMaxOffset = 20;
 
 @interface ASMediaThumbnailsViewController ()
 
 @end
 
 @implementation ASMediaThumbnailsViewController
+
++ (float)randomFloatBetween:(float)smallNumber andMax:(float)bigNumber
+{
+    float diff = bigNumber - smallNumber;
+    
+    return (((float) (arc4random() % ((unsigned)RAND_MAX + 1)) / RAND_MAX) * diff) + smallNumber;
+}
+
+- (void)addSomeRandomTransformOnThumbnailViews
+{
+    for(UIView *view in self.imageViews)
+    {
+        CGFloat angle;
+        NSInteger offsetX;
+        NSInteger offsetY;
+        
+        angle = [ASMediaThumbnailsViewController randomFloatBetween:-kMaxAngle andMax:kMaxAngle];
+        offsetX = (NSInteger)[ASMediaThumbnailsViewController randomFloatBetween:-kMaxOffset andMax:kMaxOffset];
+        offsetY = (NSInteger)[ASMediaThumbnailsViewController randomFloatBetween:-kMaxOffset andMax:kMaxOffset];
+        view.transform = CGAffineTransformMakeRotation(angle);
+        view.center = CGPointMake(view.center.x + offsetX, view.center.y + offsetY);
+        
+        // This is going to avoid crispy edges.
+        view.layer.shouldRasterize = YES;
+        view.layer.rasterizationScale = [UIScreen mainScreen].scale;
+    }
+}
 
 - (void)viewDidLoad
 {
@@ -26,8 +57,11 @@
 
     self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
     self.mediaFocusManager.delegate = self;
+    
     // Tells which views need to be focusable. You can put your image views in an array and give it to the focus manager.
     [self.mediaFocusManager installOnViews:self.imageViews];
+    
+    [self addSomeRandomTransformOnThumbnailViews];
 }
 
 - (NSUInteger)supportedInterfaceOrientations

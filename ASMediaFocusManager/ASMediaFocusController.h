@@ -13,6 +13,6 @@
 @property (strong, nonatomic) IBOutlet UIImageView *mainImageView;
 @property (strong, nonatomic) IBOutlet UIView *contentView;
 
-- (void)setImageFrame:(CGRect)frame;
+- (void)updateOrientationAnimated:(BOOL)animated;
 
 @end

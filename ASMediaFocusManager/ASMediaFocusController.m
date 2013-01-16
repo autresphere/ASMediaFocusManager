@@ -62,6 +62,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     }
 }
 
+#pragma mark - Public
 - (void)updateOrientationAnimated:(BOOL)animated
 {
     CGAffineTransform transform;
@@ -139,25 +140,6 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
         self.contentView.frame = frame;
     }
     self.previousOrientation = [UIDevice currentDevice].orientation;
-}
-
-#pragma mark - Public
-- (void)setImageFrame:(CGRect)frame
-{
-    CGRect initialFrame;
-    
-    // Trick to keep the right animation on the image frame (if this method is called in an animation block).
-    // The image frame shoud animate from its current frame to a final frame.
-    // The final frame is computed by taking care of a possible rotation regarding the current device orientation, done by calling updateOrientationAnimated.
-    // As this method changes the image frame, it also replaces the current animation on the image view, which is not wanted.
-    // Thus to recreate the right animation, the image frame is set back to its inital frame then to its final frame.
-    // This very last frame operation recreates the right frame animation.
-    initialFrame = self.mainImageView.frame;
-    self.mainImageView.frame = frame;
-    [self updateOrientationAnimated:NO];
-    frame = self.mainImageView.frame;
-    self.mainImageView.frame = initialFrame;
-    self.mainImageView.frame = frame;
 }
 
 #pragma mark - Notifications

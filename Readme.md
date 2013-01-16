@@ -1,5 +1,7 @@
 ## ASMediaFocusManager
-ASMediaFocusManager gives the ability to focus on any image by a simple tap. The image is automatically animated to a focused fullscreen image view. Another tap on the focused view shrinks the image back to its initial position.
+ASMediaFocusManager gives the ability to focus on any thumbnail image by a simple tap. The thumbnail image is automatically animated to a focused fullscreen image view. Another tap on the focused view shrinks the image back to its initial position.
+
+Each of the thumbnail image views may have their own transform, the focus and defocus animations take care of any initial transform.
 
 Works on iPhone and iPad.
 
@@ -74,7 +76,6 @@ You can change the focused background color as well as the animation duration.
 
 You can choose whether the animation has an elastic effect or not.
 ##Todo
-* Support initial transform on image views.
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
 * Media browsing by swipe in fullscreen.

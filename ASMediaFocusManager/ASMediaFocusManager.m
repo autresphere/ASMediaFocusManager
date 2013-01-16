@@ -120,8 +120,9 @@ static CGFloat const kAnimationDuration = 0.5;
 {
     UIViewController *parentViewController;
     ASMediaFocusController *focusViewController;
-    CGRect frame;
+    CGPoint center;
     UIView *mediaView;
+    UIView *imageView;
     
     mediaView = gesture.view;
     focusViewController = [self focusViewControllerForView:mediaView];
@@ -136,16 +137,40 @@ static CGFloat const kAnimationDuration = 0.5;
     focusViewController.view.frame = parentViewController.view.bounds;
     mediaView.hidden = YES;
     
-    frame = mediaView.frame;
-    frame = [focusViewController.mainImageView.superview convertRect:frame fromView:mediaView.superview];
-    focusViewController.mainImageView.frame = frame;
+    imageView = focusViewController.mainImageView;
+    center = [imageView.superview convertPoint:mediaView.center fromView:mediaView.superview];
+    imageView.center = center;
+    imageView.transform = mediaView.transform;
+    imageView.bounds = mediaView.bounds;
     
     [UIView animateWithDuration:self.animationDuration
                      animations:^{
                          CGRect frame;
+                         CGRect initialFrame;
+                         CGAffineTransform initialTransform;
                          
                          frame = [self.delegate mediaFocusManager:self finalFrameforView:mediaView];
-                         [focusViewController setImageFrame:(self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio]:frame)];
+                         frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio]:frame);
+
+                         // Trick to keep the right animation on the image frame.
+                         // The image frame shoud animate from its current frame to a final frame.
+                         // The final frame is computed by taking care of a possible rotation regarding the current device orientation, done by calling updateOrientationAnimated.
+                         // As this method changes the image frame, it also replaces the current animation on the image view, which is not wanted.
+                         // Thus to recreate the right animation, the image frame is set back to its inital frame then to its final frame.
+                         // This very last frame operation recreates the right frame animation.
+                         initialTransform = imageView.transform;
+                         imageView.transform = CGAffineTransformIdentity;
+                         initialFrame = imageView.frame;
+                         imageView.frame = frame;
+                         [focusViewController updateOrientationAnimated:NO];
+                         // This is the final image frame. No transform.
+                         frame = imageView.frame;
+                         // It must now be animated from its initial frame and transform.
+                         imageView.frame = initialFrame;
+                         imageView.transform = initialTransform;
+                         imageView.transform = CGAffineTransformIdentity;
+                         imageView.frame = frame;
+                         
                          focusViewController.view.backgroundColor = self.backgroundColor;
                      }
                      completion:^(BOOL finished) {
@@ -153,7 +178,7 @@ static CGFloat const kAnimationDuration = 0.5;
                          {
                              [UIView animateWithDuration:self.animationDuration*kAnimateElasticDurationRatio
                                               animations:^{
-                                                  focusViewController.mainImageView.frame = focusViewController.contentView.bounds;
+                                                  imageView.frame = focusViewController.contentView.bounds;
                                               }];
                          }
                      }];
@@ -162,17 +187,17 @@ static CGFloat const kAnimationDuration = 0.5;
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
 {
     UIView *contentView;
-    CGRect __block frame;
+    CGRect __block bounds;
     
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:self.animationDuration
                      animations:^{
-                         CGAffineTransform transform;
                          
-                         transform = self.mediaView.transform;
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
-                         frame = [contentView.superview convertRect:self.mediaView.frame fromView:self.mediaView.superview];
-                         contentView.frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio]:frame);
+                         contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
+                         contentView.transform = self.mediaView.transform;
+                         bounds = self.mediaView.bounds;
+                         contentView.bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
                          gesture.view.backgroundColor = [UIColor clearColor];
                      }
                      completion:^(BOOL finished) {
@@ -180,7 +205,7 @@ static CGFloat const kAnimationDuration = 0.5;
                                           animations:^{
                                               if(self.elasticAnimation)
                                               {
-                                                  contentView.frame = frame;
+                                                  contentView.bounds = bounds;
                                               }
                                           }
                                           completion:^(BOOL finished) {
