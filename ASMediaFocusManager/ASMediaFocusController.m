@@ -30,6 +30,8 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:nil];
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    NSLog(@"self.mainImageView.frame.size.height: %@", NSStringFromCGSize(self.mainImageView.frame.size));
+    [self.scrollView setContentSize:CGSizeMake(320, self.mainImageView.frame.size.height)];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
