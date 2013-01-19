@@ -76,6 +76,8 @@ You can change the focused background color as well as the animation duration.
 
 You can choose whether the animation has an elastic effect or not.
 ##Todo
+* Add zooming feature
+* Add "Done" button
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
 * Media browsing by swipe in fullscreen.
