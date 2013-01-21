@@ -85,7 +85,8 @@ static CGFloat const kAnimationDuration = 0.5;
     if(image == nil)
         return nil;
 
-    viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
+    viewController = [[ASMediaFocusController alloc] initWithNibName:@"ASMediaFocusController" bundle:nil];
+    
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
     [viewController.view addGestureRecognizer:tapGesture];    
     viewController.mainImageView.image = image;
@@ -102,6 +103,8 @@ static CGFloat const kAnimationDuration = 0.5;
         });
     });
 
+    viewController.scrollView.delegate = self;
+    
     return viewController;
 }
 
@@ -130,6 +133,7 @@ static CGFloat const kAnimationDuration = 0.5;
         return;
     
     self.focusViewController = focusViewController;
+    
     self.mediaView = mediaView;
     parentViewController = [self.delegate parentViewControllerForMediaFocusManager:self];
     [parentViewController addChildViewController:focusViewController];
@@ -189,6 +193,8 @@ static CGFloat const kAnimationDuration = 0.5;
     UIView *contentView;
     CGRect __block bounds;
     
+    self.focusViewController.scrollView.delegate = nil;
+    
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:self.animationDuration
                      animations:^{
@@ -215,5 +221,10 @@ static CGFloat const kAnimationDuration = 0.5;
                                               self.focusViewController = nil;
                                           }];
                      }];
+}
+
+#pragma mark - UIScrollViewDelegate
+- (UIView*)viewForZoomingInScrollView:(UIScrollView *)aScrollView {
+    return self.focusViewController.mainImageView;
 }
 @end

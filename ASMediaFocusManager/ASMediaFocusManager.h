@@ -24,7 +24,7 @@
 @end
 
 
-@interface ASMediaFocusManager : NSObject
+@interface ASMediaFocusManager : NSObject <UIScrollViewDelegate>
 
 @property (nonatomic, assign) id<ASMediasFocusDelegate> delegate;
 // The animation duration. Defaults to 0.5.

@@ -30,6 +30,8 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:nil];
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+
+    [self.scrollView setContentSize:self.mainImageView.frame.size];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -118,7 +120,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
                 break;
                 
             case UIDeviceOrientationFaceDown:
-            case UIDeviceOrientationFaceUp:
+            case UIDeviceOrientationFaceUp: 
             case UIDeviceOrientationUnknown:
                 return;
         }
