@@ -53,6 +53,7 @@ static CGFloat const kAnimationDuration = 0.5;
         self.animationDuration = kAnimationDuration;
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
         self.elasticAnimation = YES;
+        self.zoomEnabled = YES;
     }
     
     return self;
@@ -179,9 +180,45 @@ static CGFloat const kAnimationDuration = 0.5;
                              [UIView animateWithDuration:self.animationDuration*kAnimateElasticDurationRatio
                                               animations:^{
                                                   imageView.frame = focusViewController.contentView.bounds;
-                                              }];
+                                              }
+                              completion:^(BOOL finished) {
+                                  [self installZoomView];
+                              }];
+                         }
+                         else
+                         {
+                             [self installZoomView];
                          }
                      }];
+    
+}
+
+- (void)installZoomView
+{
+    ASImageScrollView *scrollView;
+    
+    if(!self.zoomEnabled)
+        return;
+    
+    scrollView = [[ASImageScrollView alloc] initWithFrame:self.focusViewController.contentView.bounds];
+    scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.focusViewController.scrollView = scrollView;
+    [self.focusViewController.contentView addSubview:scrollView];
+    [scrollView displayImage:self.focusViewController.mainImageView.image];
+    self.focusViewController.mainImageView.hidden = YES;
+}
+
+- (void)uninstallZoomView
+{
+    CGRect frame;
+    
+    if(!self.zoomEnabled)
+        return;
+    
+    frame = [self.focusViewController.contentView convertRect:self.focusViewController.scrollView.zoomImageView.frame fromView:self.focusViewController.scrollView];
+    self.focusViewController.scrollView.hidden = YES;
+    self.focusViewController.mainImageView.hidden = NO;
+    self.focusViewController.mainImageView.frame = frame;
 }
 
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
@@ -189,10 +226,10 @@ static CGFloat const kAnimationDuration = 0.5;
     UIView *contentView;
     CGRect __block bounds;
     
+    [self uninstallZoomView];
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:self.animationDuration
-                     animations:^{
-                         
+                     animations:^{                         
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                          contentView.transform = self.mediaView.transform;

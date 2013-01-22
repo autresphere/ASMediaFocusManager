@@ -33,6 +33,8 @@
 @property (nonatomic, strong) UIColor *backgroundColor;
 // Returns whether the animation has an elastic effect. Defaults to YES.
 @property (assign, nonatomic) BOOL elasticAnimation;
+// Returns whether zoom is enabled on fullscreen image. Defaults to YES.
+@property (nonatomic, assign) BOOL zoomEnabled;
 
 - (void)installOnViews:(NSArray *)views;
 

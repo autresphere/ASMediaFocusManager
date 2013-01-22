@@ -72,12 +72,16 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 ```
 
 ###Configure
-You can change the focused background color as well as the animation duration.
+Here is the things you can configure:
 
-You can choose whether the animation has an elastic effect or not.
+* focused background color 
+* animation duration
+* enable/disable elastic animation
+* enable/disable zooming by pinch
+
 ##Todo
-* Add zooming feature
 * Add "Done" button
+* Fix image jump on orientation change when fullscreen image is zoomed
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
 * Media browsing by swipe in fullscreen.

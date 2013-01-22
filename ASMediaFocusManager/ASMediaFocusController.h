@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ASImageScrollView.h"
 
 @interface ASMediaFocusController : UIViewController
 
+@property (strong, nonatomic) ASImageScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UIImageView *mainImageView;
 @property (strong, nonatomic) IBOutlet UIView *contentView;
 
