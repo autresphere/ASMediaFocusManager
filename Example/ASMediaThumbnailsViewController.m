@@ -89,12 +89,52 @@ static CGFloat const kMaxOffset = 20;
 {
     NSString *path;
     NSString *name;
+    NSInteger index;
+    
+    if(self.tableView == nil)
+    {
+        index = ([self.imageViews indexOfObject:view] + 1);
+    }
+    else
+    {
+        index = view.tag;
+    }
     
     // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
-    name = [NSString stringWithFormat:@"%df", ([self.imageViews indexOfObject:view] + 1)];
+    name = [NSString stringWithFormat:@"%df", index];
     path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-    
     return path;
 }
 
+#pragma mark - UITableViewDataSource
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *cellIdentifier = @"Cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    NSString *path;
+    UIImage *image;
+    
+    if(cell == nil)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        [self.mediaFocusManager installOnView:cell.imageView];
+    }
+    
+    path = [NSString stringWithFormat:@"%d.jpg", indexPath.row + 1];
+    image = [UIImage imageNamed:path];
+    cell.imageView.image = image;
+    cell.imageView.tag = indexPath.row + 1;    
+    
+    return cell;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return 4;
+}
 @end

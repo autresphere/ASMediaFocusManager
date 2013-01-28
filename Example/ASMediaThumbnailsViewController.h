@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "ASMediaFocusManager.h"
 
-@interface ASMediaThumbnailsViewController : UIViewController <ASMediasFocusDelegate>
+@interface ASMediaThumbnailsViewController : UIViewController <ASMediasFocusDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) IBOutletCollection(UIImageView) NSArray *imageViews;
 @property (strong, nonatomic) ASMediaFocusManager *mediaFocusManager;
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UIView *contentView;
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
 
 @end

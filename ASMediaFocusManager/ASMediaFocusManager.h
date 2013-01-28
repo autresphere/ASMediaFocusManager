@@ -37,5 +37,6 @@
 @property (nonatomic, assign) BOOL zoomEnabled;
 
 - (void)installOnViews:(NSArray *)views;
+- (void)installOnView:(UIView *)view;
 
 @end
