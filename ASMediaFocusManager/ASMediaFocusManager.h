@@ -35,6 +35,8 @@
 @property (assign, nonatomic) BOOL elasticAnimation;
 // Returns whether zoom is enabled on fullscreen image. Defaults to YES.
 @property (nonatomic, assign) BOOL zoomEnabled;
+// Returns whether gesture is disabled during zooming. Defaults to YES.
+@property (nonatomic, assign) BOOL gestureDisabledDuringZooming;
 
 - (void)installOnViews:(NSArray *)views;
 - (void)installOnView:(UIView *)view;
