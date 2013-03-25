@@ -20,6 +20,9 @@
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager;
 // Returns a local media path, it must be an image path. This path is used to create an image at full screen.
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaPathForView:(UIView *)view;
+// Returns a uiimage. This path is used to create an image at full screen.
+- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager uiImageForFocusView:(UIView *)view;
+
 
 @end
 
