@@ -85,11 +85,12 @@ static CGFloat const kMaxOffset = 20;
     return self.parentViewController;
 }
 
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaPathForView:(UIView *)view
+- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
 {
     NSString *path;
     NSString *name;
     NSInteger index;
+    NSURL *url;
     
     if(self.tableView == nil)
     {
@@ -103,7 +104,10 @@ static CGFloat const kMaxOffset = 20;
     // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
     name = [NSString stringWithFormat:@"%df", index];
     path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-    return path;
+    
+    url = [NSURL fileURLWithPath:path];
+    
+    return url;
 }
 
 #pragma mark - UITableViewDataSource

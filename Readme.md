@@ -56,17 +56,20 @@ Here is an example of a delegate implementation. Please adapt the code to your c
     return self.parentViewController;
 }
 
-// Returns a local media path, it must be an image path. This path is used to create an image at full screen.
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaPathForView:(UIView *)view
+// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
+- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
 {
     NSString *path;
     NSString *name;
+    NSURL *url;
     
     // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
     name = [NSString stringWithFormat:@"%df", ([self.imageViews indexOfObject:view] + 1)];
     path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
     
-    return path;
+    url = [NSURL fileURLWithPath:path];
+    
+    return url;
 }
 
 ```

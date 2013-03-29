@@ -91,19 +91,30 @@ static CGFloat const kAnimationDuration = 0.5;
 
     viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
-    [viewController.view addGestureRecognizer:tapGesture];    
+    [viewController.view addGestureRecognizer:tapGesture];
     viewController.mainImageView.image = image;
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        UIImage *image;
-        NSString *path;
+        NSURL *url;
+        NSData *data;
+        NSError *error = nil;
         
-        path = [self.delegate mediaFocusManager:self mediaPathForView:mediaView];
-        image = [[UIImage alloc] initWithContentsOfFile:path];
-        image = [self decodedImageWithImage:image];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            viewController.mainImageView.image = image;
-        });
+        url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
+        data = [NSData dataWithContentsOfURL:url options:0 error:&error];
+        if(error != nil)
+        {
+            NSLog(@"Warning: Unable to load image at %@. %@", url, error);
+        }
+        else
+        {
+            UIImage *image;
+
+            image = [[UIImage alloc] initWithData:data];
+            image = [self decodedImageWithImage:image];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                viewController.mainImageView.image = image;
+            });
+        }
     });
 
     return viewController;
@@ -187,10 +198,10 @@ static CGFloat const kAnimationDuration = 0.5;
                                               animations:^{
                                                   imageView.frame = focusViewController.contentView.bounds;
                                               }
-                              completion:^(BOOL finished) {
-                                  [self installZoomView];
-                                  self.isZooming = NO;
-                              }];
+                                              completion:^(BOOL finished) {
+                                                  [self installZoomView];
+                                                  self.isZooming = NO;
+                                              }];
                          }
                          else
                          {
@@ -198,7 +209,6 @@ static CGFloat const kAnimationDuration = 0.5;
                              self.isZooming = NO;
                          }
                      }];
-    
 }
 
 - (void)installZoomView
@@ -239,7 +249,7 @@ static CGFloat const kAnimationDuration = 0.5;
     [self uninstallZoomView];
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:self.animationDuration
-                     animations:^{                         
+                     animations:^{
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                          contentView.transform = self.mediaView.transform;
