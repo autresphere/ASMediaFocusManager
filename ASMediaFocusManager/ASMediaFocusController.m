@@ -142,6 +142,38 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     self.previousOrientation = [UIDevice currentDevice].orientation;
 }
 
+- (void)installZoomView
+{
+    ASImageScrollView *scrollView;
+    
+    scrollView = [[ASImageScrollView alloc] initWithFrame:self.contentView.bounds];
+    scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.scrollView = scrollView;
+    [self.contentView insertSubview:scrollView atIndex:0];
+    [scrollView displayImage:self.mainImageView.image];
+    self.mainImageView.hidden = YES;
+}
+
+- (void)uninstallZoomView
+{
+    CGRect frame;
+    
+    frame = [self.contentView convertRect:self.scrollView.zoomImageView.frame fromView:self.scrollView];
+    self.scrollView.hidden = YES;
+    self.mainImageView.hidden = NO;
+    self.mainImageView.frame = frame;
+}
+
+- (void)pinAccessoryView
+{
+    CGRect frame;
+    
+    // Move the accessory view to the main view in order not to be rotated along with the media.
+    frame = [self.view convertRect:self.accessoryView.frame fromView:self.accessoryView.superview];
+    [self.view addSubview:self.accessoryView];
+    self.accessoryView.frame = frame;
+}
+
 #pragma mark - Notifications
 - (void)orientationDidChangeNotification:(NSNotification *)notification
 {

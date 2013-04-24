@@ -8,6 +8,7 @@
 
 #import "ASMediaFocusManager.h"
 #import "ASMediaFocusController.h"
+#import <QuartzCore/QuartzCore.h>
 
 static CGFloat const kAnimateElasticSizeRatio = 0.03;
 static CGFloat const kAnimateElasticDurationRatio = 0.6;
@@ -17,7 +18,8 @@ static CGFloat const kAnimationDuration = 0.5;
 // The media view being focused.
 @property (nonatomic, strong) UIView *mediaView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
-@property (nonatomic) bool isZooming;
+@property (nonatomic) BOOL isZooming;
+@property (nonatomic) BOOL isDefocusingWithTap;
 @end
 
 @implementation ASMediaFocusManager
@@ -57,6 +59,7 @@ static CGFloat const kAnimationDuration = 0.5;
         self.zoomEnabled = YES;
         self.isZooming = NO;
         self.gestureDisabledDuringZooming = YES;
+        self.isDefocusingWithTap = YES;
     }
     
     return self;
@@ -79,10 +82,27 @@ static CGFloat const kAnimationDuration = 0.5;
     view.userInteractionEnabled = YES;
 }
 
+- (void)installDefocusActionOnFocusViewController:(ASMediaFocusController *)focusViewController
+{
+    // We need the view to be loaded.
+    if(focusViewController.view)
+    {
+        if(self.isDefocusingWithTap)
+        {
+            UITapGestureRecognizer *tapGesture;
+
+            tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
+            [focusViewController.view addGestureRecognizer:tapGesture];
+        }
+        else
+        {
+            [self setupAccessoryViewOnFocusViewController:focusViewController];
+        }
+    }
+}
 - (ASMediaFocusController *)focusViewControllerForView:(UIView *)mediaView
 {
     ASMediaFocusController *viewController;
-    UITapGestureRecognizer *tapGesture;
     UIImage *image;
     
     image = [self.delegate mediaFocusManager:self imageForView:mediaView];
@@ -90,10 +110,9 @@ static CGFloat const kAnimationDuration = 0.5;
         return nil;
 
     viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
-    tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
-    [viewController.view addGestureRecognizer:tapGesture];
+    [self installDefocusActionOnFocusViewController:viewController];
     viewController.mainImageView.image = image;
-
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSURL *url;
         NSData *data;
@@ -129,6 +148,47 @@ static CGFloat const kAnimationDuration = 0.5;
     dy = frame.size.height*ratio;
     
     return CGRectInset(frame, dx, dy);
+}
+
+- (void)installZoomView
+{
+    if(!self.zoomEnabled)
+        return;
+    
+    [self.focusViewController installZoomView];
+}
+
+- (void)uninstallZoomView
+{
+    if(!self.zoomEnabled)
+        return;
+    
+    [self.focusViewController uninstallZoomView];
+}
+
+- (void)setupAccessoryViewOnFocusViewController:(ASMediaFocusController *)focusViewController
+{
+    UIButton *doneButton;
+    
+    doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [doneButton setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
+    [doneButton addTarget:self action:@selector(handleDefocusGesture:) forControlEvents:UIControlEventTouchUpInside];
+    doneButton.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
+    [doneButton sizeToFit];
+    doneButton.frame = CGRectInset(doneButton.frame, -20, -4);
+    doneButton.layer.borderWidth = 2;
+    doneButton.layer.cornerRadius = 4;
+    doneButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    doneButton.center = CGPointMake(focusViewController.contentView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 10);
+    doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
+    [focusViewController.contentView addSubview:doneButton];
+    focusViewController.accessoryView = doneButton;
+    
+    doneButton.alpha = 0;
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         doneButton.alpha = 1;
+                     }];
 }
 
 - (void)handleFocusGesture:(UIGestureRecognizer *)gesture
@@ -187,8 +247,7 @@ static CGFloat const kAnimationDuration = 0.5;
                          imageView.frame = initialFrame;
                          imageView.transform = initialTransform;
                          imageView.transform = CGAffineTransformIdentity;
-                         imageView.frame = frame;
-                         
+                         imageView.frame = frame;                         
                          focusViewController.view.backgroundColor = self.backgroundColor;
                      }
                      completion:^(BOOL finished) {
@@ -211,34 +270,6 @@ static CGFloat const kAnimationDuration = 0.5;
                      }];
 }
 
-- (void)installZoomView
-{
-    ASImageScrollView *scrollView;
-    
-    if(!self.zoomEnabled)
-        return;
-    
-    scrollView = [[ASImageScrollView alloc] initWithFrame:self.focusViewController.contentView.bounds];
-    scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.focusViewController.scrollView = scrollView;
-    [self.focusViewController.contentView addSubview:scrollView];
-    [scrollView displayImage:self.focusViewController.mainImageView.image];
-    self.focusViewController.mainImageView.hidden = YES;
-}
-
-- (void)uninstallZoomView
-{
-    CGRect frame;
-    
-    if(!self.zoomEnabled)
-        return;
-    
-    frame = [self.focusViewController.contentView convertRect:self.focusViewController.scrollView.zoomImageView.frame fromView:self.focusViewController.scrollView];
-    self.focusViewController.scrollView.hidden = YES;
-    self.focusViewController.mainImageView.hidden = NO;
-    self.focusViewController.mainImageView.frame = frame;
-}
-
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
 {
     if(self.isZooming && self.gestureDisabledDuringZooming) return;
@@ -247,15 +278,19 @@ static CGFloat const kAnimationDuration = 0.5;
     CGRect __block bounds;
     
     [self uninstallZoomView];
+    [self.focusViewController pinAccessoryView];
+    
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:self.animationDuration
                      animations:^{
+                         
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                          contentView.transform = self.mediaView.transform;
                          bounds = self.mediaView.bounds;
                          contentView.bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
-                         gesture.view.backgroundColor = [UIColor clearColor];
+                         self.focusViewController.view.backgroundColor = [UIColor clearColor];
+                         self.focusViewController.accessoryView.alpha = 0;
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio:0)

@@ -81,9 +81,10 @@ Here is the things you can configure:
 * animation duration
 * enable/disable elastic animation
 * enable/disable zooming by pinch
+* close focused view either by tap or through a "Done" button
 
 ##Todo
-* Add "Done" button
+* Improve "Done" button (hide when zooming, better transitions)
 * Fix image jump on orientation change when fullscreen image is zoomed
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
