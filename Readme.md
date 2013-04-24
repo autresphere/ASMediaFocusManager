@@ -85,6 +85,7 @@ Here is the things you can configure:
 
 ##Todo
 * Improve "Done" button (hide when zooming, better transitions)
+* Add title label
 * Fix image jump on orientation change when fullscreen image is zoomed
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
