@@ -188,8 +188,8 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     CGRect frame;
     
     frame = [self.view convertRect:view.frame fromView:view.superview];
-    [self.view addSubview:view];
     view.transform = view.superview.transform;
+    [self.view addSubview:view];
     view.frame = frame;
 }
 
