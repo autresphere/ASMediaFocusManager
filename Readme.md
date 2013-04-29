@@ -94,7 +94,8 @@ Here is the things you can configure:
 * Fix image jump on orientation change when fullscreen image is zoomed
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
-* Media browsing by swipe in fullscreen.
+* Close focus view by vertical swipe like in facebook app.
+* Media browsing by horizontal swipe in fullscreen.
 
 ## ARC
 ASMediaFocusManager needs ARC.
