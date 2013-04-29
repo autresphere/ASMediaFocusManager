@@ -116,7 +116,7 @@ static CGFloat const kMaxOffset = 20;
     
     title = [NSString stringWithFormat:@"Image %@", [self mediaFocusManager:mediaFocusManager mediaURLForView:view].lastPathComponent];
     
-    return @"This is an image taken from the Open Source movie 'Elephants Dream'.";
+    return @"Of course, you can zoom in and out on the image.";
 }
 
 #pragma mark - UITableViewDataSource

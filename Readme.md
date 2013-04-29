@@ -72,6 +72,13 @@ Here is an example of a delegate implementation. Please adapt the code to your c
     return url;
 }
 
+// Returns the title for this media view. Return nil if you don't want any title to appear.
+- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view
+{
+	return @"My title";
+}
+
+
 ```
 
 ###Configure
@@ -84,8 +91,6 @@ Here is the things you can configure:
 * close focused view either by tap or through a "Done" button
 
 ##Todo
-* Improve "Done" button (hide when zooming, better transitions)
-* Add title label
 * Fix image jump on orientation change when fullscreen image is zoomed
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
