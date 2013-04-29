@@ -14,11 +14,12 @@
 @property (strong, nonatomic) ASImageScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet UIImageView *mainImageView;
 @property (strong, nonatomic) IBOutlet UIView *contentView;
+@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) UIView *accessoryView;
 
 - (void)updateOrientationAnimated:(BOOL)animated;
 - (void)installZoomView;
 - (void)uninstallZoomView;
-- (void)pinAccessoryView;
+- (void)pinAccessoryViews;
 
 @end

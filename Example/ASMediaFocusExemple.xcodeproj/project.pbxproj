@@ -376,7 +376,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ASMediaFocus/ASMediaFocusExemple-Prefix.pch";
 				INFOPLIST_FILE = "ASMediaFocus/ASMediaFocusExemple-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = ASMediaFocusExemple;
 				WRAPPER_EXTENSION = app;
 			};
@@ -388,7 +388,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ASMediaFocus/ASMediaFocusExemple-Prefix.pch";
 				INFOPLIST_FILE = "ASMediaFocus/ASMediaFocusExemple-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				PRODUCT_NAME = ASMediaFocusExemple;
 				WRAPPER_EXTENSION = app;
 			};

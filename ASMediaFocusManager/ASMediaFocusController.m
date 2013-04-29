@@ -7,6 +7,7 @@
 //
 
 #import "ASMediaFocusController.h"
+#import <QuartzCore/QuartzCore.h>
 
 static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 
@@ -17,6 +18,14 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 @end
 
 @implementation ASMediaFocusController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.titleLabel.layer.shadowOpacity = 1;
+    self.titleLabel.layer.shadowOffset = CGSizeZero;
+    self.titleLabel.layer.shadowRadius = 1;
+}
 
 - (void)viewDidUnload
 {
@@ -37,6 +46,16 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.titleLabel.alpha = 0;
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         self.titleLabel.alpha = 1;
+                     }];
 }
 
 - (NSUInteger)supportedInterfaceOrientations
@@ -164,14 +183,21 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     self.mainImageView.frame = frame;
 }
 
-- (void)pinAccessoryView
+- (void)pinAccessoryView:(UIView *)view
 {
     CGRect frame;
     
-    // Move the accessory view to the main view in order not to be rotated along with the media.
-    frame = [self.view convertRect:self.accessoryView.frame fromView:self.accessoryView.superview];
-    [self.view addSubview:self.accessoryView];
-    self.accessoryView.frame = frame;
+    frame = [self.view convertRect:view.frame fromView:view.superview];
+    [self.view addSubview:view];
+    view.transform = view.superview.transform;
+    view.frame = frame;
+}
+
+- (void)pinAccessoryViews
+{
+    // Move the accessory views to the main view in order not to be rotated along with the media.
+    [self pinAccessoryView:self.accessoryView];
+    [self pinAccessoryView:self.titleLabel];
 }
 
 #pragma mark - Notifications

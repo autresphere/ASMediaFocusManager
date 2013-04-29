@@ -110,6 +110,15 @@ static CGFloat const kMaxOffset = 20;
     return url;
 }
 
+- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
+{
+    NSString *title;
+    
+    title = [NSString stringWithFormat:@"Image %@", [self mediaFocusManager:mediaFocusManager mediaURLForView:view].lastPathComponent];
+    
+    return @"This is an image taken from the Open Source movie 'Elephants Dream'.";
+}
+
 #pragma mark - UITableViewDataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

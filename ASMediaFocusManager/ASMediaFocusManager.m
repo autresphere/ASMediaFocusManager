@@ -59,7 +59,7 @@ static CGFloat const kAnimationDuration = 0.5;
         self.zoomEnabled = YES;
         self.isZooming = NO;
         self.gestureDisabledDuringZooming = YES;
-        self.isDefocusingWithTap = YES;
+        self.isDefocusingWithTap = NO;
     }
     
     return self;
@@ -100,6 +100,7 @@ static CGFloat const kAnimationDuration = 0.5;
         }
     }
 }
+
 - (ASMediaFocusController *)focusViewControllerForView:(UIView *)mediaView
 {
     ASMediaFocusController *viewController;
@@ -111,6 +112,7 @@ static CGFloat const kAnimationDuration = 0.5;
 
     viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
     [self installDefocusActionOnFocusViewController:viewController];
+    viewController.titleLabel.text = [self.delegate mediaFocusManager:self titleForView:mediaView];
     viewController.mainImageView.image = image;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -152,18 +154,18 @@ static CGFloat const kAnimationDuration = 0.5;
 
 - (void)installZoomView
 {
-    if(!self.zoomEnabled)
-        return;
-    
-    [self.focusViewController installZoomView];
+    if(self.zoomEnabled)
+    {
+        [self.focusViewController installZoomView];
+    }
 }
 
 - (void)uninstallZoomView
 {
-    if(!self.zoomEnabled)
-        return;
-    
-    [self.focusViewController uninstallZoomView];
+    if(self.zoomEnabled)
+    {
+        [self.focusViewController uninstallZoomView];
+    }
 }
 
 - (void)setupAccessoryViewOnFocusViewController:(ASMediaFocusController *)focusViewController
@@ -191,6 +193,7 @@ static CGFloat const kAnimationDuration = 0.5;
                      }];
 }
 
+#pragma mark - Gestures
 - (void)handleFocusGesture:(UIGestureRecognizer *)gesture
 {
     UIViewController *parentViewController;
@@ -217,8 +220,7 @@ static CGFloat const kAnimationDuration = 0.5;
     imageView.center = center;
     imageView.transform = mediaView.transform;
     imageView.bounds = mediaView.bounds;
-    
-    
+        
     self.isZooming = YES;
     
     [UIView animateWithDuration:self.animationDuration
@@ -278,12 +280,11 @@ static CGFloat const kAnimationDuration = 0.5;
     CGRect __block bounds;
     
     [self uninstallZoomView];
-    [self.focusViewController pinAccessoryView];
+    [self.focusViewController pinAccessoryViews];
     
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:self.animationDuration
                      animations:^{
-                         
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                          contentView.transform = self.mediaView.transform;
@@ -291,6 +292,7 @@ static CGFloat const kAnimationDuration = 0.5;
                          contentView.bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
                          self.focusViewController.accessoryView.alpha = 0;
+                         self.focusViewController.titleLabel.alpha = 0;
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio:0)
