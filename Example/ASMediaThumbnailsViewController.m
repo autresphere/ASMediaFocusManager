@@ -119,6 +119,11 @@ static CGFloat const kMaxOffset = 20;
     return @"Of course, you can zoom in and out on the image.";
 }
 
+- (void)mediaFocusManagerDidDismiss:(ASMediaFocusManager *)mediaFocusManager
+{
+    NSLog(@"The view has been dismissed");
+}
+
 #pragma mark - UITableViewDataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
