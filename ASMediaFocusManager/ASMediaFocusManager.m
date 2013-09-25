@@ -308,9 +308,9 @@ static CGFloat const kAnimationDuration = 0.5;
                                               [self.focusViewController removeFromParentViewController];
                                               self.focusViewController = nil;
                                               
-                                              if (self.delegate && [self.delegate respondsToSelector:@selector(didDismissView)])
+                                              if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDismiss:)])
                                               {
-                                                  [self.delegate didDismissView];
+                                                  [self.delegate mediaFocusManagerDidDismiss:self];
                                               }
                                           }];
                      }];

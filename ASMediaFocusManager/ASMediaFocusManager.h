@@ -25,7 +25,7 @@
 
 @optional
 //Called when the view has be dismissed by the 'done' button or by gesture.
-- (void)didDismissView;
+- (void)mediaFocusManagerDidDismiss:(ASMediaFocusManager *)mediaFocusManager;
 @end
 
 

@@ -119,7 +119,7 @@ static CGFloat const kMaxOffset = 20;
     return @"Of course, you can zoom in and out on the image.";
 }
 
-- (void)didDismissView
+- (void)mediaFocusManagerDidDismiss:(ASMediaFocusManager *)mediaFocusManager
 {
     NSLog(@"The view has been dismissed");
 }
