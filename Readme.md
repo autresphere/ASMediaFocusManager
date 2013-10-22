@@ -16,7 +16,7 @@ The focused view is automatically adapted to the screen orientation even if your
 
 Because orientation management is different between iOS 5 and 6, this class is for iOS 6 only (although it should not be hard to adapt it to iOS 5).
 ## Use It
-Copy the whole `ASMediaFocusManager` folder in your project.
+Add `pod 'ASMediaFocusManager'` to your Podfile or copy the whole `ASMediaFocusManager` folder in your project.
 
 * Create a `ASMediaFocusManager`
 * Implement its delegate (`ASMediaFocusDelegate`)
