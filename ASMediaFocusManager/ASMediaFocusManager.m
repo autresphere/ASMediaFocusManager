@@ -19,7 +19,6 @@ static CGFloat const kAnimationDuration = 0.5;
 @property (nonatomic, strong) UIView *mediaView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
 @property (nonatomic) BOOL isZooming;
-@property (nonatomic) BOOL isDefocusingWithTap;
 @end
 
 @implementation ASMediaFocusManager
