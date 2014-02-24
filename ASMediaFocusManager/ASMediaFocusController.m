@@ -164,6 +164,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (void)installZoomView
 {
     ASImageScrollView *scrollView;
+    UITapGestureRecognizer *tapGesture;
     
     scrollView = [[ASImageScrollView alloc] initWithFrame:self.contentView.bounds];
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -171,6 +172,10 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [self.contentView insertSubview:scrollView atIndex:0];
     [scrollView displayImage:self.mainImageView.image];
     self.mainImageView.hidden = YES;
+    
+    tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+    tapGesture.numberOfTapsRequired = 2;
+    [self.scrollView addGestureRecognizer:tapGesture];
 }
 
 - (void)uninstallZoomView
@@ -198,6 +203,40 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     // Move the accessory views to the main view in order not to be rotated along with the media.
     [self pinAccessoryView:self.accessoryView];
     [self pinAccessoryView:self.titleLabel];
+}
+
+#pragma mark - Actions
+- (void)handleDoubleTap:(UITapGestureRecognizer*)gesture
+{
+    CGRect frame = CGRectZero;
+    CGPoint location;
+    UIView *contentView;
+    CGFloat scale;
+    
+    if(self.scrollView.zoomScale == self.scrollView.minimumZoomScale)
+    {
+        scale = self.scrollView.maximumZoomScale;
+        contentView = [self.scrollView.delegate viewForZoomingInScrollView:self.scrollView];
+        location = [gesture locationInView:contentView];
+        frame = CGRectMake(location.x*self.scrollView.maximumZoomScale - self.scrollView.bounds.size.width/2, location.y*self.scrollView.maximumZoomScale - self.scrollView.bounds.size.height/2, self.scrollView.bounds.size.width, self.scrollView.bounds.size.height);
+    }
+    else
+    {
+        scale = self.scrollView.minimumZoomScale;
+    }
+    
+    [UIView animateWithDuration:0.5
+                          delay:0
+                        options:UIViewAnimationOptionBeginFromCurrentState
+                     animations:^(void) {
+                         self.scrollView.zoomScale = scale;
+                     }
+                     completion:nil];
+    
+    if(scale == self.scrollView.maximumZoomScale)
+    {
+        [self.scrollView scrollRectToVisible:frame animated:NO];
+    }
 }
 
 #pragma mark - Notifications
