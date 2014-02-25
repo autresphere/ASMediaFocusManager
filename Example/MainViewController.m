@@ -1,22 +1,22 @@
 //
-//  ASMediaThumbnailsViewController.m
+//  MainViewController.m
 //  ASMediaFocusExample
 //
 //  Created by Philippe Converset on 21/12/12.
 //  Copyright (c) 2012 AutreSphere. All rights reserved.
 //
 
-#import "ASMediaThumbnailsViewController.h"
+#import "MainViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
 static CGFloat const kMaxAngle = 0.1;
 static CGFloat const kMaxOffset = 20;
 
-@interface ASMediaThumbnailsViewController ()
-
+@interface MainViewController ()
+@property (nonatomic, assign) BOOL statusBarHidden;
 @end
 
-@implementation ASMediaThumbnailsViewController
+@implementation MainViewController
 
 + (float)randomFloatBetween:(float)smallNumber andMax:(float)bigNumber
 {
@@ -33,9 +33,9 @@ static CGFloat const kMaxOffset = 20;
         NSInteger offsetX;
         NSInteger offsetY;
         
-        angle = [ASMediaThumbnailsViewController randomFloatBetween:-kMaxAngle andMax:kMaxAngle];
-        offsetX = (NSInteger)[ASMediaThumbnailsViewController randomFloatBetween:-kMaxOffset andMax:kMaxOffset];
-        offsetY = (NSInteger)[ASMediaThumbnailsViewController randomFloatBetween:-kMaxOffset andMax:kMaxOffset];
+        angle = [MainViewController randomFloatBetween:-kMaxAngle andMax:kMaxAngle];
+        offsetX = (NSInteger)[MainViewController randomFloatBetween:-kMaxOffset andMax:kMaxOffset];
+        offsetY = (NSInteger)[MainViewController randomFloatBetween:-kMaxOffset andMax:kMaxOffset];
         view.transform = CGAffineTransformMakeRotation(angle);
         view.center = CGPointMake(view.center.x + offsetX, view.center.y + offsetY);
         
@@ -50,11 +50,6 @@ static CGFloat const kMaxOffset = 20;
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    if(self.scrollView)
-    {
-        self.scrollView.contentSize = self.contentView.bounds.size;
-    }
-
     self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
     self.mediaFocusManager.delegate = self;
     
@@ -66,7 +61,13 @@ static CGFloat const kMaxOffset = 20;
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    return UIInterfaceOrientationMaskAll;
+    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
+     return UIInterfaceOrientationMaskAll;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return self.statusBarHidden;
 }
 
 #pragma mark - ASMediaFocusDelegate
@@ -77,12 +78,12 @@ static CGFloat const kMaxOffset = 20;
 
 - (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view
 {
-    return self.parentViewController.view.bounds;
+    return self.view.bounds;
 }
 
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
 {
-    return self.parentViewController;
+    return self;
 }
 
 - (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
@@ -119,7 +120,25 @@ static CGFloat const kMaxOffset = 20;
     return @"Of course, you can zoom in and out on the image.";
 }
 
-- (void)mediaFocusManagerDidDismiss:(ASMediaFocusManager *)mediaFocusManager
+- (void)mediaFocusManagerWillAppear:(ASMediaFocusManager *)mediaFocusManager
+{
+    self.statusBarHidden = YES;
+    if([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)])
+    {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
+}
+
+- (void)mediaFocusManagerWillDisappear:(ASMediaFocusManager *)mediaFocusManager
+{
+    self.statusBarHidden = NO;
+    if([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)])
+    {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
+}
+
+- (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager
 {
     NSLog(@"The view has been dismissed");
 }

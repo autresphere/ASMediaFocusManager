@@ -248,7 +248,7 @@ static CGFloat const kAnimationDuration = 0.5;
     [parentViewController.view addSubview:focusViewController.view];
     focusViewController.view.frame = parentViewController.view.bounds;
     mediaView.hidden = YES;
-    
+
     imageView = focusViewController.mainImageView;
     center = [imageView.superview convertPoint:mediaView.center fromView:mediaView.superview];
     imageView.center = center;
@@ -262,6 +262,11 @@ static CGFloat const kAnimationDuration = 0.5;
                          CGRect frame;
                          CGRect initialFrame;
                          CGAffineTransform initialTransform;
+                         
+                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
+                         {
+                             [self.delegate mediaFocusManagerWillAppear:self];
+                         }
                          
                          frame = [self.delegate mediaFocusManager:self finalFrameforView:mediaView];
                          frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio]:frame);
@@ -287,22 +292,19 @@ static CGFloat const kAnimationDuration = 0.5;
                          focusViewController.view.backgroundColor = self.backgroundColor;
                      }
                      completion:^(BOOL finished) {
-                         if(self.elasticAnimation)
-                         {
-                             [UIView animateWithDuration:self.animationDuration*kAnimateElasticDurationRatio
-                                              animations:^{
-                                                  imageView.frame = focusViewController.contentView.bounds;
+                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio:0)
+                                          animations:^{
+                                              imageView.frame = focusViewController.contentView.bounds;
+                                          }
+                                          completion:^(BOOL finished) {
+                                              [self installZoomView];
+                                              self.isZooming = NO;
+                                              
+                                              if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
+                                              {
+                                                  [self.delegate mediaFocusManagerDidAppear:self];
                                               }
-                                              completion:^(BOOL finished) {
-                                                  [self installZoomView];
-                                                  self.isZooming = NO;
-                                              }];
-                         }
-                         else
-                         {
-                             [self installZoomView];
-                             self.isZooming = NO;
-                         }
+                                          }];
                      }];
 }
 
@@ -319,6 +321,11 @@ static CGFloat const kAnimationDuration = 0.5;
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:self.animationDuration
                      animations:^{
+                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillDisappear:)])
+                         {
+                             [self.delegate mediaFocusManagerWillDisappear:self];
+                         }
+                         
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                          contentView.transform = self.mediaView.transform;
@@ -342,9 +349,9 @@ static CGFloat const kAnimationDuration = 0.5;
                                               [self.focusViewController removeFromParentViewController];
                                               self.focusViewController = nil;
                                               
-                                              if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDismiss:)])
+                                              if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDisappear:)])
                                               {
-                                                  [self.delegate mediaFocusManagerDidDismiss:self];
+                                                  [self.delegate mediaFocusManagerDidDisappear:self];
                                               }
                                           }];
                      }];
