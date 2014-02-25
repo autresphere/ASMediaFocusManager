@@ -123,11 +123,12 @@ Here is an example on how to hide and show the status bar. As the delegate metho
 
 
 ##Todo
-* Fix image jump on orientation change when fullscreen image is zoomed
+* Fix image jump on orientation change when fullscreen image is zoomed (only when parent ViewController supports UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown)
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
 * Close focus view by vertical swipe like in facebook app.
 * Media browsing by horizontal swipe in fullscreen.
+* Hide accessory views (button and label) when view is zoomed.
 
 ## ARC
 ASMediaFocusManager needs ARC.
