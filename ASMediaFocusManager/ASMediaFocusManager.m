@@ -126,6 +126,7 @@ static CGFloat const kAnimationDuration = 0.5;
             UITapGestureRecognizer *tapGesture;
 
             tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
+            [tapGesture requireGestureRecognizerToFail:focusViewController.doubleTapGesture];
             [focusViewController.view addGestureRecognizer:tapGesture];
         }
         else

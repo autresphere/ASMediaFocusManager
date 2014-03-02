@@ -19,6 +19,16 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 
 @implementation ASMediaFocusController
 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        self.doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+        self.doubleTapGesture.numberOfTapsRequired = 2;
+    }
+
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -164,7 +174,6 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (void)installZoomView
 {
     ASImageScrollView *scrollView;
-    UITapGestureRecognizer *tapGesture;
     
     scrollView = [[ASImageScrollView alloc] initWithFrame:self.contentView.bounds];
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -173,9 +182,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [scrollView displayImage:self.mainImageView.image];
     self.mainImageView.hidden = YES;
     
-    tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
-    tapGesture.numberOfTapsRequired = 2;
-    [self.scrollView addGestureRecognizer:tapGesture];
+    [self.scrollView addGestureRecognizer:self.doubleTapGesture];
 }
 
 - (void)uninstallZoomView
