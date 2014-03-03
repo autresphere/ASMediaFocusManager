@@ -12,6 +12,8 @@
 
 static CGFloat const kAnimateElasticSizeRatio = 0.03;
 static CGFloat const kAnimateElasticDurationRatio = 0.6;
+static CGFloat const kAnimateElasticSecondMoveSizeRatio = 0.5;
+static CGFloat const kAnimateElasticThirdMoveSizeRatio = 0.2;
 static CGFloat const kAnimationDuration = 0.5;
 
 @interface ASMediaFocusManager ()
@@ -235,6 +237,7 @@ static CGFloat const kAnimationDuration = 0.5;
     CGPoint center;
     UIView *mediaView;
     UIView *imageView;
+    NSTimeInterval duration;
     
     mediaView = gesture.view;
     focusViewController = [self focusViewControllerForView:mediaView];
@@ -257,7 +260,8 @@ static CGFloat const kAnimationDuration = 0.5;
         
     self.isZooming = YES;
     
-    [UIView animateWithDuration:self.animationDuration
+    duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
+    [UIView animateWithDuration:duration
                      animations:^{
                          CGRect frame;
                          CGRect initialFrame;
@@ -292,25 +296,48 @@ static CGFloat const kAnimationDuration = 0.5;
                          focusViewController.view.backgroundColor = self.backgroundColor;
                      }
                      completion:^(BOOL finished) {
-                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio:0)
+                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                           animations:^{
-                                              imageView.frame = focusViewController.contentView.bounds;
+                                              CGRect frame;
+                                              
+                                              frame = focusViewController.contentView.bounds;
+                                              frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
+                                              imageView.frame = frame;
                                           }
                                           completion:^(BOOL finished) {
-                                              [self installZoomView];
-                                              self.isZooming = NO;
-                                              
-                                              if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
-                                              {
-                                                  [self.delegate mediaFocusManagerDidAppear:self];
-                                              }
+                                              [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
+                                                               animations:^{
+                                                                   CGRect frame;
+                                                                   
+                                                                   frame = focusViewController.contentView.bounds;
+                                                                   frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
+                                                                   imageView.frame = frame;
+                                                               }
+                                                               completion:^(BOOL finished) {
+                                                                   [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
+                                                                                    animations:^{
+                                                                                        imageView.frame = focusViewController.contentView.bounds;
+                                                                                    }
+                                                                                    completion:^(BOOL finished) {
+                                                                                        [self installZoomView];
+                                                                                        self.isZooming = NO;
+                                                                                        
+                                                                                        if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
+                                                                                        {
+                                                                                            [self.delegate mediaFocusManagerDidAppear:self];
+                                                                                        }
+                                                                                    }];
+                                                               }];
                                           }];
                      }];
 }
 
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
 {
-    if(self.isZooming && self.gestureDisabledDuringZooming) return;
+    NSTimeInterval duration;
+
+    if(self.isZooming && self.gestureDisabledDuringZooming)
+        return;
     
     UIView *contentView;
     CGRect __block bounds;
@@ -319,7 +346,8 @@ static CGFloat const kAnimationDuration = 0.5;
     [self.focusViewController pinAccessoryViews];
     
     contentView = self.focusViewController.mainImageView;
-    [UIView animateWithDuration:self.animationDuration
+    duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
+    [UIView animateWithDuration:duration
                      animations:^{
                          if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillDisappear:)])
                          {
@@ -336,23 +364,40 @@ static CGFloat const kAnimationDuration = 0.5;
                          self.focusViewController.titleLabel.alpha = 0;
                      }
                      completion:^(BOOL finished) {
-                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio:0)
+                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                           animations:^{
-                                              if(self.elasticAnimation)
-                                              {
-                                                  contentView.bounds = bounds;
-                                              }
+                                              CGRect frame;
+                                              
+                                              frame = bounds;
+                                              frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
+                                              contentView.bounds = frame;
                                           }
                                           completion:^(BOOL finished) {
-                                              self.mediaView.hidden = NO;
-                                              [self.focusViewController.view removeFromSuperview];
-                                              [self.focusViewController removeFromParentViewController];
-                                              self.focusViewController = nil;
-                                              
-                                              if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDisappear:)])
-                                              {
-                                                  [self.delegate mediaFocusManagerDidDisappear:self];
-                                              }
+                                              [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
+                                                               animations:^{
+                                                                   CGRect frame;
+                                                                   
+                                                                   frame = bounds;
+                                                                   frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
+                                                                   contentView.bounds = frame;
+                                                               }
+                                                               completion:^(BOOL finished) {
+                                                                   [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
+                                                                                    animations:^{
+                                                                                        contentView.bounds = bounds;
+                                                                                    }
+                                                                                    completion:^(BOOL finished) {
+                                                                                        self.mediaView.hidden = NO;
+                                                                                        [self.focusViewController.view removeFromSuperview];
+                                                                                        [self.focusViewController removeFromParentViewController];
+                                                                                        self.focusViewController = nil;
+                                                                                        
+                                                                                        if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDisappear:)])
+                                                                                        {
+                                                                                            [self.delegate mediaFocusManagerDidDisappear:self];
+                                                                                        }
+                                                                                    }];
+                                                               }];
                                           }];
                      }];
 }
