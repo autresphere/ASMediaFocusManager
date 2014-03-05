@@ -128,7 +128,7 @@ Here is an example on how to hide and show the status bar. As the delegate metho
 * Support movie media.
 * Close focus view by vertical swipe like in facebook app.
 * Media browsing by horizontal swipe in fullscreen.
-* Hide accessory views (button and label) when view is zoomed.
+* ~~Hide accessory views (button and label) when view is zoomed.~~ (March 5, 2014)
 
 ## ARC
 ASMediaFocusManager needs ARC.

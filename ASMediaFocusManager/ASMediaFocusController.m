@@ -11,7 +11,7 @@
 
 static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 
-@interface ASMediaFocusController ()
+@interface ASMediaFocusController () <UIScrollViewDelegate>
 
 @property (nonatomic, assign) UIDeviceOrientation previousOrientation;
 
@@ -177,10 +177,12 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     
     scrollView = [[ASImageScrollView alloc] initWithFrame:self.contentView.bounds];
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    scrollView.delegate = self;
     self.scrollView = scrollView;
     [self.contentView insertSubview:scrollView atIndex:0];
     [scrollView displayImage:self.mainImageView.image];
     self.mainImageView.hidden = YES;
+    [self.scrollView addObserver:self forKeyPath:@"zoomScale" options:NSKeyValueObservingOptionNew context:nil];
     
     [self.scrollView addGestureRecognizer:self.doubleTapGesture];
 }
@@ -190,6 +192,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     CGRect frame;
     
     frame = [self.contentView convertRect:self.scrollView.zoomImageView.frame fromView:self.scrollView];
+    [self.scrollView removeObserver:self forKeyPath:@"zoomScale" context:nil];
     self.scrollView.hidden = YES;
     self.mainImageView.hidden = NO;
     self.mainImageView.frame = frame;
@@ -210,6 +213,26 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     // Move the accessory views to the main view in order not to be rotated along with the media.
     [self pinAccessoryView:self.accessoryView];
     [self pinAccessoryView:self.titleLabel];
+}
+
+- (void)showAccessoryViews:(BOOL)visible
+{
+    if(visible == [self accessoryViewsVisible])
+        return;
+    
+    [UIView animateWithDuration:0.5
+                          delay:0
+                        options:UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{
+                         self.accessoryView.alpha = (visible?1:0);
+                         self.titleLabel.alpha = (visible?1:0);
+                     }
+                     completion:nil];
+}
+
+- (BOOL)accessoryViewsVisible
+{
+    return (self.titleLabel.alpha == 1);
 }
 
 #pragma mark - Actions
@@ -246,9 +269,25 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     }
 }
 
+#pragma mark - UIScrollViewDelegate
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return self.scrollView.zoomImageView;
+}
+
+- (void)scrollViewDidZoom:(UIScrollView *)scrollView
+{
+    [self showAccessoryViews:self.scrollView.zoomScale == self.scrollView.minimumZoomScale];
+}
+
 #pragma mark - Notifications
 - (void)orientationDidChangeNotification:(NSNotification *)notification
 {
     [self updateOrientationAnimated:YES];
+}
+
+#pragma mark - KVO
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
 }
 @end
