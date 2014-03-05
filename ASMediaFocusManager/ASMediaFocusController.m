@@ -182,7 +182,6 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [self.contentView insertSubview:scrollView atIndex:0];
     [scrollView displayImage:self.mainImageView.image];
     self.mainImageView.hidden = YES;
-    [self.scrollView addObserver:self forKeyPath:@"zoomScale" options:NSKeyValueObservingOptionNew context:nil];
     
     [self.scrollView addGestureRecognizer:self.doubleTapGesture];
 }
@@ -192,7 +191,6 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     CGRect frame;
     
     frame = [self.contentView convertRect:self.scrollView.zoomImageView.frame fromView:self.scrollView];
-    [self.scrollView removeObserver:self forKeyPath:@"zoomScale" context:nil];
     self.scrollView.hidden = YES;
     self.mainImageView.hidden = NO;
     self.mainImageView.frame = frame;
@@ -282,10 +280,5 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (void)orientationDidChangeNotification:(NSNotification *)notification
 {
     [self updateOrientationAnimated:YES];
-}
-
-#pragma mark - KVO
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
 }
 @end
