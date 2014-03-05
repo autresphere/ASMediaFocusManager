@@ -31,6 +31,7 @@
 		4ABF0B0516A0575C0053040A /* ASMediaFocusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */; };
 		4ABF0B0616A0575C0053040A /* ASMediaFocusManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */; };
 		4ABF0B1916A2E62E0053040A /* ASMediaFocusController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */; };
+		4AFDA6AA18C7179B00A1D0C4 /* ASTransparentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,8 @@
 		4ABF0B0316A0575C0053040A /* ASMediaFocusManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASMediaFocusManager.h; sourceTree = "<group>"; };
 		4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaFocusManager.m; sourceTree = "<group>"; };
 		4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ASMediaFocusController.xib; sourceTree = "<group>"; };
+		4AFDA6A818C7179B00A1D0C4 /* ASTransparentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTransparentView.h; sourceTree = "<group>"; };
+		4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASTransparentView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -188,6 +191,8 @@
 				4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */,
 				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
 				4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */,
+				4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */,
+				4AFDA6A818C7179B00A1D0C4 /* ASTransparentView.h */,
 			);
 			name = ASMediaFocusManager;
 			path = ../../ASMediaFocusManager;
@@ -275,6 +280,7 @@
 				4ABF0B0516A0575C0053040A /* ASMediaFocusController.m in Sources */,
 				4ABF0B0616A0575C0053040A /* ASMediaFocusManager.m in Sources */,
 				4A2D149E16AD255800D3CE3D /* ASImageScrollView.m in Sources */,
+				4AFDA6AA18C7179B00A1D0C4 /* ASTransparentView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

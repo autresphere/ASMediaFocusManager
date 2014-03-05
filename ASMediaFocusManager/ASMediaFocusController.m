@@ -208,11 +208,10 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     view.frame = frame;
 }
 
-- (void)pinAccessoryViews
+- (void)pinAccessoryView
 {
     // Move the accessory views to the main view in order not to be rotated along with the media.
     [self pinAccessoryView:self.accessoryView];
-    [self pinAccessoryView:self.titleLabel];
 }
 
 - (void)showAccessoryViews:(BOOL)visible
@@ -225,14 +224,13 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
                         options:UIViewAnimationOptionBeginFromCurrentState
                      animations:^{
                          self.accessoryView.alpha = (visible?1:0);
-                         self.titleLabel.alpha = (visible?1:0);
                      }
                      completion:nil];
 }
 
 - (BOOL)accessoryViewsVisible
 {
-    return (self.titleLabel.alpha == 1);
+    return (self.accessoryView.alpha == 1);
 }
 
 #pragma mark - Actions

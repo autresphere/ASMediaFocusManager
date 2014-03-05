@@ -203,6 +203,7 @@ static CGFloat const kAnimationDuration = 0.5;
     {
         [self.focusViewController uninstallZoomView];
     }
+    [self.focusViewController pinAccessoryView];
 }
 
 - (void)setupAccessoryViewOnFocusViewController:(ASMediaFocusController *)focusViewController
@@ -218,10 +219,9 @@ static CGFloat const kAnimationDuration = 0.5;
     doneButton.layer.borderWidth = 2;
     doneButton.layer.cornerRadius = 4;
     doneButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    doneButton.center = CGPointMake(focusViewController.contentView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 10);
+    doneButton.center = CGPointMake(focusViewController.accessoryView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 10);
     doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
-    [focusViewController.contentView addSubview:doneButton];
-    focusViewController.accessoryView = doneButton;
+    [focusViewController.accessoryView addSubview:doneButton];
     
     doneButton.alpha = 0;
     [UIView animateWithDuration:0.5
@@ -344,7 +344,6 @@ static CGFloat const kAnimationDuration = 0.5;
     CGRect __block bounds;
     
     [self uninstallZoomView];
-    [self.focusViewController pinAccessoryViews];
     
     contentView = self.focusViewController.mainImageView;
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
@@ -362,7 +361,6 @@ static CGFloat const kAnimationDuration = 0.5;
                          contentView.bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
                          self.focusViewController.accessoryView.alpha = 0;
-                         self.focusViewController.titleLabel.alpha = 0;
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
