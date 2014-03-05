@@ -35,6 +35,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     self.titleLabel.layer.shadowOpacity = 1;
     self.titleLabel.layer.shadowOffset = CGSizeZero;
     self.titleLabel.layer.shadowRadius = 1;
+    self.accessoryView.alpha = 0;
 }
 
 - (void)viewDidUnload
@@ -56,16 +57,6 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    self.titleLabel.alpha = 0;
-    [UIView animateWithDuration:0.5
-                     animations:^{
-                         self.titleLabel.alpha = 1;
-                     }];
 }
 
 - (NSUInteger)supportedInterfaceOrientations
@@ -212,7 +203,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [self pinAccessoryView:self.accessoryView];
 }
 
-- (void)showAccessoryViews:(BOOL)visible
+- (void)showAccessoryView:(BOOL)visible
 {
     if(visible == [self accessoryViewsVisible])
         return;
@@ -273,7 +264,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView
 {
-    [self showAccessoryViews:self.scrollView.zoomScale == self.scrollView.minimumZoomScale];
+    [self showAccessoryView:self.scrollView.zoomScale == self.scrollView.minimumZoomScale];
 }
 
 #pragma mark - Notifications

@@ -222,12 +222,6 @@ static CGFloat const kAnimationDuration = 0.5;
     doneButton.center = CGPointMake(focusViewController.accessoryView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 10);
     doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
     [focusViewController.accessoryView addSubview:doneButton];
-    
-    doneButton.alpha = 0;
-    [UIView animateWithDuration:0.5
-                     animations:^{
-                         doneButton.alpha = 1;
-                     }];
 }
 
 #pragma mark - Gestures
@@ -321,6 +315,7 @@ static CGFloat const kAnimationDuration = 0.5;
                                                                                     }
                                                                                     completion:^(BOOL finished) {
                                                                                         [self installZoomView];
+                                                                                        [self.focusViewController showAccessoryView:YES];
                                                                                         self.isZooming = NO;
                                                                                         
                                                                                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])

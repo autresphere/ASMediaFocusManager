@@ -22,5 +22,6 @@
 - (void)installZoomView;
 - (void)uninstallZoomView;
 - (void)pinAccessoryView;
+- (void)showAccessoryView:(BOOL)visible;
 
 @end
