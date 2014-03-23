@@ -153,26 +153,28 @@ static CGFloat const kAnimationDuration = 0.5;
     viewController.mainImageView.image = image;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSURL *url;
-        NSData *data;
-        NSError *error = nil;
         
-        url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
-        data = [NSData dataWithContentsOfURL:url options:0 error:&error];
-        if(error != nil)
-        {
-            NSLog(@"Warning: Unable to load image at %@. %@", url, error);
+        UIImage *image;
+        if ([self.delegate respondsToSelector:@selector(mediaFocusManager:mediaURLForView:)]) {
+            
+            NSError *error = nil;
+            NSURL *url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
+            NSData *data = [NSData dataWithContentsOfURL:url options:0 error:&error];
+            
+            if(error != nil) {
+                NSLog(@"Warning: Unable to load image at %@. %@", url, error);
+            } else {
+                image = [[UIImage alloc] initWithData:data];
+            }
+        } else {
+            image = [self.delegate mediaFocusManager:self fullMediaForView:mediaView];
         }
-        else
-        {
-            UIImage *image;
-
-            image = [[UIImage alloc] initWithData:data];
-            image = [self decodedImageWithImage:image];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                viewController.mainImageView.image = image;
-            });
-        }
+        
+        
+        image = [self decodedImageWithImage:image];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            viewController.mainImageView.image = image;
+        });
     });
 
     return viewController;

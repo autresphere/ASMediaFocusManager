@@ -18,8 +18,6 @@
 - (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view;
 // Returns the view controller in which the focus controller is going to be added. This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager;
-// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
-- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view;
 // Returns the title for this media view. Return nil if you don't want any title to appear.
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
 
@@ -32,6 +30,14 @@
 - (void)mediaFocusManagerWillDisappear:(ASMediaFocusManager *)mediaFocusManager;
 // Called when the view has be dismissed by the 'done' button or by gesture.
 - (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager;
+
+@optional
+// Implement one of the following two URLs. The first is if you're handling image storage to file manually, the second is if you're allowing Core Data to manage your image storage and so don't have a URL.
+
+// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
+- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view;
+//Added callback for images stored in Core Data
+- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager fullMediaForView:(UIView *)view;
 
 @end
 
