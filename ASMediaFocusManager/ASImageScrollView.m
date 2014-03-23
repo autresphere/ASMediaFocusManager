@@ -72,6 +72,7 @@
         self.showsHorizontalScrollIndicator = NO;
         self.bouncesZoom = YES;
         self.decelerationRate = UIScrollViewDecelerationRateFast;
+        self.delegate = self;        
     }
     return self;
 }
@@ -112,6 +113,19 @@
     if (sizeChanging) {
         [self recoverFromResizing];
     }
+}
+
+
+#pragma mark - UIScrollViewDelegate
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
+{
+    return self.zoomImageView;
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(UIView *)view atScale:(float)scale
+{
+    
 }
 
 #pragma mark - Configure scrollView to display new image
