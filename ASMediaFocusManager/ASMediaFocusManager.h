@@ -12,6 +12,11 @@
 
 @protocol ASMediasFocusDelegate <NSObject>
 
+// For scrolling purposes, the previous view in your hierarchy;
+- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager previousViewFromView:(UIView *)view;
+// For scrolling purposes, the next view in your hierarchy;
+- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager nextViewFromView:(UIView *)view;
+
 // Returns an image that represents the media view. This image is used in the focusing animation view. It is usually a small image.
 - (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageForView:(UIView *)view;
 // Returns the final focused frame for this media view. This frame is usually a full screen frame.
@@ -42,7 +47,7 @@
 @end
 
 
-@interface ASMediaFocusManager : NSObject
+@interface ASMediaFocusManager : NSObject <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, assign) id<ASMediasFocusDelegate> delegate;
 // The animation duration. Defaults to 0.5.
@@ -57,6 +62,8 @@
 @property (nonatomic, assign) BOOL gestureDisabledDuringZooming;
 // Returns whether defocuses with tap. Defaults to NO.
 @property (nonatomic) BOOL isDefocusingWithTap;
+
+@property (nonatomic) UIPageViewController *pageViewController;
 
 - (void)installOnViews:(NSArray *)views;
 - (void)installOnView:(UIView *)view;
