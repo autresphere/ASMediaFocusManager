@@ -152,6 +152,7 @@ static CGFloat const kAnimationDuration = 0.5;
     viewController.mediaView = mediaView;
     viewController.titleLabel.text = [self.delegate mediaFocusManager:self titleForView:mediaView];
     viewController.mainImageView.image = image;
+    [viewController.mainImageView setContentMode:UIViewContentModeScaleAspectFit];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
@@ -429,11 +430,15 @@ static CGFloat const kAnimationDuration = 0.5;
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
-    UIView *mediaView = ((ASMediaFocusController*) viewController).mediaView;
-    UIView *nextMediaView = [self.delegate mediaFocusManager:self previousViewFromView:mediaView];
-    if (nextMediaView) {
-        ASMediaFocusController *focusViewController = [self focusViewControllerForView:nextMediaView];
-        return focusViewController;
+    if ([self.delegate respondsToSelector:@selector(mediaFocusManager:previousViewFromView:)]) {
+        UIView *mediaView = ((ASMediaFocusController*) viewController).mediaView;
+        UIView *nextMediaView = [self.delegate mediaFocusManager:self previousViewFromView:mediaView];
+        if (nextMediaView) {
+            ASMediaFocusController *focusViewController = [self focusViewControllerForView:nextMediaView];
+            return focusViewController;
+        } else {
+            return nil;
+        }
     } else {
         return nil;
     }
@@ -441,11 +446,15 @@ static CGFloat const kAnimationDuration = 0.5;
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
-    UIView *mediaView = ((ASMediaFocusController*) viewController).mediaView;
-    UIView *nextMediaView = [self.delegate mediaFocusManager:self nextViewFromView:mediaView];
-    if (nextMediaView) {
-        ASMediaFocusController *focusViewController = [self focusViewControllerForView:nextMediaView];
-        return focusViewController;
+    if ([self.delegate respondsToSelector:@selector(mediaFocusManager:nextViewFromView:)]) {
+        UIView *mediaView = ((ASMediaFocusController*) viewController).mediaView;
+        UIView *nextMediaView = [self.delegate mediaFocusManager:self nextViewFromView:mediaView];
+        if (nextMediaView) {
+            ASMediaFocusController *focusViewController = [self focusViewControllerForView:nextMediaView];
+            return focusViewController;
+        } else {
+            return nil;
+        }
     } else {
         return nil;
     }

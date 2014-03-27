@@ -143,6 +143,36 @@ static CGFloat const kMaxOffset = 20;
     NSLog(@"The view has been dismissed");
 }
 
+- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager previousViewFromView:(UIView *)view
+{
+    UIImageView *imageView;
+    
+    if (view.tag > 1) {
+        imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"%d.jpg", view.tag - 1]]];
+        [imageView setTag:view.tag - 1];
+    } else {
+        imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"4.jpg"]];
+        [imageView setTag:4];
+    }
+    
+    return imageView;
+}
+
+- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager nextViewFromView:(UIView *)view
+{
+    UIImageView *imageView;
+    
+    if (view.tag < 4) {
+        imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[NSString stringWithFormat:@"%d.jpg", view.tag + 1]]];
+        [imageView setTag:view.tag + 1];
+    } else {
+        imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"1.jpg"]];
+        [imageView setTag:1];
+    }
+    
+    return imageView;
+}
+
 #pragma mark - UITableViewDataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {

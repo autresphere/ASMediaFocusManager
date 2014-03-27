@@ -12,11 +12,6 @@
 
 @protocol ASMediasFocusDelegate <NSObject>
 
-// For scrolling purposes, the previous view in your hierarchy;
-- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager previousViewFromView:(UIView *)view;
-// For scrolling purposes, the next view in your hierarchy;
-- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager nextViewFromView:(UIView *)view;
-
 // Returns an image that represents the media view. This image is used in the focusing animation view. It is usually a small image.
 - (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageForView:(UIView *)view;
 // Returns the final focused frame for this media view. This frame is usually a full screen frame.
@@ -27,6 +22,12 @@
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
 
 @optional
+
+// For scrolling purposes, the previous view in your hierarchy;
+- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager previousViewFromView:(UIView *)view;
+// For scrolling purposes, the next view in your hierarchy;
+- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager nextViewFromView:(UIView *)view;
+
 // Called when a focus view is about to be shown. For example, you might use this method to hide the status bar.
 - (void)mediaFocusManagerWillAppear:(ASMediaFocusManager *)mediaFocusManager;
 // Called when a focus view has been shown.
