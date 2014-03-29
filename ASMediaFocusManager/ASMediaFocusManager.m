@@ -128,7 +128,6 @@ static CGFloat const kAnimationDuration = 0.5;
             UITapGestureRecognizer *tapGesture;
             
             tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
-            [tapGesture requireGestureRecognizerToFail:focusViewController.doubleTapGesture];
             [focusViewController.view addGestureRecognizer:tapGesture];
         }
         else
@@ -323,106 +322,58 @@ static CGFloat const kAnimationDuration = 0.5;
                          focusViewController.view.backgroundColor = self.backgroundColor;
                      }
                      completion:^(BOOL finished) {
-                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                          animations:^{
-                                              CGRect frame;
-                                              
-                                              frame = focusViewController.contentView.bounds;
-                                              frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
-                                              imageView.frame = frame;
-                                          }
-                                          completion:^(BOOL finished) {
-                                              [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                                               animations:^{
-                                                                   CGRect frame;
-                                                                   
-                                                                   frame = focusViewController.contentView.bounds;
-                                                                   frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
-                                                                   imageView.frame = frame;
-                                                               }
-                                                               completion:^(BOOL finished) {
-                                                                   [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                                                                    animations:^{
-                                                                                        imageView.frame = focusViewController.contentView.bounds;
-                                                                                    }
-                                                                                    completion:^(BOOL finished) {
-                                                                                        [self installZoomView];
-                                                                                        [self.focusViewController showAccessoryView:YES];
-                                                                                        
-                                                                                        self.isZooming = NO;
-                                                                                        if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
-                                                                                        {
-                                                                                            [self.delegate mediaFocusManagerDidAppear:self];
-                                                                                        }
-                                                                                    }];
-                                                               }];
-                                          }];
+                         if(self.elasticAnimation)
+                         {
+                             [UIView animateWithDuration:self.animationDuration*kAnimateElasticDurationRatio
+                                              animations:^{
+                                                  imageView.frame = focusViewController.contentView.bounds;
+                                              }
+                                              completion:^(BOOL finished) {
+                                                  [self installZoomView];
+                                                  self.isZooming = NO;
+                                              }];
+                         }
+                         else
+                         {
+                             [self installZoomView];
+                             self.isZooming = NO;
+                         }
+                         
                      }];
 }
 
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
 {
-    NSTimeInterval duration;
     
-    if(self.isZooming && self.gestureDisabledDuringZooming)
+    if(self.isZooming && self.gestureDisabledDuringZooming) {
         return;
+    }
     
     UIView *contentView;
-    CGRect __block bounds;
     
     [self uninstallZoomView];
     
     contentView = self.focusViewController.mainImageView;
-    duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
-    [UIView animateWithDuration:duration
+    [UIView animateWithDuration:.3
                      animations:^{
                          if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillDisappear:)])
                          {
                              [self.delegate mediaFocusManagerWillDisappear:self];
                          }
-                         
-                         self.focusViewController.contentView.transform = CGAffineTransformIdentity;
-                         contentView.center = [contentView.superview convertPoint:self.focusViewController.mediaView.center fromView:self.focusViewController.mediaView.superview];
-                         contentView.transform = self.focusViewController.mediaView.transform;
-                         bounds = self.focusViewController.mediaView.bounds;
-                         contentView.bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
+                         self.focusViewController.view.alpha = 0;
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
                          self.focusViewController.accessoryView.alpha = 0;
                      }
                      completion:^(BOOL finished) {
-                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                          animations:^{
-                                              CGRect frame;
-                                              
-                                              frame = bounds;
-                                              frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
-                                              contentView.bounds = frame;
-                                          }
-                                          completion:^(BOOL finished) {
-                                              [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                                               animations:^{
-                                                                   CGRect frame;
-                                                                   
-                                                                   frame = bounds;
-                                                                   frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
-                                                                   contentView.bounds = frame;
-                                                               }
-                                                               completion:^(BOOL finished) {
-                                                                   [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                                                                    animations:^{
-                                                                                        contentView.bounds = bounds;
-                                                                                    }
-                                                                                    completion:^(BOOL finished) {
-                                                                                        self.focusViewController.mediaView.hidden = NO;
-                                                                                        [self cleanPageController];
-                                                                                        
-                                                                                        if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDisappear:)])
-                                                                                        {
-                                                                                            [self.delegate mediaFocusManagerDidDisappear:self];
-                                                                                        }
-                                                                                    }];
-                                                               }];
-                                          }];
+                         
+                         self.focusViewController.mediaView.hidden = NO;
+                         [self cleanPageController];
+                         
+                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDisappear:)])
+                         {
+                             [self.delegate mediaFocusManagerDidDisappear:self];
+                         }
+                         
                      }];
 }
 
