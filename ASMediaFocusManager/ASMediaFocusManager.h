@@ -18,12 +18,16 @@
 - (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view;
 // Returns the view controller in which the focus controller is going to be added. This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager;
-// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
-- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view;
 // Returns the title for this media view. Return nil if you don't want any title to appear.
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
 
 @optional
+
+// For scrolling purposes, the previous view in your hierarchy;
+- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager previousViewFromView:(UIView *)view;
+// For scrolling purposes, the next view in your hierarchy;
+- (UIView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager nextViewFromView:(UIView *)view;
+
 // Called when a focus view is about to be shown. For example, you might use this method to hide the status bar.
 - (void)mediaFocusManagerWillAppear:(ASMediaFocusManager *)mediaFocusManager;
 // Called when a focus view has been shown.
@@ -33,10 +37,18 @@
 // Called when the view has be dismissed by the 'done' button or by gesture.
 - (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager;
 
+@optional
+// Implement one of the following two URLs. The first is if you're handling image storage to file manually, the second is if you're allowing Core Data to manage your image storage and so don't have a URL.
+
+// Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
+- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view;
+//Added callback for images stored in Core Data
+- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager fullMediaForView:(UIView *)view;
+
 @end
 
 
-@interface ASMediaFocusManager : NSObject
+@interface ASMediaFocusManager : NSObject <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 
 @property (nonatomic, assign) id<ASMediasFocusDelegate> delegate;
 // The animation duration. Defaults to 0.5.
@@ -51,6 +63,8 @@
 @property (nonatomic, assign) BOOL gestureDisabledDuringZooming;
 // Returns whether defocuses with tap. Defaults to NO.
 @property (nonatomic) BOOL isDefocusingWithTap;
+
+@property (nonatomic) UIPageViewController *pageViewController;
 
 - (void)installOnViews:(NSArray *)views;
 - (void)installOnView:(UIView *)view;

@@ -99,7 +99,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     }
     
     if(([UIDevice currentDevice].orientation == UIInterfaceOrientationPortrait)
-       || [self isParentSupportingInterfaceOrientation:[UIDevice currentDevice].orientation])
+       || [self isParentSupportingInterfaceOrientation:(UIInterfaceOrientation)[UIDevice currentDevice].orientation])
     {
         transform = CGAffineTransformIdentity;
     }
