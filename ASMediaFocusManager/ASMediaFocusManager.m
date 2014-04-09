@@ -142,15 +142,18 @@ static CGFloat const kAnimationDuration = 0.5;
 {
     ASMediaFocusController *viewController;
     UIImage *image;
+    UIImageView *imageView;
     
-    image = [self.delegate mediaFocusManager:self imageForView:mediaView];
-    if(image == nil)
+    imageView = [self.delegate mediaFocusManager:self imageViewForView:mediaView];
+    image = imageView.image;
+    if((imageView == nil) || (image == nil))
         return nil;
 
     viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
     [self installDefocusActionOnFocusViewController:viewController];
     viewController.titleLabel.text = [self.delegate mediaFocusManager:self titleForView:mediaView];
     viewController.mainImageView.image = image;
+    viewController.mainImageView.contentMode = imageView.contentMode;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSURL *url;
@@ -224,6 +227,29 @@ static CGFloat const kAnimationDuration = 0.5;
     [focusViewController.accessoryView addSubview:doneButton];
 }
 
+- (CGSize)sizeThatFitsInSize:(CGSize)boundingSize initialSize:(CGSize)initialSize
+{
+	// Compute the final size that fits in boundingSize in order to keep aspect ratio from initialSize.
+	CGSize fittingSize;
+	
+    CGFloat widthRatio;
+    CGFloat heightRatio;
+    
+    widthRatio = boundingSize.width / initialSize.width;
+    heightRatio = boundingSize.height / initialSize.height;
+    
+    if (widthRatio < heightRatio)
+    {
+        fittingSize = CGSizeMake(boundingSize.width, floorf(initialSize.height * widthRatio));
+    }
+    else
+    {
+        fittingSize = CGSizeMake(floorf(initialSize.width * heightRatio), boundingSize.height);
+    }
+    
+	return fittingSize;
+}
+
 #pragma mark - Gestures
 - (void)handleFocusGesture:(UIGestureRecognizer *)gesture
 {
@@ -231,8 +257,9 @@ static CGFloat const kAnimationDuration = 0.5;
     ASMediaFocusController *focusViewController;
     CGPoint center;
     UIView *mediaView;
-    UIView *imageView;
+    UIImageView *imageView;
     NSTimeInterval duration;
+    CGRect finalImageFrame;
     
     mediaView = gesture.view;
     focusViewController = [self focusViewControllerForView:mediaView];
@@ -244,6 +271,7 @@ static CGFloat const kAnimationDuration = 0.5;
     parentViewController = [self.delegate parentViewControllerForMediaFocusManager:self];
     [parentViewController addChildViewController:focusViewController];
     [parentViewController.view addSubview:focusViewController.view];
+    // The focus view is generally
     focusViewController.view.frame = parentViewController.view.bounds;
     mediaView.hidden = YES;
 
@@ -255,6 +283,17 @@ static CGFloat const kAnimationDuration = 0.5;
         
     self.isZooming = YES;
     
+    finalImageFrame = [self.delegate mediaFocusManager:self finalFrameForView:mediaView];
+    if(imageView.contentMode == UIViewContentModeScaleAspectFill)
+    {
+        CGSize size;
+        
+        size = [self sizeThatFitsInSize:finalImageFrame.size initialSize:imageView.image.size];
+        finalImageFrame.size = size;
+        finalImageFrame.origin.x = (focusViewController.view.bounds.size.width - size.width)/2;
+        finalImageFrame.origin.y = (focusViewController.view.bounds.size.height - size.height)/2;
+    }
+
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
     [UIView animateWithDuration:duration
                      animations:^{
@@ -267,7 +306,7 @@ static CGFloat const kAnimationDuration = 0.5;
                              [self.delegate mediaFocusManagerWillAppear:self];
                          }
                          
-                         frame = [self.delegate mediaFocusManager:self finalFrameforView:mediaView];
+                         frame = finalImageFrame;
                          frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio]:frame);
 
                          // Trick to keep the right animation on the image frame.
@@ -295,7 +334,7 @@ static CGFloat const kAnimationDuration = 0.5;
                                           animations:^{
                                               CGRect frame;
                                               
-                                              frame = focusViewController.contentView.bounds;
+                                              frame = finalImageFrame;
                                               frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
                                               imageView.frame = frame;
                                           }
@@ -304,14 +343,14 @@ static CGFloat const kAnimationDuration = 0.5;
                                                                animations:^{
                                                                    CGRect frame;
                                                                    
-                                                                   frame = focusViewController.contentView.bounds;
+                                                                   frame = finalImageFrame;
                                                                    frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
                                                                    imageView.frame = frame;
                                                                }
                                                                completion:^(BOOL finished) {
                                                                    [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                                                                     animations:^{
-                                                                                        imageView.frame = focusViewController.contentView.bounds;
+                                                                                        imageView.frame = finalImageFrame;
                                                                                     }
                                                                                     completion:^(BOOL finished) {
                                                                                         [self installZoomView];

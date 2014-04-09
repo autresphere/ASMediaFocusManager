@@ -15,6 +15,13 @@ Works on iPhone and iPad.
 The focused view is automatically adapted to the screen orientation even if your main view controller is portrait only.
 
 Because orientation management was different on iOS 5, this class does not work on iOS 5 and below (although it should not be hard to adapt it).
+## Image content modes
+For now, only `UIViewContentModeScaleAspectFit` and `UIViewContentModeScaleAspectFill` are supported, but these modes are the most widely used.
+
+In case of `UIViewContentModeScaleAspectFill`, the view is expanded in order to show the image in full.
+
+If you want other content modes to be supported, please drop me a line. You can even try a pull request, which would be much appreciated.
+
 ## Use It
 Add `pod 'ASMediaFocusManager'` to your Podfile or copy the whole `ASMediaFocusManager` folder in your project.
 

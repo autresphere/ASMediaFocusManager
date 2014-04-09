@@ -71,12 +71,12 @@ static CGFloat const kMaxOffset = 20;
 }
 
 #pragma mark - ASMediaFocusDelegate
-- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageForView:(UIView *)view
+- (UIImageView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageViewForView:(UIView *)view
 {
-    return ((UIImageView *)view).image;
+    return (UIImageView *)view;
 }
 
-- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view
+- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameForView:(UIView *)view
 {
     return self.view.bounds;
 }
@@ -159,8 +159,9 @@ static CGFloat const kMaxOffset = 20;
     
     path = [NSString stringWithFormat:@"%d.jpg", indexPath.row + 1];
     image = [UIImage imageNamed:path];
+    cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
     cell.imageView.image = image;
-    cell.imageView.tag = indexPath.row + 1;    
+    cell.imageView.tag = indexPath.row + 1;
     
     return cell;
 }
