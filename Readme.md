@@ -20,7 +20,9 @@ For now, only `UIViewContentModeScaleAspectFit` and `UIViewContentModeScaleAspec
 
 In case of `UIViewContentModeScaleAspectFill`, the view is expanded in order to show the image in full.
 
-If you want other content modes to be supported, please drop me a line. You can even try a pull request, which would be much appreciated.
+![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/videoAspectFill.gif) 
+
+If you want other content modes to be supported, please drop me a line. You can even try a pull request, which would be much appreciated!
 
 ## Use It
 Add `pod 'ASMediaFocusManager'` to your Podfile or copy the whole `ASMediaFocusManager` folder in your project.
