@@ -12,7 +12,7 @@
 
 @protocol ASMediasFocusDelegate <NSObject>
 
-// Returns an image that represents the media view. This image is used in the focusing animation view. It is usually a small image.
+// Returns an image view that represents the media view. This image from this view is used in the focusing animation view. It is usually a small image.
 - (UIImageView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageViewForView:(UIView *)view;
 // Returns the final focused frame for this media view. This frame is usually a full screen frame.
 - (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameForView:(UIView *)view;

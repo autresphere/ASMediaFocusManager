@@ -49,11 +49,10 @@ In your View Controller where some image views need focus feature, add this code
 Here is an example of a delegate implementation. Please adapt the code to your context.
 ```objc
 #pragma mark - ASMediaFocusDelegate
-// Returns an image that represents the media view. This image is used in the focusing animation view.
-// It is usually a small image.
-- (UIImage *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageForView:(UIView *)view
+// Returns an image view that represents the media view. This image from this view is used in the focusing animation view. It is usually a small image.
+- (UIImageView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageViewForView:(UIView *)view;
 {
-    return ((UIImageView *)view).image;
+    return (UIImageView *)view;
 }
 
 // Returns the final focused frame for this media view. This frame is usually a full screen frame.
