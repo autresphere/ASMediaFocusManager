@@ -189,7 +189,7 @@ static CGFloat const kAnimationDuration = 0.5;
     dx = frame.size.width*ratio;
     dy = frame.size.height*ratio;
     
-    return CGRectInset(frame, dx, dy);
+    return CGRectIntegral(CGRectInset(frame, dx, dy));
 }
 
 - (void)installZoomView
@@ -260,6 +260,7 @@ static CGFloat const kAnimationDuration = 0.5;
     UIImageView *imageView;
     NSTimeInterval duration;
     CGRect finalImageFrame;
+    __block CGRect untransformedFinalImageFrame;
     
     mediaView = gesture.view;
     focusViewController = [self focusViewControllerForView:mediaView];
@@ -307,7 +308,6 @@ static CGFloat const kAnimationDuration = 0.5;
                          }
                          
                          frame = finalImageFrame;
-                         frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio]:frame);
 
                          // Trick to keep the right animation on the image frame.
                          // The image frame shoud animate from its current frame to a final frame.
@@ -321,7 +321,8 @@ static CGFloat const kAnimationDuration = 0.5;
                          imageView.frame = frame;
                          [focusViewController updateOrientationAnimated:NO];
                          // This is the final image frame. No transform.
-                         frame = imageView.frame;
+                         untransformedFinalImageFrame = imageView.frame;
+                         frame = (self.elasticAnimation?[self rectInsetsForRect:untransformedFinalImageFrame ratio:-kAnimateElasticSizeRatio]:untransformedFinalImageFrame);
                          // It must now be animated from its initial frame and transform.
                          imageView.frame = initialFrame;
                          imageView.transform = initialTransform;
@@ -334,7 +335,7 @@ static CGFloat const kAnimationDuration = 0.5;
                                           animations:^{
                                               CGRect frame;
                                               
-                                              frame = finalImageFrame;
+                                              frame = untransformedFinalImageFrame;
                                               frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
                                               imageView.frame = frame;
                                           }
@@ -343,14 +344,14 @@ static CGFloat const kAnimationDuration = 0.5;
                                                                animations:^{
                                                                    CGRect frame;
                                                                    
-                                                                   frame = finalImageFrame;
+                                                                   frame = untransformedFinalImageFrame;
                                                                    frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
                                                                    imageView.frame = frame;
                                                                }
                                                                completion:^(BOOL finished) {
                                                                    [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                                                                     animations:^{
-                                                                                        imageView.frame = finalImageFrame;
+                                                                                        imageView.frame = untransformedFinalImageFrame;
                                                                                     }
                                                                                     completion:^(BOOL finished) {
                                                                                         [self installZoomView];
