@@ -92,13 +92,13 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     if([UIDevice currentDevice].orientation == self.previousOrientation)
         return;
     
-    if((UIInterfaceOrientationIsLandscape([UIDevice currentDevice].orientation) && UIInterfaceOrientationIsLandscape(self.previousOrientation))
-       || (UIInterfaceOrientationIsPortrait([UIDevice currentDevice].orientation) && UIInterfaceOrientationIsPortrait(self.previousOrientation)))
+    if((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && UIDeviceOrientationIsLandscape(self.previousOrientation))
+       || (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && UIDeviceOrientationIsPortrait(self.previousOrientation)))
     {
         duration *= 2;
     }
     
-    if(([UIDevice currentDevice].orientation == UIInterfaceOrientationPortrait)
+    if(([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait)
        || [self isParentSupportingInterfaceOrientation:[UIDevice currentDevice].orientation])
     {
         transform = CGAffineTransformIdentity;
@@ -107,7 +107,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     {
         switch ([UIDevice currentDevice].orientation)
         {
-            case UIInterfaceOrientationLandscapeLeft:
+            case UIDeviceOrientationLandscapeRight:
                 if(self.parentViewController.interfaceOrientation == UIInterfaceOrientationPortrait)
                 {
                     transform = CGAffineTransformMakeRotation(-M_PI_2);
@@ -118,7 +118,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
                 }
                 break;
                 
-            case UIInterfaceOrientationLandscapeRight:
+            case UIDeviceOrientationLandscapeLeft:
                 if(self.parentViewController.interfaceOrientation == UIInterfaceOrientationPortrait)
                 {
                     transform = CGAffineTransformMakeRotation(M_PI_2);
@@ -129,11 +129,11 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
                 }
                 break;
                 
-            case UIInterfaceOrientationPortrait:
+            case UIDeviceOrientationPortrait:
                 transform = CGAffineTransformIdentity;
                 break;
                 
-            case UIInterfaceOrientationPortraitUpsideDown:
+            case UIDeviceOrientationPortraitUpsideDown:
                 transform = CGAffineTransformMakeRotation(M_PI);
                 break;
                 
