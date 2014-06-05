@@ -354,13 +354,34 @@ static CGFloat const kAnimationDuration = 0.5;
                                                                                         imageView.frame = untransformedFinalImageFrame;
                                                                                     }
                                                                                     completion:^(BOOL finished) {
-                                                                                        [self installZoomView];
-                                                                                        [self.focusViewController showAccessoryView:YES];
-                                                                                        self.isZooming = NO;
-                                                                                        
-                                                                                        if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
-                                                                                        {
-                                                                                            [self.delegate mediaFocusManagerDidAppear:self];
+                                                                                        CGSize imageOriSize = imageView.image.size;
+                                                                                        if (imageOriSize.width < untransformedFinalImageFrame.size.width && imageOriSize.height < untransformedFinalImageFrame.size.height) {//if the size of image is smaller than the bounds
+                                                                                            [UIView animateWithDuration:self.animationDuration / 2 animations:^{
+                                                                                                //set imageView at the centre of bounds and change to the original image size.
+                                                                                                const CGFloat scaleRatio = MAX(imageOriSize.width / untransformedFinalImageFrame.size.width, imageOriSize.height / untransformedFinalImageFrame.size.height);
+                                                                                                CGSize imageDestSize = CGSizeMake(untransformedFinalImageFrame.size.width * scaleRatio, untransformedFinalImageFrame.size.height * scaleRatio);
+                                                                                                
+                                                                                                imageView.frame = CGRectMake(untransformedFinalImageFrame.origin.x + (untransformedFinalImageFrame.size.width - imageDestSize.width) / 2, untransformedFinalImageFrame.origin.y + (untransformedFinalImageFrame.size.height - imageDestSize.height) / 2, imageDestSize.width, imageDestSize.height);
+                                                                                            } completion:^(BOOL finished) {
+                                                                                                [self installZoomView];
+                                                                                                [self.focusViewController showAccessoryView:YES];
+                                                                                                self.isZooming = NO;
+                                                                                                
+                                                                                                if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
+                                                                                                {
+                                                                                                    [self.delegate mediaFocusManagerDidAppear:self];
+                                                                                                }
+                                                                                            }];
+                                                                                        }
+                                                                                        else{
+                                                                                            [self installZoomView];
+                                                                                            [self.focusViewController showAccessoryView:YES];
+                                                                                            self.isZooming = NO;
+                                                                                            
+                                                                                            if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
+                                                                                            {
+                                                                                                [self.delegate mediaFocusManagerDidAppear:self];
+                                                                                            }
                                                                                         }
                                                                                     }];
                                                                }];
