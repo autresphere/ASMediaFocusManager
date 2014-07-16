@@ -272,7 +272,7 @@ static CGFloat const kAnimationDuration = 0.5;
     parentViewController = [self.delegate parentViewControllerForMediaFocusManager:self];
     [parentViewController addChildViewController:focusViewController];
     [parentViewController.view addSubview:focusViewController.view];
-    // The focus view is generally
+
     focusViewController.view.frame = parentViewController.view.bounds;
     mediaView.hidden = YES;
 
