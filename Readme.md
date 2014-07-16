@@ -1,5 +1,5 @@
 ## ASMediaFocusManager
-ASMediaFocusManager gives the ability to focus on any thumbnail image by a simple tap. The thumbnail image is automatically animated to a focused fullscreen image view. Another tap on the focused view shrinks the image back to its initial position.
+ASMediaFocusManager gives the ability to focus on any thumbnail image by a simple tap. The thumbnail image is automatically animated to a focused fullscreen image view. Another tap on the focused view (or on the 'Done' button) shrinks the image back to its initial position.
 
 Each thumbnail image view may have its own transform, the focus and defocus animations take care of any initial transform.
 
@@ -23,6 +23,11 @@ In case of `UIViewContentModeScaleAspectFill`, the view is expanded in order to 
 ![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/videoAspectFill.gif) 
 
 If you want other content modes to be supported, please drop me a line. You can even try a pull request, which would be much appreciated!
+
+## Image size
+When focused, an image is shown fullscreen even if the image is smaller than the screen resolution. In this case no interactive zoom is available.
+
+All Image sizes are supported.
 
 ## Use It
 Add `pod 'ASMediaFocusManager'` to your Podfile or copy the whole `ASMediaFocusManager` folder in your project.
@@ -142,6 +147,7 @@ Here is an example on how to hide and show the status bar. As the delegate metho
 ASMediaFocusManager needs ARC.
 
 ## Licence
-ASMediaFocusManager is available under the MIT license. See the LICENSE file for more info.
+ASMediaFocusManager is available under the MIT license, Copyright (c) 2014 AutreSphere [@autresphere](http://twitter.com/autresphere).
+
 
 
