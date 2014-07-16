@@ -161,9 +161,9 @@
     maxImageScale = MAX(minScale, maxImageScale);
     maxScale = MIN(maxScale, maxImageScale);
 
-    // don't let minScale exceed maxScale. (If the image is smaller than the screen, we don't want to force it to be zoomed.)
+    // If the image is smaller than the screen, force it to be zoomed.
     if (minScale > maxScale) {
-        minScale = maxScale;
+        maxScale = minScale;
     }
         
     self.maximumZoomScale = maxScale;
