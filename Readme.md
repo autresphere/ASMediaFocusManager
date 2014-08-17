@@ -61,7 +61,7 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 }
 
 // Returns the final focused frame for this media view. This frame is usually a full screen frame.
-- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameforView:(UIView *)view
+- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameForView:(UIView *)view
 {
     return self.parentViewController.view.bounds;
 }
