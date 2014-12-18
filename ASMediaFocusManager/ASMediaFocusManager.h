@@ -38,7 +38,7 @@
 
 @interface ASMediaFocusManager : NSObject
 
-@property (nonatomic, assign) id<ASMediasFocusDelegate> delegate;
+@property (nonatomic, weak) id<ASMediasFocusDelegate> delegate;
 // The animation duration. Defaults to 0.5.
 @property (nonatomic, assign) NSTimeInterval animationDuration;
 // The background color. Defaults to transparent black.
