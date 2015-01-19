@@ -222,7 +222,7 @@ static CGFloat const kAnimationDuration = 0.5;
     doneButton.layer.borderWidth = 2;
     doneButton.layer.cornerRadius = 4;
     doneButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    doneButton.center = CGPointMake(focusViewController.accessoryView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 10);
+    doneButton.center = CGPointMake(focusViewController.accessoryView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 20);
     doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
     [focusViewController.accessoryView addSubview:doneButton];
 }
