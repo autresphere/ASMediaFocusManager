@@ -261,7 +261,12 @@ static CGFloat const kAnimationDuration = 0.5;
     NSTimeInterval duration;
     CGRect finalImageFrame;
     __block CGRect untransformedFinalImageFrame;
-    
+
+    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
+    {
+        [self.delegate mediaFocusManagerWillAppear:self];
+    }
+
     mediaView = gesture.view;
     focusViewController = [self focusViewControllerForView:mediaView];
     if(focusViewController == nil)
@@ -301,12 +306,7 @@ static CGFloat const kAnimationDuration = 0.5;
                          CGRect frame;
                          CGRect initialFrame;
                          CGAffineTransform initialTransform;
-                         
-                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
-                         {
-                             [self.delegate mediaFocusManagerWillAppear:self];
-                         }
-                         
+
                          frame = finalImageFrame;
 
                          // Trick to keep the right animation on the image frame.
