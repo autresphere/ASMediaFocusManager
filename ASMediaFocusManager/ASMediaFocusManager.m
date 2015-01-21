@@ -20,7 +20,7 @@ static CGFloat const kAnimationDuration = 0.5;
 // The media view being focused.
 @property (nonatomic, strong) UIView *mediaView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
-@property (nonatomic) BOOL isZooming;
+@property (nonatomic, assign) BOOL isZooming;
 @end
 
 @implementation ASMediaFocusManager
