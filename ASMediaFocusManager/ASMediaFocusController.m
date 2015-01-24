@@ -213,7 +213,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     
     [UIView animateWithDuration:0.5
                           delay:0
-                        options:UIViewAnimationOptionBeginFromCurrentState
+                        options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction
                      animations:^{
                          self.accessoryView.alpha = (visible?1:0);
                      }
