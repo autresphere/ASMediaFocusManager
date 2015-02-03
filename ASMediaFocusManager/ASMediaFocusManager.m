@@ -155,6 +155,13 @@ static CGFloat const kAnimationDuration = 0.5;
     viewController.mainImageView.image = image;
     viewController.mainImageView.contentMode = imageView.contentMode;
     
+    if ([self.delegate respondsToSelector:@selector(mediaFocusManager:cachedImageForView:)]) {
+        UIImage *image = [self.delegate mediaFocusManager:self cachedImageForView:mediaView];
+        if (image) {
+            viewController.mainImageView.image = image;
+            return viewController;
+        }
+    }
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSURL *url;
         NSData *data;
