@@ -32,6 +32,8 @@
 - (void)mediaFocusManagerWillDisappear:(ASMediaFocusManager *)mediaFocusManager;
 // Called when the view has be dismissed by the 'done' button or by gesture.
 - (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager;
+// Called before mediaURLForView to check if image is already on memory.
+- (UIImage*)mediaFocusManager:(ASMediaFocusManager*)mediaFocusManager cachedImageForView:(UIView*)view;
 
 @end
 
