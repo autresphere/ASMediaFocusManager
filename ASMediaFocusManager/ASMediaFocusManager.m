@@ -264,11 +264,6 @@ static CGFloat const kAnimationDuration = 0.5;
     CGRect finalImageFrame;
     __block CGRect untransformedFinalImageFrame;
 
-    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
-    {
-        [self.delegate mediaFocusManagerWillAppear:self];
-    }
-
     mediaView = gesture.view;
     focusViewController = [self focusViewControllerForView:mediaView];
     if(focusViewController == nil)
@@ -278,6 +273,13 @@ static CGFloat const kAnimationDuration = 0.5;
     if (self.closeOnSwipeGesture) {
         [self installSwipeGestureOnFocusView];
     }
+
+    // This should be called after swipe gesture is installed to make sure the nav bar doesn't hide before animation begins.
+    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
+    {
+        [self.delegate mediaFocusManagerWillAppear:self];
+    }
+
     self.mediaView = mediaView;
     parentViewController = [self.delegate parentViewControllerForMediaFocusManager:self];
     [parentViewController addChildViewController:focusViewController];
