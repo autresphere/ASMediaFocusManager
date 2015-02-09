@@ -28,60 +28,60 @@ static CGFloat const kAnimationDuration = 0.5;
 // Taken from https://github.com/rs/SDWebImage/blob/master/SDWebImage/SDWebImageDecoder.m
 - (UIImage *)decodedImageWithImage:(UIImage *)image
 {
-   if (image.images) {
-      // Do not decode animated images
-      return image;
-   }
-   
-   CGImageRef imageRef = image.CGImage;
-   CGSize imageSize = CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef));
-   CGRect imageRect = (CGRect){.origin = CGPointZero, .size = imageSize};
-   
-   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-   CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
-   
-   int infoMask = (bitmapInfo & kCGBitmapAlphaInfoMask);
-   BOOL anyNonAlpha = (infoMask == kCGImageAlphaNone ||
-                       infoMask == kCGImageAlphaNoneSkipFirst ||
-                       infoMask == kCGImageAlphaNoneSkipLast);
-   
-   // CGBitmapContextCreate doesn't support kCGImageAlphaNone with RGB.
-   // https://developer.apple.com/library/mac/#qa/qa1037/_index.html
-   if (infoMask == kCGImageAlphaNone && CGColorSpaceGetNumberOfComponents(colorSpace) > 1) {
-      // Unset the old alpha info.
-      bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-      
-      // Set noneSkipFirst.
-      bitmapInfo |= kCGImageAlphaNoneSkipFirst;
-   }
-   // Some PNGs tell us they have alpha but only 3 components. Odd.
-   else if (!anyNonAlpha && CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
-      // Unset the old alpha info.
-      bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-      bitmapInfo |= kCGImageAlphaPremultipliedFirst;
-   }
-   
-   // It calculates the bytes-per-row based on the bitsPerComponent and width arguments.
-   CGContextRef context = CGBitmapContextCreate(NULL,
-                                                imageSize.width,
-                                                imageSize.height,
-                                                CGImageGetBitsPerComponent(imageRef),
-                                                0,
-                                                colorSpace,
-                                                bitmapInfo);
-   CGColorSpaceRelease(colorSpace);
-   
-   // If failed, return undecompressed image
-   if (!context) return image;
-   
-   CGContextDrawImage(context, imageRect, imageRef);
-   CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
-   
-   CGContextRelease(context);
-   
-   UIImage *decompressedImage = [UIImage imageWithCGImage:decompressedImageRef scale:image.scale orientation:image.imageOrientation];
-   CGImageRelease(decompressedImageRef);
-   return decompressedImage;
+    if (image.images) {
+        // Do not decode animated images
+        return image;
+    }
+
+    CGImageRef imageRef = image.CGImage;
+    CGSize imageSize = CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef));
+    CGRect imageRect = (CGRect){.origin = CGPointZero, .size = imageSize};
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
+
+    int infoMask = (bitmapInfo & kCGBitmapAlphaInfoMask);
+    BOOL anyNonAlpha = (infoMask == kCGImageAlphaNone ||
+                        infoMask == kCGImageAlphaNoneSkipFirst ||
+                        infoMask == kCGImageAlphaNoneSkipLast);
+
+    // CGBitmapContextCreate doesn't support kCGImageAlphaNone with RGB.
+    // https://developer.apple.com/library/mac/#qa/qa1037/_index.html
+    if (infoMask == kCGImageAlphaNone && CGColorSpaceGetNumberOfComponents(colorSpace) > 1) {
+        // Unset the old alpha info.
+        bitmapInfo &= ~kCGBitmapAlphaInfoMask;
+
+        // Set noneSkipFirst.
+        bitmapInfo |= kCGImageAlphaNoneSkipFirst;
+    }
+    // Some PNGs tell us they have alpha but only 3 components. Odd.
+    else if (!anyNonAlpha && CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
+        // Unset the old alpha info.
+        bitmapInfo &= ~kCGBitmapAlphaInfoMask;
+        bitmapInfo |= kCGImageAlphaPremultipliedFirst;
+    }
+
+    // It calculates the bytes-per-row based on the bitsPerComponent and width arguments.
+    CGContextRef context = CGBitmapContextCreate(NULL,
+                                                 imageSize.width,
+                                                 imageSize.height,
+                                                 CGImageGetBitsPerComponent(imageRef),
+                                                 0,
+                                                 colorSpace,
+                                                 bitmapInfo);
+    CGColorSpaceRelease(colorSpace);
+
+    // If failed, return undecompressed image
+    if (!context) return image;
+
+    CGContextDrawImage(context, imageRect, imageRef);
+    CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
+
+    CGContextRelease(context);
+
+    UIImage *decompressedImage = [UIImage imageWithCGImage:decompressedImageRef scale:image.scale orientation:image.imageOrientation];
+    CGImageRelease(decompressedImageRef);
+    return decompressedImage;
 }
 
 - (id)init
@@ -91,13 +91,14 @@ static CGFloat const kAnimationDuration = 0.5;
     {
         self.animationDuration = kAnimationDuration;
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+        self.closeOnSwipeGesture = NO;
         self.elasticAnimation = YES;
         self.zoomEnabled = YES;
         self.isZooming = NO;
         self.gestureDisabledDuringZooming = YES;
         self.isDefocusingWithTap = NO;
     }
-    
+
     return self;
 }
 
@@ -112,7 +113,7 @@ static CGFloat const kAnimationDuration = 0.5;
 - (void)installOnView:(UIView *)view
 {
     UITapGestureRecognizer *tapGesture;
-    
+
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleFocusGesture:)];
     [view addGestureRecognizer:tapGesture];
     view.userInteractionEnabled = YES;
@@ -143,7 +144,7 @@ static CGFloat const kAnimationDuration = 0.5;
     ASMediaFocusController *viewController;
     UIImage *image;
     UIImageView *imageView;
-    
+
     imageView = [self.delegate mediaFocusManager:self imageViewForView:mediaView];
     image = imageView.image;
     if((imageView == nil) || (image == nil))
@@ -151,10 +152,11 @@ static CGFloat const kAnimationDuration = 0.5;
 
     viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
     [self installDefocusActionOnFocusViewController:viewController];
+
     viewController.titleLabel.text = [self.delegate mediaFocusManager:self titleForView:mediaView];
     viewController.mainImageView.image = image;
     viewController.mainImageView.contentMode = imageView.contentMode;
-    
+
     if ([self.delegate respondsToSelector:@selector(mediaFocusManager:cachedImageForView:)]) {
         UIImage *image = [self.delegate mediaFocusManager:self cachedImageForView:mediaView];
         if (image) {
@@ -162,11 +164,12 @@ static CGFloat const kAnimationDuration = 0.5;
             return viewController;
         }
     }
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSURL *url;
         NSData *data;
         NSError *error = nil;
-        
+
         url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
         data = [NSData dataWithContentsOfURL:url options:0 error:&error];
         if(error != nil)
@@ -192,10 +195,10 @@ static CGFloat const kAnimationDuration = 0.5;
 {
     CGFloat dx;
     CGFloat dy;
-    
+
     dx = frame.size.width*ratio;
     dy = frame.size.height*ratio;
-    
+
     return CGRectIntegral(CGRectInset(frame, dx, dy));
 }
 
@@ -219,7 +222,7 @@ static CGFloat const kAnimationDuration = 0.5;
 - (void)setupAccessoryViewOnFocusViewController:(ASMediaFocusController *)focusViewController
 {
     UIButton *doneButton;
-    
+
     doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [doneButton setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
     [doneButton addTarget:self action:@selector(handleDefocusGesture:) forControlEvents:UIControlEventTouchUpInside];
@@ -229,22 +232,22 @@ static CGFloat const kAnimationDuration = 0.5;
     doneButton.layer.borderWidth = 2;
     doneButton.layer.cornerRadius = 4;
     doneButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    doneButton.center = CGPointMake(focusViewController.accessoryView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 10);
+    doneButton.center = CGPointMake(focusViewController.accessoryView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 20);
     doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
     [focusViewController.accessoryView addSubview:doneButton];
 }
 
 - (CGSize)sizeThatFitsInSize:(CGSize)boundingSize initialSize:(CGSize)initialSize
 {
-	// Compute the final size that fits in boundingSize in order to keep aspect ratio from initialSize.
-	CGSize fittingSize;
-	
+    // Compute the final size that fits in boundingSize in order to keep aspect ratio from initialSize.
+    CGSize fittingSize;
+
     CGFloat widthRatio;
     CGFloat heightRatio;
-    
+
     widthRatio = boundingSize.width / initialSize.width;
     heightRatio = boundingSize.height / initialSize.height;
-    
+
     if (widthRatio < heightRatio)
     {
         fittingSize = CGSizeMake(boundingSize.width, floorf(initialSize.height * widthRatio));
@@ -253,8 +256,8 @@ static CGFloat const kAnimationDuration = 0.5;
     {
         fittingSize = CGSizeMake(floorf(initialSize.width * heightRatio), boundingSize.height);
     }
-    
-	return fittingSize;
+
+    return fittingSize;
 }
 
 #pragma mark - Gestures
@@ -268,13 +271,23 @@ static CGFloat const kAnimationDuration = 0.5;
     NSTimeInterval duration;
     CGRect finalImageFrame;
     __block CGRect untransformedFinalImageFrame;
-    
+
     mediaView = gesture.view;
     focusViewController = [self focusViewControllerForView:mediaView];
     if(focusViewController == nil)
         return;
-    
+
     self.focusViewController = focusViewController;
+    if (self.closeOnSwipeGesture) {
+        [self installSwipeGestureOnFocusView];
+    }
+
+    // This should be called after swipe gesture is installed to make sure the nav bar doesn't hide before animation begins.
+    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
+    {
+        [self.delegate mediaFocusManagerWillAppear:self];
+    }
+
     self.mediaView = mediaView;
     parentViewController = [self.delegate parentViewControllerForMediaFocusManager:self];
     [parentViewController addChildViewController:focusViewController];
@@ -288,14 +301,14 @@ static CGFloat const kAnimationDuration = 0.5;
     imageView.center = center;
     imageView.transform = mediaView.transform;
     imageView.bounds = mediaView.bounds;
-        
+
     self.isZooming = YES;
-    
+
     finalImageFrame = [self.delegate mediaFocusManager:self finalFrameForView:mediaView];
     if(imageView.contentMode == UIViewContentModeScaleAspectFill)
     {
         CGSize size;
-        
+
         size = [self sizeThatFitsInSize:finalImageFrame.size initialSize:imageView.image.size];
         finalImageFrame.size = size;
         finalImageFrame.origin.x = (focusViewController.view.bounds.size.width - size.width)/2;
@@ -308,12 +321,7 @@ static CGFloat const kAnimationDuration = 0.5;
                          CGRect frame;
                          CGRect initialFrame;
                          CGAffineTransform initialTransform;
-                         
-                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
-                         {
-                             [self.delegate mediaFocusManagerWillAppear:self];
-                         }
-                         
+
                          frame = finalImageFrame;
 
                          // Trick to keep the right animation on the image frame.
@@ -334,14 +342,14 @@ static CGFloat const kAnimationDuration = 0.5;
                          imageView.frame = initialFrame;
                          imageView.transform = initialTransform;
                          imageView.transform = CGAffineTransformIdentity;
-                         imageView.frame = frame;                         
+                         imageView.frame = frame;
                          focusViewController.view.backgroundColor = self.backgroundColor;
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                           animations:^{
                                               CGRect frame;
-                                              
+
                                               frame = untransformedFinalImageFrame;
                                               frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
                                               imageView.frame = frame;
@@ -350,7 +358,7 @@ static CGFloat const kAnimationDuration = 0.5;
                                               [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                                                animations:^{
                                                                    CGRect frame;
-                                                                   
+
                                                                    frame = untransformedFinalImageFrame;
                                                                    frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
                                                                    imageView.frame = frame;
@@ -364,7 +372,7 @@ static CGFloat const kAnimationDuration = 0.5;
                                                                                         [self installZoomView];
                                                                                         [self.focusViewController showAccessoryView:YES];
                                                                                         self.isZooming = NO;
-                                                                                        
+
                                                                                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
                                                                                         {
                                                                                             [self.delegate mediaFocusManagerDidAppear:self];
@@ -381,12 +389,12 @@ static CGFloat const kAnimationDuration = 0.5;
 
     if(self.isZooming && self.gestureDisabledDuringZooming)
         return;
-    
+
     UIView *contentView;
     CGRect __block bounds;
-    
+
     [self uninstallZoomView];
-    
+
     contentView = self.focusViewController.mainImageView;
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
     [UIView animateWithDuration:duration
@@ -395,7 +403,7 @@ static CGFloat const kAnimationDuration = 0.5;
                          {
                              [self.delegate mediaFocusManagerWillDisappear:self];
                          }
-                         
+
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                          contentView.transform = self.mediaView.transform;
@@ -408,7 +416,7 @@ static CGFloat const kAnimationDuration = 0.5;
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                           animations:^{
                                               CGRect frame;
-                                              
+
                                               frame = bounds;
                                               frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
                                               contentView.bounds = frame;
@@ -417,7 +425,7 @@ static CGFloat const kAnimationDuration = 0.5;
                                               [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                                                animations:^{
                                                                    CGRect frame;
-                                                                   
+
                                                                    frame = bounds;
                                                                    frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
                                                                    contentView.bounds = frame;
@@ -432,7 +440,7 @@ static CGFloat const kAnimationDuration = 0.5;
                                                                                         [self.focusViewController.view removeFromSuperview];
                                                                                         [self.focusViewController removeFromParentViewController];
                                                                                         self.focusViewController = nil;
-                                                                                        
+
                                                                                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDisappear:)])
                                                                                         {
                                                                                             [self.delegate mediaFocusManagerDidDisappear:self];
@@ -442,4 +450,54 @@ static CGFloat const kAnimationDuration = 0.5;
                                           }];
                      }];
 }
+
+#pragma mark - dismiss on swipe
+
+- (void)installSwipeGestureOnFocusView
+{
+    UISwipeGestureRecognizer *swipeGesture;
+
+    swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(animateImageSwipe)];
+    swipeGesture.direction = UISwipeGestureRecognizerDirectionUp;
+    [self.focusViewController.view addGestureRecognizer:swipeGesture];
+    self.focusViewController.view.userInteractionEnabled = YES;
+}
+
+- (void)animateImageSwipe
+{
+    UIView *contentView;
+    [self uninstallZoomView];
+
+    contentView = self.focusViewController.mainImageView;
+    [UIView animateWithDuration:0.2
+                     animations:^{
+                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillDisappear:)])
+                         {
+                             [self.delegate mediaFocusManagerWillDisappear:self];
+                         }
+                         self.focusViewController.contentView.transform = CGAffineTransformIdentity;
+
+                         self.focusViewController.view.backgroundColor = [UIColor clearColor];
+                         self.focusViewController.accessoryView.alpha = 0;
+                         contentView.center = CGPointMake(self.focusViewController.view.center.x, self.focusViewController.view.center.y - 100);
+                     }
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.3 animations:^{
+                             contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
+                             contentView.transform = self.mediaView.transform;
+                             contentView.bounds  = self.mediaView.bounds;
+                         } completion:^(BOOL finished) {
+                             self.mediaView.hidden = NO;
+                             [self.focusViewController.view removeFromSuperview];
+                             [self.focusViewController removeFromParentViewController];
+                             self.focusViewController = nil;
+
+                             if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDisappear:)])
+                             {
+                                 [self.delegate mediaFocusManagerDidDisappear:self];
+                             }
+                         }];
+                     }];
+}
+
 @end

@@ -45,6 +45,8 @@
 @property (nonatomic, assign) NSTimeInterval animationDuration;
 // The background color. Defaults to transparent black.
 @property (nonatomic, strong) UIColor *backgroundColor;
+// On swiping upwards in zoomed mode the image animates and defocuses. Defaults to NO.
+@property (assign, nonatomic) BOOL closeOnSwipeGesture;
 // Returns whether the animation has an elastic effect. Defaults to YES.
 @property (assign, nonatomic) BOOL elasticAnimation;
 // Returns whether zoom is enabled on fullscreen image. Defaults to YES.
