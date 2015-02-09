@@ -15,6 +15,7 @@ static CGFloat const kAnimateElasticDurationRatio = 0.6;
 static CGFloat const kAnimateElasticSecondMoveSizeRatio = 0.5;
 static CGFloat const kAnimateElasticThirdMoveSizeRatio = 0.2;
 static CGFloat const kAnimationDuration = 0.5;
+static CGFloat const kSwipeOffset = 100;
 
 @interface ASMediaFocusManager ()
 // The media view being focused.
@@ -91,7 +92,7 @@ static CGFloat const kAnimationDuration = 0.5;
     {
         self.animationDuration = kAnimationDuration;
         self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
-        self.closeOnSwipeGesture = NO;
+        self.defocusOnVerticalSwipe = YES;
         self.elasticAnimation = YES;
         self.zoomEnabled = YES;
         self.isZooming = NO;
@@ -278,7 +279,7 @@ static CGFloat const kAnimationDuration = 0.5;
         return;
 
     self.focusViewController = focusViewController;
-    if (self.closeOnSwipeGesture) {
+    if (self.defocusOnVerticalSwipe) {
         [self installSwipeGestureOnFocusView];
     }
 
@@ -457,17 +458,24 @@ static CGFloat const kAnimationDuration = 0.5;
 {
     UISwipeGestureRecognizer *swipeGesture;
 
-    swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(animateImageSwipe)];
+    swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusBySwipeGesture:)];
     swipeGesture.direction = UISwipeGestureRecognizerDirectionUp;
+    [self.focusViewController.view addGestureRecognizer:swipeGesture];
+    
+    swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusBySwipeGesture:)];
+    swipeGesture.direction = UISwipeGestureRecognizerDirectionDown;
     [self.focusViewController.view addGestureRecognizer:swipeGesture];
     self.focusViewController.view.userInteractionEnabled = YES;
 }
 
-- (void)animateImageSwipe
+- (void)handleDefocusBySwipeGesture:(UISwipeGestureRecognizer *)gesture
 {
     UIView *contentView;
+    CGFloat offset;
+    
     [self uninstallZoomView];
 
+    offset = (gesture.direction == UISwipeGestureRecognizerDirectionUp?-kSwipeOffset:kSwipeOffset);
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:0.2
                      animations:^{
@@ -479,7 +487,7 @@ static CGFloat const kAnimationDuration = 0.5;
 
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
                          self.focusViewController.accessoryView.alpha = 0;
-                         contentView.center = CGPointMake(self.focusViewController.view.center.x, self.focusViewController.view.center.y - 100);
+                         contentView.center = CGPointMake(self.focusViewController.view.center.x, self.focusViewController.view.center.y + offset);
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.3 animations:^{
