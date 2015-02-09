@@ -250,13 +250,14 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
                         options:UIViewAnimationOptionBeginFromCurrentState
                      animations:^(void) {
                          self.scrollView.zoomScale = scale;
+                         [self.scrollView layoutIfNeeded];
+                         if(scale == self.scrollView.maximumZoomScale)
+                         {
+                             [self.scrollView scrollRectToVisible:frame animated:NO];
+                         }
                      }
                      completion:nil];
     
-    if(scale == self.scrollView.maximumZoomScale)
-    {
-        [self.scrollView scrollRectToVisible:frame animated:NO];
-    }
 }
 
 #pragma mark - UIScrollViewDelegate
