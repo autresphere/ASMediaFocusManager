@@ -98,6 +98,12 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 
 ```
 
+If you need to focus a view programmatically, you can call `startFocusingView` as long as the view is focusable.
+
+```objc
+[self.mediaFocusManager startFocusingView:mediaView];
+```
+
 ###Configure
 Here is the things you can configure:
 
@@ -105,7 +111,7 @@ Here is the things you can configure:
 * animation duration
 * enable/disable elastic animation
 * enable/disable zooming by pinch
-* close focused view either by tap or through a "Done" button
+* close focused view by tap, vertical swipe or through a "Done" button
 
 ### Hiding the status bar
 On iOS 7, if you want to hide or show the status bar when a view is focused or defocused, you can use optional delegate methods `[ASMediaFocusManager mediaFocusManagerWillAppear:]` and `[ASMediaFocusManager mediaFocusManagerWillDisappear:]`.
@@ -139,7 +145,7 @@ Here is an example on how to hide and show the status bar. As the delegate metho
 * Fix image jump on orientation change when fullscreen image is zoomed (only when parent ViewController supports UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown)
 * Improve the elastic (ie natural) effect on focus and defocus rotation.
 * Support movie media.
-* Close focus view by vertical swipe like in facebook app.
+* Close focus view by vertical swipe like in facebook app (partly done thanks to @harishkashyap, Feb 09, 2015).
 * Media browsing by horizontal swipe in fullscreen.
 * ~~Hide accessory views (button and label) when view is zoomed.~~ (March 5, 2014)
 

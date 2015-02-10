@@ -56,7 +56,11 @@
 // Returns whether defocuses with tap. Defaults to NO.
 @property (nonatomic) BOOL isDefocusingWithTap;
 
+// Install focusing gesture on the specified array of views.
 - (void)installOnViews:(NSArray *)views;
+// Install focusing gesture on the specified view.
 - (void)installOnView:(UIView *)view;
+// Start the focus animation on the specified view. The focusing gesture must have been installed on this view.
+- (void)startFocusingView:(UIView *)view;
 
 @end

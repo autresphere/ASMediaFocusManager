@@ -120,6 +120,126 @@ static CGFloat const kSwipeOffset = 100;
     view.userInteractionEnabled = YES;
 }
 
+- (void)startFocusingView:(UIView *)mediaView
+{
+    UIViewController *parentViewController;
+    ASMediaFocusController *focusViewController;
+    CGPoint center;
+    UIImageView *imageView;
+    NSTimeInterval duration;
+    CGRect finalImageFrame;
+    __block CGRect untransformedFinalImageFrame;
+    
+    focusViewController = [self focusViewControllerForView:mediaView];
+    if(focusViewController == nil)
+        return;
+    
+    self.focusViewController = focusViewController;
+    if (self.defocusOnVerticalSwipe) {
+        [self installSwipeGestureOnFocusView];
+    }
+    
+    // This should be called after swipe gesture is installed to make sure the nav bar doesn't hide before animation begins.
+    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
+    {
+        [self.delegate mediaFocusManagerWillAppear:self];
+    }
+    
+    self.mediaView = mediaView;
+    parentViewController = [self.delegate parentViewControllerForMediaFocusManager:self];
+    [parentViewController addChildViewController:focusViewController];
+    [parentViewController.view addSubview:focusViewController.view];
+    
+    focusViewController.view.frame = parentViewController.view.bounds;
+    mediaView.hidden = YES;
+    
+    imageView = focusViewController.mainImageView;
+    center = [imageView.superview convertPoint:mediaView.center fromView:mediaView.superview];
+    imageView.center = center;
+    imageView.transform = mediaView.transform;
+    imageView.bounds = mediaView.bounds;
+    
+    self.isZooming = YES;
+    
+    finalImageFrame = [self.delegate mediaFocusManager:self finalFrameForView:mediaView];
+    if(imageView.contentMode == UIViewContentModeScaleAspectFill)
+    {
+        CGSize size;
+        
+        size = [self sizeThatFitsInSize:finalImageFrame.size initialSize:imageView.image.size];
+        finalImageFrame.size = size;
+        finalImageFrame.origin.x = (focusViewController.view.bounds.size.width - size.width)/2;
+        finalImageFrame.origin.y = (focusViewController.view.bounds.size.height - size.height)/2;
+    }
+    
+    duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
+    [UIView animateWithDuration:duration
+                     animations:^{
+                         CGRect frame;
+                         CGRect initialFrame;
+                         CGAffineTransform initialTransform;
+                         
+                         frame = finalImageFrame;
+                         
+                         // Trick to keep the right animation on the image frame.
+                         // The image frame shoud animate from its current frame to a final frame.
+                         // The final frame is computed by taking care of a possible rotation regarding the current device orientation, done by calling updateOrientationAnimated.
+                         // As this method changes the image frame, it also replaces the current animation on the image view, which is not wanted.
+                         // Thus to recreate the right animation, the image frame is set back to its inital frame then to its final frame.
+                         // This very last frame operation recreates the right frame animation.
+                         initialTransform = imageView.transform;
+                         imageView.transform = CGAffineTransformIdentity;
+                         initialFrame = imageView.frame;
+                         imageView.frame = frame;
+                         [focusViewController updateOrientationAnimated:NO];
+                         // This is the final image frame. No transform.
+                         untransformedFinalImageFrame = imageView.frame;
+                         frame = (self.elasticAnimation?[self rectInsetsForRect:untransformedFinalImageFrame ratio:-kAnimateElasticSizeRatio]:untransformedFinalImageFrame);
+                         // It must now be animated from its initial frame and transform.
+                         imageView.frame = initialFrame;
+                         imageView.transform = initialTransform;
+                         imageView.transform = CGAffineTransformIdentity;
+                         imageView.frame = frame;
+                         focusViewController.view.backgroundColor = self.backgroundColor;
+                     }
+                     completion:^(BOOL finished) {
+                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
+                                          animations:^{
+                                              CGRect frame;
+                                              
+                                              frame = untransformedFinalImageFrame;
+                                              frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
+                                              imageView.frame = frame;
+                                          }
+                                          completion:^(BOOL finished) {
+                                              [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
+                                                               animations:^{
+                                                                   CGRect frame;
+                                                                   
+                                                                   frame = untransformedFinalImageFrame;
+                                                                   frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
+                                                                   imageView.frame = frame;
+                                                               }
+                                                               completion:^(BOOL finished) {
+                                                                   [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
+                                                                                    animations:^{
+                                                                                        imageView.frame = untransformedFinalImageFrame;
+                                                                                    }
+                                                                                    completion:^(BOOL finished) {
+                                                                                        [self installZoomView];
+                                                                                        [self.focusViewController showAccessoryView:YES];
+                                                                                        self.isZooming = NO;
+                                                                                        
+                                                                                        if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
+                                                                                        {
+                                                                                            [self.delegate mediaFocusManagerDidAppear:self];
+                                                                                        }
+                                                                                    }];
+                                                               }];
+                                          }];
+                     }];
+}
+
 - (void)installDefocusActionOnFocusViewController:(ASMediaFocusController *)focusViewController
 {
     // We need the view to be loaded.
@@ -264,124 +384,7 @@ static CGFloat const kSwipeOffset = 100;
 #pragma mark - Gestures
 - (void)handleFocusGesture:(UIGestureRecognizer *)gesture
 {
-    UIViewController *parentViewController;
-    ASMediaFocusController *focusViewController;
-    CGPoint center;
-    UIView *mediaView;
-    UIImageView *imageView;
-    NSTimeInterval duration;
-    CGRect finalImageFrame;
-    __block CGRect untransformedFinalImageFrame;
-
-    mediaView = gesture.view;
-    focusViewController = [self focusViewControllerForView:mediaView];
-    if(focusViewController == nil)
-        return;
-
-    self.focusViewController = focusViewController;
-    if (self.defocusOnVerticalSwipe) {
-        [self installSwipeGestureOnFocusView];
-    }
-
-    // This should be called after swipe gesture is installed to make sure the nav bar doesn't hide before animation begins.
-    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
-    {
-        [self.delegate mediaFocusManagerWillAppear:self];
-    }
-
-    self.mediaView = mediaView;
-    parentViewController = [self.delegate parentViewControllerForMediaFocusManager:self];
-    [parentViewController addChildViewController:focusViewController];
-    [parentViewController.view addSubview:focusViewController.view];
-
-    focusViewController.view.frame = parentViewController.view.bounds;
-    mediaView.hidden = YES;
-
-    imageView = focusViewController.mainImageView;
-    center = [imageView.superview convertPoint:mediaView.center fromView:mediaView.superview];
-    imageView.center = center;
-    imageView.transform = mediaView.transform;
-    imageView.bounds = mediaView.bounds;
-
-    self.isZooming = YES;
-
-    finalImageFrame = [self.delegate mediaFocusManager:self finalFrameForView:mediaView];
-    if(imageView.contentMode == UIViewContentModeScaleAspectFill)
-    {
-        CGSize size;
-
-        size = [self sizeThatFitsInSize:finalImageFrame.size initialSize:imageView.image.size];
-        finalImageFrame.size = size;
-        finalImageFrame.origin.x = (focusViewController.view.bounds.size.width - size.width)/2;
-        finalImageFrame.origin.y = (focusViewController.view.bounds.size.height - size.height)/2;
-    }
-
-    duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
-    [UIView animateWithDuration:duration
-                     animations:^{
-                         CGRect frame;
-                         CGRect initialFrame;
-                         CGAffineTransform initialTransform;
-
-                         frame = finalImageFrame;
-
-                         // Trick to keep the right animation on the image frame.
-                         // The image frame shoud animate from its current frame to a final frame.
-                         // The final frame is computed by taking care of a possible rotation regarding the current device orientation, done by calling updateOrientationAnimated.
-                         // As this method changes the image frame, it also replaces the current animation on the image view, which is not wanted.
-                         // Thus to recreate the right animation, the image frame is set back to its inital frame then to its final frame.
-                         // This very last frame operation recreates the right frame animation.
-                         initialTransform = imageView.transform;
-                         imageView.transform = CGAffineTransformIdentity;
-                         initialFrame = imageView.frame;
-                         imageView.frame = frame;
-                         [focusViewController updateOrientationAnimated:NO];
-                         // This is the final image frame. No transform.
-                         untransformedFinalImageFrame = imageView.frame;
-                         frame = (self.elasticAnimation?[self rectInsetsForRect:untransformedFinalImageFrame ratio:-kAnimateElasticSizeRatio]:untransformedFinalImageFrame);
-                         // It must now be animated from its initial frame and transform.
-                         imageView.frame = initialFrame;
-                         imageView.transform = initialTransform;
-                         imageView.transform = CGAffineTransformIdentity;
-                         imageView.frame = frame;
-                         focusViewController.view.backgroundColor = self.backgroundColor;
-                     }
-                     completion:^(BOOL finished) {
-                         [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                          animations:^{
-                                              CGRect frame;
-
-                                              frame = untransformedFinalImageFrame;
-                                              frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
-                                              imageView.frame = frame;
-                                          }
-                                          completion:^(BOOL finished) {
-                                              [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                                               animations:^{
-                                                                   CGRect frame;
-
-                                                                   frame = untransformedFinalImageFrame;
-                                                                   frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
-                                                                   imageView.frame = frame;
-                                                               }
-                                                               completion:^(BOOL finished) {
-                                                                   [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
-                                                                                    animations:^{
-                                                                                        imageView.frame = untransformedFinalImageFrame;
-                                                                                    }
-                                                                                    completion:^(BOOL finished) {
-                                                                                        [self installZoomView];
-                                                                                        [self.focusViewController showAccessoryView:YES];
-                                                                                        self.isZooming = NO;
-
-                                                                                        if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
-                                                                                        {
-                                                                                            [self.delegate mediaFocusManagerDidAppear:self];
-                                                                                        }
-                                                                                    }];
-                                                               }];
-                                          }];
-                     }];
+    [self startFocusingView:gesture.view];
 }
 
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
