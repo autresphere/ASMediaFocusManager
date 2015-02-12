@@ -120,6 +120,13 @@ static CGFloat const kSwipeOffset = 100;
     view.userInteractionEnabled = YES;
 }
 
+- (void)endFocusing{
+    if (self.isZooming) {
+        [self handleDefocusGesture:nil];
+    }
+}
+
+
 - (void)startFocusingView:(UIView *)mediaView
 {
     UIViewController *parentViewController;
