@@ -62,7 +62,7 @@
 - (void)installOnView:(UIView *)view;
 // Start the focus animation on the specified view. The focusing gesture must have been installed on this view.
 - (void)startFocusingView:(UIView *)view;
-// Starts the close animation on the open view.
+// Start the close animation on the current focused view.
 - (void)endFocusing;
 
 @end
