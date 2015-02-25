@@ -103,7 +103,7 @@ static CGFloat const kMaxOffset = 20;
     }
     
     // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
-    name = [NSString stringWithFormat:@"%df", index];
+    name = [NSString stringWithFormat:@"%ldf", (long)index];
     path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
     
     url = [NSURL fileURLWithPath:path];
@@ -157,7 +157,7 @@ static CGFloat const kMaxOffset = 20;
         [self.mediaFocusManager installOnView:cell.imageView];
     }
     
-    path = [NSString stringWithFormat:@"%d.jpg", indexPath.row + 1];
+    path = [NSString stringWithFormat:@"%ld.jpg", indexPath.row + 1];
     image = [UIImage imageNamed:path];
     cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
     cell.imageView.image = image;
