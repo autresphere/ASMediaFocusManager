@@ -98,7 +98,7 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 
 ```
 
-If you need to focus a view programmatically, you can call `startFocusingView` as long as the view is focusable.
+If you need to focus or defocus a view programmatically, you can call `startFocusingView` ()as long as the view is focusable) or `endFocusing`.
 
 ```objc
 [self.mediaFocusManager startFocusingView:mediaView];
