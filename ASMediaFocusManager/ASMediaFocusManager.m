@@ -22,6 +22,7 @@ static CGFloat const kSwipeOffset = 100;
 @property (nonatomic, strong) UIView *mediaView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
 @property (nonatomic, assign) BOOL isZooming;
+@property (nonatomic, strong) UIPinchGestureRecognizer *focusPinchGestureRecognizer;
 @end
 
 @implementation ASMediaFocusManager
@@ -39,8 +40,9 @@ static CGFloat const kSwipeOffset = 100;
         self.isZooming = NO;
         self.gestureDisabledDuringZooming = YES;
         self.isDefocusingWithTap = NO;
+        self.focusOnPinch = NO;
     }
-    
+
     return self;
 }
 
@@ -58,6 +60,12 @@ static CGFloat const kSwipeOffset = 100;
     
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleFocusGesture:)];
     [view addGestureRecognizer:tapGesture];
+
+    if (self.focusOnPinch) {
+        self.focusPinchGestureRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handleFocusGesture:)];
+        [view addGestureRecognizer:self.focusPinchGestureRecognizer];
+    }
+
     view.userInteractionEnabled = YES;
 }
 
@@ -446,6 +454,9 @@ static CGFloat const kSwipeOffset = 100;
                                                                                         {
                                                                                             [self.delegate mediaFocusManagerDidDisappear:self];
                                                                                         }
+                                                                                        if(self.focusOnPinch) {
+                                                                                            self.focusPinchGestureRecognizer.enabled = YES;
+                                                                                        }
                                                                                     }];
                                                                }];
                                           }];
@@ -455,7 +466,13 @@ static CGFloat const kSwipeOffset = 100;
 #pragma mark - Gestures
 - (void)handleFocusGesture:(UIGestureRecognizer *)gesture
 {
-    [self startFocusingView:gesture.view];
+    if (self.focusOnPinch && ([gesture class] == [UIPinchGestureRecognizer class]) && (gesture.state == UIGestureRecognizerStateBegan)) {
+        // Disable Pinch Gesture Recognizer as we don't want it to conflict with pinch recognizer that zooms the image.
+        self.focusPinchGestureRecognizer.enabled = NO;
+        [self startFocusingView:gesture.view];
+    }else if([gesture class] == [UITapGestureRecognizer class]) {
+        [self startFocusingView:gesture.view];
+    }
 }
 
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
@@ -515,6 +532,9 @@ static CGFloat const kSwipeOffset = 100;
                                               if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidDisappear:)])
                                               {
                                                   [self.delegate mediaFocusManagerDidDisappear:self];
+                                              }
+                                              if(self.focusOnPinch) {
+                                                  self.focusPinchGestureRecognizer.enabled = YES;
                                               }
                                           }];
                      }];
