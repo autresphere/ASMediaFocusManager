@@ -245,9 +245,8 @@ static CGFloat const kSwipeOffset = 100;
         if (url) {
             data = [NSData dataWithContentsOfURL:url options:0 error:&error];
         }else{
-            NSMutableDictionary* details = [NSMutableDictionary dictionary];
-            [details setValue:@"image = nil" forKey:NSLocalizedDescriptionKey];
-            error = [NSError errorWithDomain:@"Image Error" code:200 userInfo:details];
+            NSLog(@"Warning: url is nil");
+            return;
         }
         
         if(error != nil)
