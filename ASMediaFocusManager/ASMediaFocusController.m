@@ -8,12 +8,32 @@
 
 #import "ASMediaFocusController.h"
 #import <QuartzCore/QuartzCore.h>
+#import <AVFoundation/AVFoundation.h>
 
 static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
+
+@interface PlayerView : UIView
+
+@end
+
+@implementation PlayerView
+
++ (Class)layerClass {
+    return [AVPlayerLayer class];
+}
+- (AVPlayer*)player {
+    return [(AVPlayerLayer *)[self layer] player];
+}
+- (void)setPlayer:(AVPlayer *)player {
+    [(AVPlayerLayer *)[self layer] setPlayer:player];
+}
+
+@end
 
 @interface ASMediaFocusController () <UIScrollViewDelegate>
 
 @property (nonatomic, assign) UIDeviceOrientation previousOrientation;
+@property (nonatomic, strong) AVPlayer *player;
 
 @end
 
@@ -184,13 +204,16 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 {
     CGRect frame;
     
+    if(self.scrollView == nil)
+        return;
+    
     frame = [self.contentView convertRect:self.scrollView.zoomImageView.frame fromView:self.scrollView];
     self.scrollView.hidden = YES;
     self.mainImageView.hidden = NO;
     self.mainImageView.frame = frame;
 }
 
-- (void)pinAccessoryView:(UIView *)view
+- (void)pinView:(UIView *)view
 {
     CGRect frame;
     
@@ -203,7 +226,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (void)pinAccessoryView
 {
     // Move the accessory views to the main view in order not to be rotated along with the media.
-    [self pinAccessoryView:self.accessoryView];
+    [self pinView:self.accessoryView];
 }
 
 - (void)showAccessoryView:(BOOL)visible
@@ -223,6 +246,44 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (BOOL)accessoryViewsVisible
 {
     return (self.accessoryView.alpha == 1);
+}
+
+- (void)showPlayerWithURL:(NSURL *)url
+{
+    self.playerView = [[PlayerView alloc] initWithFrame:self.mainImageView.bounds];
+    [self.mainImageView addSubview:self.playerView];
+    self.playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.playerView.hidden = YES;
+    self.player = [[AVPlayer alloc] initWithURL:url];
+    
+    ((PlayerView *)self.playerView).player = self.player;
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    if(self.playerView != nil)
+    {
+        self.playerView.frame = self.mainImageView.bounds;
+    }
+}
+
+- (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled
+{
+    if(zoomEnabled && (self.playerView == nil))
+    {
+        [self installZoomView];
+    }
+    [self showAccessoryView:YES];
+    self.playerView.hidden = NO;
+    [self.player play];
+}
+
+- (void)defocusWillStart
+{
+    [self uninstallZoomView];
+    [self pinAccessoryView];
+    [self.player pause];
 }
 
 #pragma mark - Actions

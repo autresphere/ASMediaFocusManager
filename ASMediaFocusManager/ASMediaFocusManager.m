@@ -81,23 +81,6 @@ static CGFloat const kSwipeOffset = 100;
     }
 }
 
-- (void)installZoomView
-{
-    if(self.zoomEnabled)
-    {
-        [self.focusViewController installZoomView];
-    }
-}
-
-- (void)uninstallZoomView
-{
-    if(self.zoomEnabled)
-    {
-        [self.focusViewController uninstallZoomView];
-    }
-    [self.focusViewController pinAccessoryView];
-}
-
 - (void)setupAccessoryViewOnFocusViewController:(ASMediaFocusController *)focusViewController
 {
     UIButton *doneButton;
@@ -214,12 +197,17 @@ static CGFloat const kSwipeOffset = 100;
     ASMediaFocusController *viewController;
     UIImage *image;
     UIImageView *imageView;
+    NSURL *url;
     
     imageView = [self.delegate mediaFocusManager:self imageViewForView:mediaView];
     image = imageView.image;
     if((imageView == nil) || (image == nil))
         return nil;
     
+    url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
+    if(url == nil)
+        return nil;
+
     viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
     [self installDefocusActionOnFocusViewController:viewController];
     
@@ -235,30 +223,40 @@ static CGFloat const kSwipeOffset = 100;
         }
     }
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSURL *url;
-        NSData *data;
-        NSError *error = nil;
-        
-        url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
-        data = [NSData dataWithContentsOfURL:url options:0 error:&error];
-        if(error != nil)
-        {
-            NSLog(@"Warning: Unable to load image at %@. %@", url, error);
-        }
-        else
-        {
-            UIImage *image;
-            
-            image = [[UIImage alloc] initWithData:data];
-            image = [self decodedImageWithImage:image];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                viewController.mainImageView.image = image;
-            });
-        }
-    });
+    if([url.pathExtension isEqualToString:@"mp4"])
+    {
+        [viewController showPlayerWithURL:url];
+    }
+    else
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self loadImageFromURL:url onImageView:viewController.mainImageView];
+        });
+    }
     
     return viewController;
+}
+
+- (void)loadImageFromURL:(NSURL *)url onImageView:(UIImageView *)imageView
+{
+    NSData *data;
+    NSError *error = nil;
+    
+    data = [NSData dataWithContentsOfURL:url options:0 error:&error];
+    if(error != nil)
+    {
+        NSLog(@"Warning: Unable to load image at %@. %@", url, error);
+    }
+    else
+    {
+        UIImage *image;
+        
+        image = [[UIImage alloc] initWithData:data];
+        image = [self decodedImageWithImage:image];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            imageView.image = image;
+        });
+    }
 }
 
 #pragma mark - Focus/Defocus
@@ -368,8 +366,7 @@ static CGFloat const kSwipeOffset = 100;
                                                                                         imageView.frame = untransformedFinalImageFrame;
                                                                                     }
                                                                                     completion:^(BOOL finished) {
-                                                                                        [self installZoomView];
-                                                                                        [self.focusViewController showAccessoryView:YES];
+                                                                                        [self.focusViewController focusDidEndWithZoomEnabled:self.zoomEnabled];
                                                                                         self.isZooming = NO;
                                                                                         
                                                                                         if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerDidAppear:)])
@@ -391,20 +388,22 @@ static CGFloat const kSwipeOffset = 100;
     if(self.isZooming && self.gestureDisabledDuringZooming)
         return;
     
-    [self uninstallZoomView];
-    
     contentView = self.focusViewController.mainImageView;
     if (contentView == nil)
         return;
     
+    [self.focusViewController defocusWillStart];
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
     [UIView animateWithDuration:duration
                      animations:^{
+                         CGRect frame;
+                         
                          if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillDisappear:)])
                          {
                              [self.delegate mediaFocusManagerWillDisappear:self];
                          }
                          
+                         frame = self.focusViewController.playerView.frame;
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                          contentView.transform = self.mediaView.transform;
@@ -412,6 +411,7 @@ static CGFloat const kSwipeOffset = 100;
                          contentView.bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
                          self.focusViewController.accessoryView.alpha = 0;
+                         self.focusViewController.playerView.alpha = 0;
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
@@ -483,8 +483,7 @@ static CGFloat const kSwipeOffset = 100;
     UIView *contentView;
     CGFloat offset;
     
-    [self uninstallZoomView];
-    
+    [self.focusViewController defocusWillStart];
     offset = (gesture.direction == UISwipeGestureRecognizerDirectionUp?-kSwipeOffset:kSwipeOffset);
     contentView = self.focusViewController.mainImageView;
     [UIView animateWithDuration:0.2
@@ -497,6 +496,7 @@ static CGFloat const kSwipeOffset = 100;
                          
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
                          self.focusViewController.accessoryView.alpha = 0;
+                         self.focusViewController.playerView.alpha = 0;
                          contentView.center = CGPointMake(self.focusViewController.view.center.x, self.focusViewController.view.center.y + offset);
                      }
                      completion:^(BOOL finished) {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4A0BC97B1AC9846F000904A2 /* 3f.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC97A1AC9846F000904A2 /* 3f.mp4 */; };
 		4A15DE2916776BE9004C6733 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2816776BE9004C6733 /* UIKit.framework */; };
 		4A15DE2B16776BE9004C6733 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2A16776BE9004C6733 /* Foundation.framework */; };
 		4A15DE2D16776BE9004C6733 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2C16776BE9004C6733 /* CoreGraphics.framework */; };
@@ -19,12 +20,12 @@
 		4A15DE4816776BE9004C6733 /* MainViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A15DE4616776BE9004C6733 /* MainViewController~ipad.xib */; };
 		4A15DE6E16776EC7004C6733 /* 1f.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A15DE6516776EC7004C6733 /* 1f.jpg */; };
 		4A15DE6F16776EC7004C6733 /* 2f.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A15DE6616776EC7004C6733 /* 2f.jpg */; };
-		4A15DE7016776EC7004C6733 /* 3f.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A15DE6716776EC7004C6733 /* 3f.jpg */; };
 		4A15DE7116776EC7004C6733 /* 4f.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A15DE6816776EC7004C6733 /* 4f.jpg */; };
 		4A15DE7216776EC7004C6733 /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A15DE6A16776EC7004C6733 /* 1.jpg */; };
 		4A15DE7316776EC7004C6733 /* 2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A15DE6B16776EC7004C6733 /* 2.jpg */; };
 		4A15DE7416776EC7004C6733 /* 3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A15DE6C16776EC7004C6733 /* 3.jpg */; };
 		4A2D149E16AD255800D3CE3D /* ASImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */; };
+		4A553D681ABC708D000C2FD7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A553D671ABC708D000C2FD7 /* AVFoundation.framework */; };
 		4A6CBCAA18F59152001C32EB /* 4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A6CBCA918F59152001C32EB /* 4.jpg */; };
 		4A7F15F21684635100ADC5D6 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A7F15F01684635100ADC5D6 /* MainViewController.m */; };
 		4ABF0AF216A048E50053040A /* MainViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4ABF0AF016A048E50053040A /* MainViewController~iphone.xib */; };
@@ -35,6 +36,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4A0BC97A1AC9846F000904A2 /* 3f.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 3f.mp4; sourceTree = "<group>"; };
 		4A15DE2416776BE9004C6733 /* ASMediaFocusExemple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASMediaFocusExemple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A15DE2816776BE9004C6733 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4A15DE2A16776BE9004C6733 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -51,13 +53,13 @@
 		4A15DE4716776BE9004C6733 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/MainViewController~ipad.xib"; sourceTree = "<group>"; };
 		4A15DE6516776EC7004C6733 /* 1f.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1f.jpg; sourceTree = "<group>"; };
 		4A15DE6616776EC7004C6733 /* 2f.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2f.jpg; sourceTree = "<group>"; };
-		4A15DE6716776EC7004C6733 /* 3f.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3f.jpg; sourceTree = "<group>"; };
 		4A15DE6816776EC7004C6733 /* 4f.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 4f.jpg; sourceTree = "<group>"; };
 		4A15DE6A16776EC7004C6733 /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
 		4A15DE6B16776EC7004C6733 /* 2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 2.jpg; sourceTree = "<group>"; };
 		4A15DE6C16776EC7004C6733 /* 3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3.jpg; sourceTree = "<group>"; };
 		4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASImageScrollView.h; sourceTree = "<group>"; };
 		4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASImageScrollView.m; sourceTree = "<group>"; };
+		4A553D671ABC708D000C2FD7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		4A6CBCA918F59152001C32EB /* 4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 4.jpg; sourceTree = "<group>"; };
 		4A7F15EF1684635100ADC5D6 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = ../MainViewController.h; sourceTree = "<group>"; };
 		4A7F15F01684635100ADC5D6 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = ../MainViewController.m; sourceTree = "<group>"; };
@@ -76,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A553D681ABC708D000C2FD7 /* AVFoundation.framework in Frameworks */,
 				4A15DE2916776BE9004C6733 /* UIKit.framework in Frameworks */,
 				4A15DE2B16776BE9004C6733 /* Foundation.framework in Frameworks */,
 				4A15DE2D16776BE9004C6733 /* CoreGraphics.framework in Frameworks */,
@@ -106,6 +109,7 @@
 		4A15DE2716776BE9004C6733 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4A553D671ABC708D000C2FD7 /* AVFoundation.framework */,
 				4A15DE2816776BE9004C6733 /* UIKit.framework */,
 				4A15DE2A16776BE9004C6733 /* Foundation.framework */,
 				4A15DE2C16776BE9004C6733 /* CoreGraphics.framework */,
@@ -164,7 +168,7 @@
 			children = (
 				4A15DE6516776EC7004C6733 /* 1f.jpg */,
 				4A15DE6616776EC7004C6733 /* 2f.jpg */,
-				4A15DE6716776EC7004C6733 /* 3f.jpg */,
+				4A0BC97A1AC9846F000904A2 /* 3f.mp4 */,
 				4A15DE6816776EC7004C6733 /* 4f.jpg */,
 			);
 			path = full;
@@ -186,9 +190,9 @@
 			children = (
 				4ABF0B0116A0575C0053040A /* ASMediaFocusController.h */,
 				4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */,
+				4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */,
 				4ABF0B0316A0575C0053040A /* ASMediaFocusManager.h */,
 				4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */,
-				4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */,
 				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
 				4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */,
 				4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */,
@@ -249,6 +253,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A0BC97B1AC9846F000904A2 /* 3f.mp4 in Resources */,
 				4A15DE3316776BE9004C6733 /* InfoPlist.strings in Resources */,
 				4A15DE3B16776BE9004C6733 /* Default.png in Resources */,
 				4A15DE3D16776BE9004C6733 /* Default@2x.png in Resources */,
@@ -256,7 +261,6 @@
 				4A15DE4816776BE9004C6733 /* MainViewController~ipad.xib in Resources */,
 				4A15DE6E16776EC7004C6733 /* 1f.jpg in Resources */,
 				4A15DE6F16776EC7004C6733 /* 2f.jpg in Resources */,
-				4A15DE7016776EC7004C6733 /* 3f.jpg in Resources */,
 				4A15DE7116776EC7004C6733 /* 4f.jpg in Resources */,
 				4A6CBCAA18F59152001C32EB /* 4.jpg in Resources */,
 				4A15DE7216776EC7004C6733 /* 1.jpg in Resources */,
