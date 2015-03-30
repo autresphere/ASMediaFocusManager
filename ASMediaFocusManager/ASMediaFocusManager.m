@@ -241,7 +241,14 @@ static CGFloat const kSwipeOffset = 100;
         NSError *error = nil;
         
         url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
-        data = [NSData dataWithContentsOfURL:url options:0 error:&error];
+        
+        if (url) {
+            data = [NSData dataWithContentsOfURL:url options:0 error:&error];
+        }else{
+            NSLog(@"Warning: url is nil");
+            return;
+        }
+        
         if(error != nil)
         {
             NSLog(@"Warning: Unable to load image at %@. %@", url, error);
