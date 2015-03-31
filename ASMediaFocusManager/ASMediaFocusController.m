@@ -7,10 +7,12 @@
 //
 
 #import "ASMediaFocusController.h"
+#import "ASVideoControlView.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AVFoundation/AVFoundation.h>
 
 static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
+static CGFloat const kDefaultControlMargin = 5;
 
 @interface PlayerView : UIView
 
@@ -44,9 +46,18 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         self.doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
         self.doubleTapGesture.numberOfTapsRequired = 2;
+        self.controlMargin = kDefaultControlMargin;
     }
 
     return self;
+}
+
+- (void)dealloc
+{
+    if(self.player != nil)
+    {
+        [self.player.currentItem removeObserver:self forKeyPath:@"presentationSize"];
+    }
 }
 
 - (void)viewDidLoad
@@ -213,6 +224,11 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     self.mainImageView.frame = frame;
 }
 
+- (BOOL)isAccessoryViewPinned
+{
+    return (self.accessoryView.superview == self.view);
+}
+
 - (void)pinView:(UIView *)view
 {
     CGRect frame;
@@ -257,15 +273,62 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     self.player = [[AVPlayer alloc] initWithURL:url];
     
     ((PlayerView *)self.playerView).player = self.player;
+    [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    if(self.playerView != nil)
+    if((self.playerView != nil) /*&& !CGRectEqualToRect(self.playerView.frame, self.mainImageView.bounds)*/)
     {
         self.playerView.frame = self.mainImageView.bounds;
+        [self layoutControlView];
     }
+}
+
+- (void)layoutControlView
+{
+    CGRect frame;
+    CGRect videoFrame;
+    CGRect titleFrame;
+    
+    if([self isAccessoryViewPinned])
+        return;
+    
+    if(self.controlView == nil)
+    {
+        ASVideoControlView *controlView;
+        
+        controlView = [ASVideoControlView videoControlView];
+        controlView.translatesAutoresizingMaskIntoConstraints = NO;
+        controlView.scrubbing.player = self.player;
+        self.controlView = controlView;
+        [self.accessoryView addSubview:self.controlView];
+    }
+    videoFrame = [self videoFrame];
+    frame = self.controlView.frame;
+    frame.size.width = self.view.bounds.size.width - self.controlMargin*2;
+    frame.origin.x = self.controlMargin;
+    titleFrame = [self.controlView.superview convertRect:self.titleLabel.frame fromView:self.titleLabel.superview];
+    frame.origin.y =  titleFrame.origin.y - frame.size.height - self.controlMargin;
+    if(videoFrame.size.width > 0)
+    {
+        frame.origin.y = MIN(frame.origin.y, CGRectGetMaxY(videoFrame) - frame.size.height - self.controlMargin);
+    }
+    self.controlView.frame = frame;
+}
+
+- (CGRect)videoFrame
+{
+    CGRect frame;
+    
+    if(CGSizeEqualToSize(self.player.currentItem.presentationSize, CGSizeZero))
+        return CGRectZero;
+    
+    frame = AVMakeRectWithAspectRatioInsideRect(self.player.currentItem.presentationSize, self.playerView.bounds);
+    frame = CGRectIntegral(frame);
+    
+    return frame;
 }
 
 - (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled
@@ -274,6 +337,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     {
         [self installZoomView];
     }
+    [self.view setNeedsLayout];
     [self showAccessoryView:YES];
     self.playerView.hidden = NO;
     [self.player play];
@@ -336,5 +400,11 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (void)orientationDidChangeNotification:(NSNotification *)notification
 {
     [self updateOrientationAnimated:YES];
+}
+
+#pragma mark - KVO
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    [self.view setNeedsLayout];
 }
 @end

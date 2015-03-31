@@ -394,6 +394,14 @@ static CGFloat const kSwipeOffset = 100;
     
     [self.focusViewController defocusWillStart];
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
+    
+    [UIView animateWithDuration:self.animationDuration
+                     animations:^{
+                         self.focusViewController.view.backgroundColor = [UIColor clearColor];
+                         self.focusViewController.accessoryView.alpha = 0;
+                         self.focusViewController.playerView.alpha = 0;
+                     }];
+    
     [UIView animateWithDuration:duration
                      animations:^{
                          CGRect frame;
@@ -409,9 +417,7 @@ static CGFloat const kSwipeOffset = 100;
                          contentView.transform = self.mediaView.transform;
                          bounds = self.mediaView.bounds;
                          contentView.bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
-                         self.focusViewController.view.backgroundColor = [UIColor clearColor];
-                         self.focusViewController.accessoryView.alpha = 0;
-                         self.focusViewController.playerView.alpha = 0;
+                         self.focusViewController.playerView.frame = contentView.bounds;
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
@@ -421,6 +427,7 @@ static CGFloat const kSwipeOffset = 100;
                                               frame = bounds;
                                               frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
                                               contentView.bounds = frame;
+                                              self.focusViewController.playerView.frame = contentView.bounds;
                                           }
                                           completion:^(BOOL finished) {
                                               [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
@@ -430,6 +437,7 @@ static CGFloat const kSwipeOffset = 100;
                                                                    frame = bounds;
                                                                    frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
                                                                    contentView.bounds = frame;
+                                                                   self.focusViewController.playerView.frame = contentView.bounds;
                                                                }
                                                                completion:^(BOOL finished) {
                                                                    [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
@@ -482,11 +490,19 @@ static CGFloat const kSwipeOffset = 100;
 {
     UIView *contentView;
     CGFloat offset;
+    NSTimeInterval duration = self.animationDuration;
     
     [self.focusViewController defocusWillStart];
     offset = (gesture.direction == UISwipeGestureRecognizerDirectionUp?-kSwipeOffset:kSwipeOffset);
     contentView = self.focusViewController.mainImageView;
-    [UIView animateWithDuration:0.2
+    [UIView animateWithDuration:duration
+                     animations:^{
+                         self.focusViewController.view.backgroundColor = [UIColor clearColor];
+                         self.focusViewController.accessoryView.alpha = 0;
+                         self.focusViewController.playerView.alpha = 0;
+                     }];
+    
+    [UIView animateWithDuration:0.4*duration
                      animations:^{
                          if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillDisappear:)])
                          {
@@ -494,17 +510,15 @@ static CGFloat const kSwipeOffset = 100;
                          }
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          
-                         self.focusViewController.view.backgroundColor = [UIColor clearColor];
-                         self.focusViewController.accessoryView.alpha = 0;
-                         self.focusViewController.playerView.alpha = 0;
                          contentView.center = CGPointMake(self.focusViewController.view.center.x, self.focusViewController.view.center.y + offset);
                      }
                      completion:^(BOOL finished) {
-                         [UIView animateWithDuration:0.3
+                         [UIView animateWithDuration:0.6*duration
                                           animations:^{
                                               contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                                               contentView.transform = self.mediaView.transform;
                                               contentView.bounds  = self.mediaView.bounds;
+                                              self.focusViewController.playerView.frame = contentView.bounds;
                                           }
                                           completion:^(BOOL finished) {
                                               self.mediaView.hidden = NO;

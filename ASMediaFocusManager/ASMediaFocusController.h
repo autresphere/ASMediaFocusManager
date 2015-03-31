@@ -17,13 +17,11 @@
 @property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UIView *accessoryView;
 @property (strong, nonatomic) UITapGestureRecognizer *doubleTapGesture;
-@property (nonatomic, strong) UIView *playerView;
+@property (strong, nonatomic) UIView *playerView;
+@property (strong, nonatomic) UIView *controlView;
+@property (assign, nonatomic) CGFloat controlMargin;
 
 - (void)updateOrientationAnimated:(BOOL)animated;
-- (void)installZoomView;
-- (void)uninstallZoomView;
-- (void)pinAccessoryView;
-- (void)showAccessoryView:(BOOL)visible;
 - (void)showPlayerWithURL:(NSURL *)url;
 
 - (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled;
