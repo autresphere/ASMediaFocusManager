@@ -30,8 +30,8 @@
 		4ABF0AF216A048E50053040A /* MainViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4ABF0AF016A048E50053040A /* MainViewController~iphone.xib */; };
 		4ABF0B0516A0575C0053040A /* ASMediaFocusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */; };
 		4ABF0B0616A0575C0053040A /* ASMediaFocusManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */; };
-		4ABF0B1916A2E62E0053040A /* ASMediaFocusController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */; };
 		4AFDA6AA18C7179B00A1D0C4 /* ASTransparentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */; };
+		B9A4384F1ACAC21F000BBD22 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9A4384E1ACAC21F000BBD22 /* Images.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,9 +66,9 @@
 		4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaFocusController.m; sourceTree = "<group>"; };
 		4ABF0B0316A0575C0053040A /* ASMediaFocusManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASMediaFocusManager.h; sourceTree = "<group>"; };
 		4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaFocusManager.m; sourceTree = "<group>"; };
-		4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ASMediaFocusController.xib; sourceTree = "<group>"; };
 		4AFDA6A818C7179B00A1D0C4 /* ASTransparentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTransparentView.h; sourceTree = "<group>"; };
 		4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASTransparentView.m; sourceTree = "<group>"; };
+		B9A4384E1ACAC21F000BBD22 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ASMediaFocusExemple/Images.xcassets; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +145,7 @@
 		4A15DE6216776EC7004C6733 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B9A4384E1ACAC21F000BBD22 /* Images.xcassets */,
 				4A15DE6316776EC7004C6733 /* media */,
 			);
 			path = Resources;
@@ -188,7 +189,6 @@
 				4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */,
 				4ABF0B0316A0575C0053040A /* ASMediaFocusManager.h */,
 				4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */,
-				4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */,
 				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
 				4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */,
 				4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */,
@@ -250,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A15DE3316776BE9004C6733 /* InfoPlist.strings in Resources */,
+				B9A4384F1ACAC21F000BBD22 /* Images.xcassets in Resources */,
 				4A15DE3B16776BE9004C6733 /* Default.png in Resources */,
 				4A15DE3D16776BE9004C6733 /* Default@2x.png in Resources */,
 				4A15DE3F16776BE9004C6733 /* Default-568h@2x.png in Resources */,
@@ -263,7 +264,6 @@
 				4A15DE7316776EC7004C6733 /* 2.jpg in Resources */,
 				4A15DE7416776EC7004C6733 /* 3.jpg in Resources */,
 				4ABF0AF216A048E50053040A /* MainViewController~iphone.xib in Resources */,
-				4ABF0B1916A2E62E0053040A /* ASMediaFocusController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,6 +369,8 @@
 		4A15DE4C16776BE9004C6733 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ASMediaFocus/ASMediaFocusExemple-Prefix.pch";
 				INFOPLIST_FILE = "ASMediaFocus/ASMediaFocusExemple-Info.plist";
@@ -381,6 +383,8 @@
 		4A15DE4D16776BE9004C6733 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ASMediaFocus/ASMediaFocusExemple-Prefix.pch";
 				INFOPLIST_FILE = "ASMediaFocus/ASMediaFocusExemple-Info.plist";

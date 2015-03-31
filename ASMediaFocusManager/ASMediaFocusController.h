@@ -12,10 +12,16 @@
 @interface ASMediaFocusController : UIViewController
 
 @property (strong, nonatomic) ASImageScrollView *scrollView;
-@property (strong, nonatomic) IBOutlet UIImageView *mainImageView;
-@property (strong, nonatomic) IBOutlet UIView *contentView;
-@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
-@property (strong, nonatomic) IBOutlet UIView *accessoryView;
+//@property (strong, nonatomic) IBOutlet UIImageView *mainImageView;
+//@property (strong, nonatomic) IBOutlet UIView *contentView;
+//@property (strong, nonatomic) IBOutlet UILabel *titleLabel;
+//@property (strong, nonatomic) IBOutlet UIView *accessoryView;
+
+@property (strong, nonatomic) UIImageView *mainImageView;
+@property (strong, nonatomic) UIView *contentView;
+@property (strong, nonatomic) UILabel *titleLabel;
+@property (strong, nonatomic) UIView *accessoryView;
+
 @property (strong, nonatomic) UITapGestureRecognizer *doubleTapGesture;
 
 - (void)updateOrientationAnimated:(BOOL)animated;

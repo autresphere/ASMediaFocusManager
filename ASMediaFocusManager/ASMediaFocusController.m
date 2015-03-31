@@ -7,6 +7,7 @@
 //
 
 #import "ASMediaFocusController.h"
+#import "ASTransparentView.h"
 #import <QuartzCore/QuartzCore.h>
 
 static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
@@ -24,20 +25,31 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         self.doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
         self.doubleTapGesture.numberOfTapsRequired = 2;
+        
+        self.contentView = [[UIView alloc] initWithFrame:self.view.bounds];
+        [self.view addSubview:self.contentView];
+        
+        self.mainImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+        self.mainImageView.userInteractionEnabled = NO;
+        self.mainImageView.clipsToBounds = YES;
+        [self.contentView addSubview:self.mainImageView];
+        
+        self.accessoryView = [[ASTransparentView alloc] initWithFrame:self.view.bounds];
+        self.accessoryView.alpha = 0;
+        [self.contentView addSubview:self.accessoryView];
+        
+        self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
+        self.titleLabel.textColor = [UIColor whiteColor];
+        self.titleLabel.layer.shadowOpacity = 1;
+        self.titleLabel.layer.shadowOffset = CGSizeZero;
+        self.titleLabel.layer.shadowRadius = 1;
+        self.titleLabel.userInteractionEnabled = NO;
+        self.titleLabel.numberOfLines = 0;
+        [self.accessoryView addSubview:self.titleLabel];
     }
 
     return self;
 }
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    self.titleLabel.layer.shadowOpacity = 1;
-    self.titleLabel.layer.shadowOffset = CGSizeZero;
-    self.titleLabel.layer.shadowRadius = 1;
-    self.accessoryView.alpha = 0;
-}
-
 - (void)viewDidUnload
 {
     [self setMainImageView:nil];
@@ -50,6 +62,29 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:nil];
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+}
+
+- (void) viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    
+    self.contentView.frame = self.view.bounds;
+    self.accessoryView.frame = self.view.bounds;
+    
+    
+    CGFloat height = 40;
+    if (self.titleLabel.text) {
+        CGSize maxSize = CGSizeMake(CGRectGetWidth(self.view.bounds) - 20, CGRectGetHeight(self.view.bounds) - 20);
+        CGSize labelSize = [self.titleLabel.text boundingRectWithSize:maxSize
+                                                              options:NSStringDrawingUsesLineFragmentOrigin
+                                                           attributes:@{NSFontAttributeName:self.titleLabel.font}
+                                                              context:nil].size;
+        height = labelSize.height;
+    }
+    
+    self.titleLabel.frame = CGRectMake(10
+                                        , CGRectGetHeight(self.view.bounds) - height - 10
+                                        , CGRectGetWidth(self.view.bounds) - 20
+                                        , height);
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -173,7 +208,10 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     scrollView.delegate = self;
     self.scrollView = scrollView;
+//    [self.contentView insertSubview:self.scrollView belowSubview:self.accessoryView];
+//    [self.contentView addSubview:self.scrollView];
     [self.contentView insertSubview:scrollView atIndex:0];
+    
     [scrollView displayImage:self.mainImageView.image];
     self.mainImageView.hidden = YES;
     

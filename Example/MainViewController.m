@@ -86,36 +86,44 @@ static CGFloat const kMaxOffset = 20;
     return self;
 }
 
-- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
+- (id)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaForView:(UIView *)view
 {
-    NSString *path;
-    NSString *name;
-    NSInteger index;
-    NSURL *url;
-    
-    if(self.tableView == nil)
-    {
-        index = ([self.imageViews indexOfObject:view] + 1);
+    if ([view respondsToSelector:@selector(image)] && [((id)view) image]) {
+        UIImage *image = [((id)view) image];
+        return image;
+    } else {
+        NSString *path;
+        NSString *name;
+        NSInteger index;
+        NSURL *url;
+        
+        if(self.tableView == nil)
+        {
+            index = ([self.imageViews indexOfObject:view] + 1);
+        }
+        else
+        {
+            index = view.tag;
+        }
+        
+        // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
+        name = [NSString stringWithFormat:@"%ldf", (long)index];
+        path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
+        
+        url = [NSURL fileURLWithPath:path];
+        
+        return url;
     }
-    else
-    {
-        index = view.tag;
-    }
-    
-    // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
-    name = [NSString stringWithFormat:@"%ldf", (long)index];
-    path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-    
-    url = [NSURL fileURLWithPath:path];
-    
-    return url;
 }
 
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
 {
     NSString *title;
     
-    title = [NSString stringWithFormat:@"Image %@", [self mediaFocusManager:mediaFocusManager mediaURLForView:view].lastPathComponent];
+    id media = [self mediaFocusManager:mediaFocusManager mediaForView:view];
+    if ([media respondsToSelector:@selector(lastPathComponent)]) {
+        title = [NSString stringWithFormat:@"Image %@", [media lastPathComponent]];
+    }
     
     return @"Of course, you can zoom in and out on the image.";
 }
