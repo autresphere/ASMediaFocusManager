@@ -185,10 +185,10 @@
 		4ABF0B0016A0575C0053040A /* ASMediaFocusManager */ = {
 			isa = PBXGroup;
 			children = (
-				4ABF0B0116A0575C0053040A /* ASMediaFocusController.h */,
-				4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */,
 				4ABF0B0316A0575C0053040A /* ASMediaFocusManager.h */,
 				4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */,
+				4ABF0B0116A0575C0053040A /* ASMediaFocusController.h */,
+				4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */,
 				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
 				4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */,
 				4AFDA6A818C7179B00A1D0C4 /* ASTransparentView.h */,

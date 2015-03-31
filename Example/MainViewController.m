@@ -14,6 +14,7 @@ static CGFloat const kMaxOffset = 20;
 
 @interface MainViewController ()
 @property (nonatomic, assign) BOOL statusBarHidden;
+@property (nonatomic, strong) NSArray *medias;
 @end
 
 @implementation MainViewController
@@ -54,14 +55,19 @@ static CGFloat const kMaxOffset = 20;
     self.mediaFocusManager.delegate = self;
     
     // Tells which views need to be focusable. You can put your image views in an array and give it to the focus manager.
-    [self.mediaFocusManager installOnViews:self.imageViews];
+    NSMutableArray *images = [NSMutableArray arrayWithCapacity:4];
     
-    [self addSomeRandomTransformOnThumbnailViews];
+    for (NSInteger i = 0; i < 4; ++i) {
+        NSString *path = [NSString stringWithFormat:@"%ld.jpg", i + 1];
+        UIImage *image = [UIImage imageNamed:path];
+        [images addObject:image];
+    }
+    
+    self.medias = [NSArray arrayWithArray:images];
 }
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
      return UIInterfaceOrientationMaskAll;
 }
 
@@ -71,12 +77,15 @@ static CGFloat const kMaxOffset = 20;
 }
 
 #pragma mark - ASMediaFocusDelegate
-- (UIImageView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageViewForView:(UIView *)view
+- (UIImageView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageViewForIndex:(NSUInteger) index
 {
-    return (UIImageView *)view;
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+    
+    UIImageView *imageView = cell.imageView;
+    return imageView;
 }
 
-- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameForView:(UIView *)view
+- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameForIndex:(NSUInteger)index
 {
     return self.view.bounds;
 }
@@ -86,41 +95,28 @@ static CGFloat const kMaxOffset = 20;
     return self;
 }
 
-- (id)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaForView:(UIView *)view
+- (id)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaForIndex:(NSUInteger)index
 {
-    if ([view respondsToSelector:@selector(image)] && [((id)view) image]) {
-        UIImage *image = [((id)view) image];
-        return image;
-    } else {
-        NSString *path;
-        NSString *name;
-        NSInteger index;
-        NSURL *url;
-        
-        if(self.tableView == nil)
-        {
-            index = ([self.imageViews indexOfObject:view] + 1);
-        }
-        else
-        {
-            index = view.tag;
-        }
-        
-        // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
-        name = [NSString stringWithFormat:@"%ldf", (long)index];
-        path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-        
-        url = [NSURL fileURLWithPath:path];
-        
-        return url;
-    }
+    
+#if 0
+    id media = self.medias[index];
+    return media;
+#else
+    NSString *name = [NSString stringWithFormat:@"%ldf", (long)index + 1];
+    NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
+    
+    NSURL *url = [NSURL fileURLWithPath:path];
+    
+    return url;
+#endif
+
 }
 
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
+- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForIndex:(NSUInteger) index
 {
     NSString *title;
     
-    id media = [self mediaFocusManager:mediaFocusManager mediaForView:view];
+    id media = self.medias[index];
     if ([media respondsToSelector:@selector(lastPathComponent)]) {
         title = [NSString stringWithFormat:@"Image %@", [media lastPathComponent]];
     }
@@ -162,7 +158,6 @@ static CGFloat const kMaxOffset = 20;
     if(cell == nil)
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-        [self.mediaFocusManager installOnView:cell.imageView];
     }
     
     path = [NSString stringWithFormat:@"%ld.jpg", indexPath.row + 1];
@@ -182,5 +177,11 @@ static CGFloat const kMaxOffset = 20;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return 4;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.mediaFocusManager startFocusingOnIndex:indexPath.row];
 }
 @end
