@@ -16,8 +16,9 @@
     
     view = [super hitTest:point withEvent:event];
     
-    if(view == self)
+    if(view == self) {
         view = nil;
+    }
     
     return view;
 }

@@ -191,8 +191,8 @@
 				4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */,
 				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
 				4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */,
-				4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */,
 				4AFDA6A818C7179B00A1D0C4 /* ASTransparentView.h */,
+				4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */,
 			);
 			name = ASMediaFocusManager;
 			path = ../../ASMediaFocusManager;
