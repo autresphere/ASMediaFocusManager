@@ -19,10 +19,9 @@ static CGFloat const kSwipeOffset = 100;
 
 @interface ASMediaFocusManager ()
 
-// The media view being focused.
-@property (nonatomic, strong) UIView *mediaReferenceView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
 @property (nonatomic, assign) BOOL isZooming;
+@property (nonatomic, assign) NSUInteger currentIndex;
 @end
 
 @implementation ASMediaFocusManager
@@ -40,6 +39,7 @@ static CGFloat const kSwipeOffset = 100;
         self.isZooming = NO;
         self.gestureDisabledDuringZooming = YES;
         self.isDefocusingWithTap = NO;
+        self.currentIndex = 0;
     }
     
     return self;
@@ -272,8 +272,9 @@ static CGFloat const kSwipeOffset = 100;
     NSTimeInterval duration;
     CGRect finalImageFrame;
     __block CGRect untransformedFinalImageFrame;
+    self.currentIndex = index;
 
-    UIView *mediaTransitionView = [self.delegate mediaFocusManager:self imageViewForIndex:index];
+    UIView *mediaReferenceView = [self.delegate mediaFocusManager:self imageViewForIndex:index];
     
     focusViewController = [self focusViewControllerForIndex:index];
     if(focusViewController == nil)
@@ -290,19 +291,18 @@ static CGFloat const kSwipeOffset = 100;
         [self.delegate mediaFocusManagerWillAppear:self];
     }
     
-    self.mediaReferenceView = mediaTransitionView;
     parentViewController = [self.delegate parentViewControllerForMediaFocusManager:self];
     [parentViewController addChildViewController:focusViewController];
     [parentViewController.view addSubview:focusViewController.view];
     
     focusViewController.view.frame = parentViewController.view.bounds;
-    mediaTransitionView.hidden = YES;
+    mediaReferenceView.hidden = YES;
     
     contentImageView = focusViewController.mainImageView;
-    center = [contentImageView.superview convertPoint:mediaTransitionView.center fromView:mediaTransitionView.superview];
+    center = [contentImageView.superview convertPoint:mediaReferenceView.center fromView:mediaReferenceView.superview];
     contentImageView.center = center;
-    contentImageView.transform = mediaTransitionView.transform;
-    contentImageView.bounds = mediaTransitionView.bounds;
+    contentImageView.transform = mediaReferenceView.transform;
+    contentImageView.bounds = mediaReferenceView.bounds;
     
     self.isZooming = YES;
     
@@ -400,6 +400,8 @@ static CGFloat const kSwipeOffset = 100;
     if (contentView == nil)
         return;
     
+    UIView *mediaReferenceView = [self.delegate mediaFocusManager:self imageViewForIndex:self.currentIndex];
+    
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
     [UIView animateWithDuration:duration
                      animations:^{
@@ -409,9 +411,10 @@ static CGFloat const kSwipeOffset = 100;
                          }
                          
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
-                         contentView.center = [contentView.superview convertPoint:self.mediaReferenceView.center fromView:self.mediaReferenceView.superview];
-                         contentView.transform = self.mediaReferenceView.transform;
-                         bounds = self.mediaReferenceView.bounds;
+                         
+                         contentView.center = [contentView.superview convertPoint:mediaReferenceView.center fromView:mediaReferenceView.superview];
+                         contentView.transform = mediaReferenceView.transform;
+                         bounds = mediaReferenceView.bounds;
                          contentView.bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
                          self.focusViewController.accessoryView.alpha = 0;
@@ -440,7 +443,7 @@ static CGFloat const kSwipeOffset = 100;
                                                                                         contentView.bounds = bounds;
                                                                                     }
                                                                                     completion:^(BOOL finished) {
-                                                                                        self.mediaReferenceView.hidden = NO;
+                                                                                        mediaReferenceView.hidden = NO;
                                                                                         [self.focusViewController.view removeFromSuperview];
                                                                                         [self.focusViewController removeFromParentViewController];
                                                                                         self.focusViewController = nil;
@@ -486,6 +489,7 @@ static CGFloat const kSwipeOffset = 100;
     
     offset = (gesture.direction == UISwipeGestureRecognizerDirectionUp?-kSwipeOffset:kSwipeOffset);
     contentView = self.focusViewController.mainImageView;
+    UIView *mediaReferenceView = [self.delegate mediaFocusManager:self imageViewForIndex:self.currentIndex];
     [UIView animateWithDuration:0.2
                      animations:^{
                          if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillDisappear:)])
@@ -501,12 +505,12 @@ static CGFloat const kSwipeOffset = 100;
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.3
                                           animations:^{
-                                              contentView.center = [contentView.superview convertPoint:self.mediaReferenceView.center fromView:self.mediaReferenceView.superview];
-                                              contentView.transform = self.mediaReferenceView.transform;
-                                              contentView.bounds  = self.mediaReferenceView.bounds;
+                                              contentView.center = [contentView.superview convertPoint:mediaReferenceView.center fromView:mediaReferenceView.superview];
+                                              contentView.transform = mediaReferenceView.transform;
+                                              contentView.bounds  = mediaReferenceView.bounds;
                                           }
                                           completion:^(BOOL finished) {
-                                              self.mediaReferenceView.hidden = NO;
+                                              mediaReferenceView.hidden = NO;
                                               [self.focusViewController.view removeFromSuperview];
                                               [self.focusViewController removeFromParentViewController];
                                               self.focusViewController = nil;
