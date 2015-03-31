@@ -14,6 +14,9 @@
 		4A0BC9951ACAB6CB000904A2 /* asmedia_pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC9911ACAB6CB000904A2 /* asmedia_pause@2x.png */; };
 		4A0BC9961ACAB6CB000904A2 /* asmedia_play.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC9921ACAB6CB000904A2 /* asmedia_play.png */; };
 		4A0BC9971ACAB6CB000904A2 /* asmedia_play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC9931ACAB6CB000904A2 /* asmedia_play@2x.png */; };
+		4A0BC99D1ACAF13D000904A2 /* MediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0BC99B1ACAF13D000904A2 /* MediaCell.m */; };
+		4A0BC99E1ACAF13D000904A2 /* MediaCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC99C1ACAF13D000904A2 /* MediaCell.xib */; };
+		4A0BC9A11ACAF2C3000904A2 /* playbig@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC9A01ACAF2C3000904A2 /* playbig@2x.png */; };
 		4A15DE2916776BE9004C6733 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2816776BE9004C6733 /* UIKit.framework */; };
 		4A15DE2B16776BE9004C6733 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2A16776BE9004C6733 /* Foundation.framework */; };
 		4A15DE2D16776BE9004C6733 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2C16776BE9004C6733 /* CoreGraphics.framework */; };
@@ -52,6 +55,10 @@
 		4A0BC9911ACAB6CB000904A2 /* asmedia_pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asmedia_pause@2x.png"; sourceTree = "<group>"; };
 		4A0BC9921ACAB6CB000904A2 /* asmedia_play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = asmedia_play.png; sourceTree = "<group>"; };
 		4A0BC9931ACAB6CB000904A2 /* asmedia_play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asmedia_play@2x.png"; sourceTree = "<group>"; };
+		4A0BC99A1ACAF13D000904A2 /* MediaCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaCell.h; sourceTree = "<group>"; };
+		4A0BC99B1ACAF13D000904A2 /* MediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaCell.m; sourceTree = "<group>"; };
+		4A0BC99C1ACAF13D000904A2 /* MediaCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MediaCell.xib; sourceTree = "<group>"; };
+		4A0BC9A01ACAF2C3000904A2 /* playbig@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playbig@2x.png"; sourceTree = "<group>"; };
 		4A15DE2416776BE9004C6733 /* ASMediaFocusExemple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASMediaFocusExemple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A15DE2816776BE9004C6733 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4A15DE2A16776BE9004C6733 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -117,6 +124,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		4A0BC99F1ACAF2C3000904A2 /* image */ = {
+			isa = PBXGroup;
+			children = (
+				4A0BC9A01ACAF2C3000904A2 /* playbig@2x.png */,
+			);
+			path = image;
+			sourceTree = "<group>";
+		};
 		4A15DE1916776BE9004C6733 = {
 			isa = PBXGroup;
 			children = (
@@ -157,6 +172,9 @@
 				4A7F15F01684635100ADC5D6 /* MainViewController.m */,
 				4A15DE4616776BE9004C6733 /* MainViewController~ipad.xib */,
 				4ABF0AF016A048E50053040A /* MainViewController~iphone.xib */,
+				4A0BC99A1ACAF13D000904A2 /* MediaCell.h */,
+				4A0BC99B1ACAF13D000904A2 /* MediaCell.m */,
+				4A0BC99C1ACAF13D000904A2 /* MediaCell.xib */,
 				4ABF0B0016A0575C0053040A /* ASMediaFocusManager */,
 				4A15DE2F16776BE9004C6733 /* Supporting Files */,
 			);
@@ -180,6 +198,7 @@
 		4A15DE6216776EC7004C6733 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4A0BC99F1ACAF2C3000904A2 /* image */,
 				4A15DE6316776EC7004C6733 /* media */,
 			);
 			path = Resources;
@@ -301,6 +320,7 @@
 			files = (
 				4A0BC97B1AC9846F000904A2 /* 3f.mp4 in Resources */,
 				4A0BC9961ACAB6CB000904A2 /* asmedia_play.png in Resources */,
+				4A0BC99E1ACAF13D000904A2 /* MediaCell.xib in Resources */,
 				4A0BC9941ACAB6CB000904A2 /* asmedia_pause.png in Resources */,
 				4A15DE3316776BE9004C6733 /* InfoPlist.strings in Resources */,
 				4A15DE3B16776BE9004C6733 /* Default.png in Resources */,
@@ -311,6 +331,7 @@
 				4A0BC9971ACAB6CB000904A2 /* asmedia_play@2x.png in Resources */,
 				4A15DE6F16776EC7004C6733 /* 2f.jpg in Resources */,
 				4A15DE7116776EC7004C6733 /* 4f.jpg in Resources */,
+				4A0BC9A11ACAF2C3000904A2 /* playbig@2x.png in Resources */,
 				4A6CBCAA18F59152001C32EB /* 4.jpg in Resources */,
 				4A15DE7216776EC7004C6733 /* 1.jpg in Resources */,
 				4A0BC9951ACAB6CB000904A2 /* asmedia_pause@2x.png in Resources */,
@@ -364,6 +385,7 @@
 			files = (
 				4A15DE3516776BE9004C6733 /* main.m in Sources */,
 				4A15DE3916776BE9004C6733 /* AppDelegate.m in Sources */,
+				4A0BC99D1ACAF13D000904A2 /* MediaCell.m in Sources */,
 				4A7F15F21684635100ADC5D6 /* MainViewController.m in Sources */,
 				4ABF0B0516A0575C0053040A /* ASMediaFocusController.m in Sources */,
 				4ABF0B0616A0575C0053040A /* ASMediaFocusManager.m in Sources */,

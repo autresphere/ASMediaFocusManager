@@ -7,6 +7,7 @@
 //
 
 #import "MainViewController.h"
+#import "MediaCell.h"
 #import <QuartzCore/QuartzCore.h>
 
 static CGFloat const kMaxAngle = 0.1;
@@ -141,28 +142,29 @@ static CGFloat const kMaxOffset = 20;
 
 - (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager
 {
-    NSLog(@"The view has been dismissed");
 }
 
 #pragma mark - UITableViewDataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    static NSString *cellIdentifier = @"MediaCell";
+    MediaCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     NSString *path;
     UIImage *image;
+    BOOL isVideo;
     
     if(cell == nil)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-        [self.mediaFocusManager installOnView:cell.imageView];
+        cell = [MediaCell mediaCell];
+        [self.mediaFocusManager installOnView:cell.thumbnailView];
     }
     
+    isVideo = [[self.mediaNames[indexPath.row] pathExtension] isEqualToString:@"mp4"];
+    cell.playView.hidden = !isVideo;
     path = [NSString stringWithFormat:@"%ld.jpg", indexPath.row + 1];
     image = [UIImage imageNamed:path];
-    cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    cell.imageView.image = image;
-    cell.imageView.tag = indexPath.row + 1;
+    cell.thumbnailView.image = image;
+    cell.thumbnailView.tag = indexPath.row + 1;
     
     return cell;
 }
