@@ -47,6 +47,10 @@ static CGFloat const kDefaultControlMargin = 5;
         self.doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
         self.doubleTapGesture.numberOfTapsRequired = 2;
         self.controlMargin = kDefaultControlMargin;
+        
+        self.tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTap:)];
+        [self.tapGesture requireGestureRecognizerToFail:self.doubleTapGesture];
+        [self.view addGestureRecognizer:self.tapGesture];
     }
 
     return self;
@@ -351,6 +355,14 @@ static CGFloat const kDefaultControlMargin = 5;
 }
 
 #pragma mark - Actions
+- (void)handleTap:(UITapGestureRecognizer*)gesture
+{
+    if(self.scrollView.zoomScale == self.scrollView.minimumZoomScale)
+    {
+        [self showAccessoryView:![self accessoryViewsVisible]];
+    }
+}
+
 - (void)handleDoubleTap:(UITapGestureRecognizer*)gesture
 {
     CGRect frame = CGRectZero;
@@ -393,7 +405,7 @@ static CGFloat const kDefaultControlMargin = 5;
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView
 {
-    [self showAccessoryView:self.scrollView.zoomScale == self.scrollView.minimumZoomScale];
+    [self showAccessoryView:(self.scrollView.zoomScale == self.scrollView.minimumZoomScale)];
 }
 
 #pragma mark - Notifications
