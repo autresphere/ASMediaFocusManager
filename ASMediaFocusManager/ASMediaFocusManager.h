@@ -19,7 +19,7 @@
 // Returns the view controller in which the focus controller is going to be added. This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager;
 // Returns an URL where the image is stored. This URL is used to create an image at full screen. The URL may be local (file://) or distant (http://).
-- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view;
+- (id)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaForView:(UIView *)view;
 // Returns the title for this media view. Return nil if you don't want any title to appear.
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
 

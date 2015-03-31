@@ -239,29 +239,39 @@ static CGFloat const kSwipeOffset = 100;
         NSURL *url;
         NSData *data;
         NSError *error = nil;
+        UIImage *image;
         
-        url = [self.delegate mediaFocusManager:self mediaURLForView:mediaView];
+        id media = [self.delegate mediaFocusManager:self mediaForView:mediaView];
         
-        if (url) {
-            data = [NSData dataWithContentsOfURL:url options:0 error:&error];
-        }else{
-            NSLog(@"Warning: url is nil");
-            return;
-        }
-        
-        if(error != nil)
-        {
-            NSLog(@"Warning: Unable to load image at %@. %@", url, error);
-        }
-        else
-        {
-            UIImage *image;
+        if (media) {
+            if ([media respondsToSelector:@selector(absoluteURL)]) {
+                url = media;
+                data = [NSData dataWithContentsOfURL:url options:0 error:&error];
+                image = [[UIImage alloc] initWithData:data];
+                image = [self decodedImageWithImage:image];
+            } else if ([media respondsToSelector:@selector(CGImage)]) {
+                image = media;
+            }
             
-            image = [[UIImage alloc] initWithData:data];
-            image = [self decodedImageWithImage:image];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                viewController.mainImageView.image = image;
-            });
+            if (!error) {
+                
+                if (image) {
+                
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        viewController.mainImageView.image = image;
+                    });
+                    
+                } else {
+                    NSLog(@"Warning: Unable to generate image");
+                }
+                
+                
+                
+            } else {
+                NSLog(@"Warning: Unable to load image at %@. %@", url, error);
+            }
+        } else {
+            NSLog(@"Warning: url is nil");
         }
     });
     
