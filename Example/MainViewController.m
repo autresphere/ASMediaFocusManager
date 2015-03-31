@@ -114,11 +114,10 @@ static CGFloat const kMaxOffset = 20;
 
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForIndex:(NSUInteger) index
 {
-    NSString *title;
-    
     id media = self.medias[index];
     if ([media respondsToSelector:@selector(lastPathComponent)]) {
-        title = [NSString stringWithFormat:@"Image %@", [media lastPathComponent]];
+        NSString *title = [NSString stringWithFormat:@"Image %@", [media lastPathComponent]];
+        return title;
     }
     
     return @"Of course, you can zoom in and out on the image.";
@@ -182,6 +181,7 @@ static CGFloat const kMaxOffset = 20;
 #pragma mark - UITableViewDelegate
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     [self.mediaFocusManager startFocusingOnIndex:indexPath.row];
 }
 @end

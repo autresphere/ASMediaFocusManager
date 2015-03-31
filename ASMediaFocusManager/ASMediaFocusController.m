@@ -8,14 +8,15 @@
 
 #import "ASMediaFocusController.h"
 #import "ASTransparentView.h"
+#import "ASImageScrollView.h"
 #import <QuartzCore/QuartzCore.h>
 
 static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 
 @interface ASMediaFocusController () <UIScrollViewDelegate>
-
 @property (nonatomic, assign) UIDeviceOrientation previousOrientation;
-
+@property (strong, nonatomic) ASImageScrollView *scrollView;
+@property (strong, nonatomic) UILabel *titleLabel;
 @end
 
 @implementation ASMediaFocusController
@@ -208,10 +209,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     scrollView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     scrollView.delegate = self;
     self.scrollView = scrollView;
-//    [self.contentView insertSubview:self.scrollView belowSubview:self.accessoryView];
-//    [self.contentView addSubview:self.scrollView];
     [self.contentView insertSubview:scrollView atIndex:0];
-    
     [scrollView displayImage:self.mainImageView.image];
     self.mainImageView.hidden = YES;
     
@@ -261,6 +259,10 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (BOOL)accessoryViewsVisible
 {
     return (self.accessoryView.alpha == 1);
+}
+
+- (void)setTitleString:(NSString*) titleString {
+    self.titleLabel.text = titleString;
 }
 
 #pragma mark - Actions
