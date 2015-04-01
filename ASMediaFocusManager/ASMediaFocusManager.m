@@ -315,6 +315,12 @@ static CGFloat const kSwipeOffset = 100;
         finalImageFrame.origin.y = (focusViewController.view.bounds.size.height - size.height)/2;
     }
     
+    [UIView animateWithDuration:self.animationDuration
+                     animations:^{
+                         focusViewController.view.backgroundColor = self.backgroundColor;
+                         [focusViewController beginAppearanceTransition:YES animated:YES];
+                     }];
+    
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
     [UIView animateWithDuration:duration
                      animations:^{
@@ -380,14 +386,9 @@ static CGFloat const kSwipeOffset = 100;
                                                                }];
                                           }];
                      }];
-    
-    [UIView animateWithDuration:self.animationDuration
-                     animations:^{
-                         focusViewController.view.backgroundColor = self.backgroundColor;
-                     }];
 }
 
-- (void)updateView:(UIView *)view fromFrame:(CGRect)initialFrame toFrame:(CGRect)finalFrame
+- (void)updateAnimatedView:(UIView *)view fromFrame:(CGRect)initialFrame toFrame:(CGRect)finalFrame
 {
     // On iOS8 previous animations are not replaced when a new one is defined with the same key.
     // Instead the new animation is added a number suffix on its key.
@@ -403,11 +404,22 @@ static CGFloat const kSwipeOffset = 100;
     view.frame = finalFrame;
 }
 
+- (void)updateBoundsDuringAnimationWithElasticRatio:(CGFloat)ratio
+{
+    CGRect frame;
+    CGRect initialFrame;
+    
+    initialFrame = self.focusViewController.playerView.frame;
+    frame = self.mediaView.bounds;
+    frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:ratio]:frame);
+    self.focusViewController.mainImageView.bounds = frame;
+    [self updateAnimatedView:self.focusViewController.playerView fromFrame:initialFrame toFrame:frame];
+}
+
 - (void)endFocusing
 {
     NSTimeInterval duration;
     UIView *contentView;
-    CGRect __block bounds;
     
     if(self.isZooming && self.gestureDisabledDuringZooming)
         return;
@@ -421,8 +433,11 @@ static CGFloat const kSwipeOffset = 100;
     [UIView animateWithDuration:self.animationDuration
                      animations:^{
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
-                         self.focusViewController.accessoryView.alpha = 0;
-                         self.focusViewController.playerView.alpha = 0;
+                     }];
+    
+    [UIView animateWithDuration:self.animationDuration/2
+                     animations:^{
+                         [self.focusViewController beginAppearanceTransition:NO animated:YES];
                      }];
     
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
@@ -441,44 +456,22 @@ static CGFloat const kSwipeOffset = 100;
                          self.focusViewController.contentView.transform = CGAffineTransformIdentity;
                          contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                          contentView.transform = self.mediaView.transform;
-                         bounds = self.mediaView.bounds;
-                         bounds = (self.elasticAnimation?[self rectInsetsForRect:bounds ratio:kAnimateElasticSizeRatio]:bounds);
-                         contentView.bounds = bounds;
-                         [self updateView:self.focusViewController.playerView fromFrame:frame toFrame:contentView.bounds];
+                         [self updateBoundsDuringAnimationWithElasticRatio:kAnimateElasticSizeRatio];
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                           animations:^{
-                                              CGRect frame;
-                                              CGRect initialFrame;
-                                              
-                                              initialFrame = self.focusViewController.playerView.frame;
-                                              frame = self.mediaView.bounds;
-                                              frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:-kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio]:frame);
-                                              contentView.bounds = frame;
-                                              [self updateView:self.focusViewController.playerView fromFrame:initialFrame toFrame:contentView.bounds];
+                                              [self updateBoundsDuringAnimationWithElasticRatio:-kAnimateElasticSizeRatio*kAnimateElasticSecondMoveSizeRatio];
                                           }
                                           completion:^(BOOL finished) {
                                               [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                                                animations:^{
-                                                                   CGRect frame;
-                                                                   CGRect initialFrame;
-                                                                   
-                                                                   initialFrame = self.focusViewController.playerView.frame;
-                                                                   frame = self.mediaView.bounds;
-                                                                   frame = (self.elasticAnimation?[self rectInsetsForRect:frame ratio:kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio]:frame);
-                                                                   contentView.bounds = frame;
-                                                                   [self updateView:self.focusViewController.playerView fromFrame:initialFrame toFrame:contentView.bounds];
+                                                                   [self updateBoundsDuringAnimationWithElasticRatio:kAnimateElasticSizeRatio*kAnimateElasticThirdMoveSizeRatio];
                                                                }
                                                                completion:^(BOOL finished) {
                                                                    [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
                                                                                     animations:^{
-                                                                                        CGRect initialFrame;
-                                                                                        
-                                                                                        initialFrame = self.focusViewController.playerView.frame;
-                                                                                        contentView.bounds = self.mediaView.bounds;
-                                                                                        
-                                                                                        [self updateView:self.focusViewController.playerView fromFrame:initialFrame toFrame:contentView.bounds];
+                                                                                        [self updateBoundsDuringAnimationWithElasticRatio:0];
                                                                                     }
                                                                                     completion:^(BOOL finished) {
                                                                                         self.mediaView.hidden = NO;
@@ -531,11 +524,15 @@ static CGFloat const kSwipeOffset = 100;
     [self.focusViewController defocusWillStart];
     offset = (gesture.direction == UISwipeGestureRecognizerDirectionUp?-kSwipeOffset:kSwipeOffset);
     contentView = self.focusViewController.mainImageView;
+    
     [UIView animateWithDuration:duration
                      animations:^{
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
-                         self.focusViewController.accessoryView.alpha = 0;
-                         self.focusViewController.playerView.alpha = 0;
+                     }];
+    
+    [UIView animateWithDuration:duration/2
+                     animations:^{
+                         [self.focusViewController beginAppearanceTransition:NO animated:YES];
                      }];
     
     [UIView animateWithDuration:0.4*duration
@@ -551,13 +548,9 @@ static CGFloat const kSwipeOffset = 100;
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:0.6*duration
                                           animations:^{
-                                              CGRect initialFrame;
-                                              
-                                              initialFrame = self.focusViewController.playerView.frame;
                                               contentView.center = [contentView.superview convertPoint:self.mediaView.center fromView:self.mediaView.superview];
                                               contentView.transform = self.mediaView.transform;
-                                              contentView.bounds  = self.mediaView.bounds;
-                                              [self updateView:self.focusViewController.playerView fromFrame:initialFrame toFrame:contentView.bounds];
+                                              [self updateBoundsDuringAnimationWithElasticRatio:0];
                                            }
                                           completion:^(BOOL finished) {
                                               self.mediaView.hidden = NO;

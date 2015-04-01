@@ -120,6 +120,25 @@ static CGFloat const kDefaultControlMargin = 5;
     }
 }
 
+- (void)beginAppearanceTransition:(BOOL)isAppearing animated:(BOOL)animated
+{
+    if(!isAppearing)
+    {
+        self.accessoryView.alpha = 0;
+        self.playerView.alpha = 0;
+    }
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    if(self.playerView != nil)
+    {
+        self.playerView.frame = self.mainImageView.bounds;
+        [self layoutControlView];
+    }
+}
+
 #pragma mark - Public
 - (void)updateOrientationAnimated:(BOOL)animated
 {
@@ -200,6 +219,38 @@ static CGFloat const kDefaultControlMargin = 5;
     self.previousOrientation = [UIDevice currentDevice].orientation;
 }
 
+- (void)showPlayerWithURL:(NSURL *)url
+{
+    self.playerView = [[PlayerView alloc] initWithFrame:self.mainImageView.bounds];
+    [self.mainImageView addSubview:self.playerView];
+    self.playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.playerView.hidden = YES;
+    self.player = [[AVPlayer alloc] initWithURL:url];
+    
+    ((PlayerView *)self.playerView).player = self.player;
+    [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled
+{
+    if(zoomEnabled && (self.playerView == nil))
+    {
+        [self installZoomView];
+    }
+    [self.view setNeedsLayout];
+    [self showAccessoryView:YES];
+    self.playerView.hidden = NO;
+    [self.player play];
+}
+
+- (void)defocusWillStart
+{
+    [self uninstallZoomView];
+    [self pinAccessoryView];
+    [self.player pause];
+}
+
+#pragma mark - Private
 - (void)installZoomView
 {
     ASImageScrollView *scrollView;
@@ -268,28 +319,6 @@ static CGFloat const kDefaultControlMargin = 5;
     return (self.accessoryView.alpha == 1);
 }
 
-- (void)showPlayerWithURL:(NSURL *)url
-{
-    self.playerView = [[PlayerView alloc] initWithFrame:self.mainImageView.bounds];
-    [self.mainImageView addSubview:self.playerView];
-    self.playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    self.playerView.hidden = YES;
-    self.player = [[AVPlayer alloc] initWithURL:url];
-    
-    ((PlayerView *)self.playerView).player = self.player;
-    [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
-}
-
-- (void)viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-    if((self.playerView != nil) /*&& !CGRectEqualToRect(self.playerView.frame, self.mainImageView.bounds)*/)
-    {
-        self.playerView.frame = self.mainImageView.bounds;
-        [self layoutControlView];
-    }
-}
-
 - (void)layoutControlView
 {
     CGRect frame;
@@ -309,6 +338,7 @@ static CGFloat const kDefaultControlMargin = 5;
         self.controlView = controlView;
         [self.accessoryView addSubview:self.controlView];
     }
+    
     videoFrame = [self videoFrame];
     frame = self.controlView.frame;
     frame.size.width = self.view.bounds.size.width - self.controlMargin*2;
@@ -333,25 +363,6 @@ static CGFloat const kDefaultControlMargin = 5;
     frame = CGRectIntegral(frame);
     
     return frame;
-}
-
-- (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled
-{
-    if(zoomEnabled && (self.playerView == nil))
-    {
-        [self installZoomView];
-    }
-    [self.view setNeedsLayout];
-    [self showAccessoryView:YES];
-    self.playerView.hidden = NO;
-    [self.player play];
-}
-
-- (void)defocusWillStart
-{
-    [self uninstallZoomView];
-    [self pinAccessoryView];
-    [self.player pause];
 }
 
 #pragma mark - Actions
