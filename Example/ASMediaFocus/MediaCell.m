@@ -22,13 +22,8 @@
     return cell;
 }
 
-- (void)layoutSubviews
+- (void)awakeFromNib
 {
-    CGRect frame;
-    
-    frame = CGRectInset(self.contentView.frame, 10, 0);
-    self.thumbnailView.frame = frame;
     [self.thumbnailView addSubview:self.playView];
-    self.playView.center = CGPointMake(CGRectGetMidX(self.thumbnailView.bounds), CGRectGetMidY(self.thumbnailView.bounds));
 }
 @end
