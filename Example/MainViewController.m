@@ -75,16 +75,6 @@ static CGFloat const kMaxOffset = 20;
 }
 
 #pragma mark - ASMediaFocusDelegate
-- (UIImageView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageViewForView:(UIView *)view
-{
-    return (UIImageView *)view;
-}
-
-- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameForView:(UIView *)view
-{
-    return self.view.bounds;
-}
-
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
 {
     return self;
@@ -115,9 +105,11 @@ static CGFloat const kMaxOffset = 20;
 {
     BOOL isVideo;
     NSURL *url;
+    NSString *extension;
     
     url = [self mediaFocusManager:mediaFocusManager mediaURLForView:view];
-    isVideo = [url.pathExtension isEqualToString:@"mp4"];
+    extension = url.pathExtension.lowercaseString;
+    isVideo = [extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"];
     
     return (isVideo?@"Video are also supported.":@"Of course, you can zoom in and out on the image.");
 }
@@ -140,10 +132,6 @@ static CGFloat const kMaxOffset = 20;
     }
 }
 
-- (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager
-{
-}
-
 #pragma mark - UITableViewDataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -161,7 +149,7 @@ static CGFloat const kMaxOffset = 20;
     
     isVideo = [[self.mediaNames[indexPath.row] pathExtension] isEqualToString:@"mp4"];
     cell.playView.hidden = !isVideo;
-    path = [NSString stringWithFormat:@"%ld.jpg", indexPath.row + 1];
+    path = [NSString stringWithFormat:@"%d.jpg", indexPath.row + 1];
     image = [UIImage imageNamed:path];
     cell.thumbnailView.image = image;
     cell.thumbnailView.tag = indexPath.row + 1;

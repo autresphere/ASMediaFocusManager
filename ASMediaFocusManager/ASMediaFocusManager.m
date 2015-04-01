@@ -199,10 +199,19 @@ static CGFloat const kSwipeOffset = 100;
 {
     ASMediaFocusController *viewController;
     UIImage *image;
-    UIImageView *imageView;
+    UIImageView *imageView = nil;
     NSURL *url;
+    NSString *extension;
     
-    imageView = [self.delegate mediaFocusManager:self imageViewForView:mediaView];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManager:imageViewForView:)])
+    {
+        imageView = [self.delegate mediaFocusManager:self imageViewForView:mediaView];
+    }
+    else if([mediaView isKindOfClass:[UIImageView class]])
+    {
+        imageView = (UIImageView *)mediaView;
+    }
+    
     image = imageView.image;
     if((imageView == nil) || (image == nil))
         return nil;
@@ -226,7 +235,8 @@ static CGFloat const kSwipeOffset = 100;
         }
     }
     
-    if([url.pathExtension isEqualToString:@"mp4"])
+    extension = url.pathExtension.lowercaseString;
+    if([extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"])
     {
         [viewController showPlayerWithURL:url];
     }
@@ -278,12 +288,13 @@ static CGFloat const kSwipeOffset = 100;
         return;
     
     self.focusViewController = focusViewController;
-    if (self.defocusOnVerticalSwipe) {
+    if(self.defocusOnVerticalSwipe)
+    {
         [self installSwipeGestureOnFocusView];
     }
     
     // This should be called after swipe gesture is installed to make sure the nav bar doesn't hide before animation begins.
-    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
+    if(self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManagerWillAppear:)])
     {
         [self.delegate mediaFocusManagerWillAppear:self];
     }
@@ -304,7 +315,15 @@ static CGFloat const kSwipeOffset = 100;
     
     self.isZooming = YES;
     
-    finalImageFrame = [self.delegate mediaFocusManager:self finalFrameForView:mediaView];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManager:finalFrameForView:)])
+    {
+        finalImageFrame = [self.delegate mediaFocusManager:self finalFrameForView:mediaView];
+    }
+    else
+    {
+        finalImageFrame = parentViewController.view.bounds;
+    }
+    
     if(imageView.contentMode == UIViewContentModeScaleAspectFill)
     {
         CGSize size;
