@@ -111,7 +111,7 @@ static CGFloat const kMaxOffset = 20;
     extension = url.pathExtension.lowercaseString;
     isVideo = [extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"];
     
-    return (isVideo?@"Video are also supported.":@"Of course, you can zoom in and out on the image.");
+    return (isVideo?@"Videos are also supported.":@"Of course, you can zoom in and out on the image.");
 }
 
 - (void)mediaFocusManagerWillAppear:(ASMediaFocusManager *)mediaFocusManager
