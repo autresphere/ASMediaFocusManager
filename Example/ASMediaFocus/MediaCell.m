@@ -21,9 +21,4 @@
     
     return cell;
 }
-
-- (void)awakeFromNib
-{
-    [self.thumbnailView addSubview:self.playView];
-}
 @end

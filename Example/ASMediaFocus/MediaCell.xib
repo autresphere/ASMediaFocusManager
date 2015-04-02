@@ -19,28 +19,19 @@
                             <constraint firstAttribute="width" constant="249" id="2rE-lK-QF3"/>
                         </constraints>
                     </imageView>
-                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="playbig.png" translatesAutoresizingMaskIntoConstraints="NO" id="VMW-C7-8uS">
-                        <rect key="frame" x="140" y="50" width="40" height="40"/>
-                    </imageView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="centerX" secondItem="VMW-C7-8uS" secondAttribute="centerX" id="Dww-fe-scV"/>
                     <constraint firstAttribute="bottom" secondItem="THk-xF-51Y" secondAttribute="bottom" constant="-1" id="KnL-J3-NZJ"/>
-                    <constraint firstAttribute="centerY" secondItem="VMW-C7-8uS" secondAttribute="centerY" id="NOj-XF-edL"/>
                     <constraint firstAttribute="centerX" secondItem="THk-xF-51Y" secondAttribute="centerX" id="ZgH-5u-ueC"/>
                     <constraint firstItem="THk-xF-51Y" firstAttribute="top" secondItem="Krs-v6-4mb" secondAttribute="top" id="iBX-c4-PK9"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="playView" destination="VMW-C7-8uS" id="qeA-U3-QMq"/>
                 <outlet property="thumbnailView" destination="THk-xF-51Y" id="kyC-FM-szs"/>
             </connections>
             <point key="canvasLocation" x="416" y="377"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <image name="playbig.png" width="40" height="40"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

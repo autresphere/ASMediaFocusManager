@@ -16,7 +16,6 @@
 		4A0BC9971ACAB6CB000904A2 /* asmedia_play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC9931ACAB6CB000904A2 /* asmedia_play@2x.png */; };
 		4A0BC99D1ACAF13D000904A2 /* MediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0BC99B1ACAF13D000904A2 /* MediaCell.m */; };
 		4A0BC99E1ACAF13D000904A2 /* MediaCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC99C1ACAF13D000904A2 /* MediaCell.xib */; };
-		4A0BC9A11ACAF2C3000904A2 /* playbig@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC9A01ACAF2C3000904A2 /* playbig@2x.png */; };
 		4A15DE2916776BE9004C6733 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2816776BE9004C6733 /* UIKit.framework */; };
 		4A15DE2B16776BE9004C6733 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2A16776BE9004C6733 /* Foundation.framework */; };
 		4A15DE2D16776BE9004C6733 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A15DE2C16776BE9004C6733 /* CoreGraphics.framework */; };
@@ -36,6 +35,9 @@
 		4A2D149E16AD255800D3CE3D /* ASImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */; };
 		4A553D681ABC708D000C2FD7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A553D671ABC708D000C2FD7 /* AVFoundation.framework */; };
 		4A6CBCAA18F59152001C32EB /* 4.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4A6CBCA918F59152001C32EB /* 4.jpg */; };
+		4A70C03C1ACD4CC800828AA6 /* ASVideoBehavior.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A70C03B1ACD4CC800828AA6 /* ASVideoBehavior.m */; };
+		4A70C03F1ACD4E5300828AA6 /* asmedia_playbig.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A70C03D1ACD4E5300828AA6 /* asmedia_playbig.png */; };
+		4A70C0401ACD4E5300828AA6 /* asmedia_playbig@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A70C03E1ACD4E5300828AA6 /* asmedia_playbig@2x.png */; };
 		4A7F15F21684635100ADC5D6 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A7F15F01684635100ADC5D6 /* MainViewController.m */; };
 		4ABF0AF216A048E50053040A /* MainViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4ABF0AF016A048E50053040A /* MainViewController~iphone.xib */; };
 		4ABF0B0516A0575C0053040A /* ASMediaFocusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */; };
@@ -58,7 +60,6 @@
 		4A0BC99A1ACAF13D000904A2 /* MediaCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaCell.h; sourceTree = "<group>"; };
 		4A0BC99B1ACAF13D000904A2 /* MediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaCell.m; sourceTree = "<group>"; };
 		4A0BC99C1ACAF13D000904A2 /* MediaCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MediaCell.xib; sourceTree = "<group>"; };
-		4A0BC9A01ACAF2C3000904A2 /* playbig@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playbig@2x.png"; sourceTree = "<group>"; };
 		4A15DE2416776BE9004C6733 /* ASMediaFocusExemple.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASMediaFocusExemple.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A15DE2816776BE9004C6733 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4A15DE2A16776BE9004C6733 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -83,6 +84,10 @@
 		4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASImageScrollView.m; sourceTree = "<group>"; };
 		4A553D671ABC708D000C2FD7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		4A6CBCA918F59152001C32EB /* 4.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 4.jpg; sourceTree = "<group>"; };
+		4A70C03A1ACD4CC800828AA6 /* ASVideoBehavior.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASVideoBehavior.h; sourceTree = "<group>"; };
+		4A70C03B1ACD4CC800828AA6 /* ASVideoBehavior.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASVideoBehavior.m; sourceTree = "<group>"; };
+		4A70C03D1ACD4E5300828AA6 /* asmedia_playbig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = asmedia_playbig.png; sourceTree = "<group>"; };
+		4A70C03E1ACD4E5300828AA6 /* asmedia_playbig@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asmedia_playbig@2x.png"; sourceTree = "<group>"; };
 		4A7F15EF1684635100ADC5D6 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = ../MainViewController.h; sourceTree = "<group>"; };
 		4A7F15F01684635100ADC5D6 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = ../MainViewController.m; sourceTree = "<group>"; };
 		4ABF0AF116A048E50053040A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/MainViewController~iphone.xib"; sourceTree = "<group>"; };
@@ -116,20 +121,14 @@
 		4A0BC98F1ACAB6CB000904A2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4A70C03D1ACD4E5300828AA6 /* asmedia_playbig.png */,
+				4A70C03E1ACD4E5300828AA6 /* asmedia_playbig@2x.png */,
 				4A0BC9901ACAB6CB000904A2 /* asmedia_pause.png */,
 				4A0BC9911ACAB6CB000904A2 /* asmedia_pause@2x.png */,
 				4A0BC9921ACAB6CB000904A2 /* asmedia_play.png */,
 				4A0BC9931ACAB6CB000904A2 /* asmedia_play@2x.png */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		4A0BC99F1ACAF2C3000904A2 /* image */ = {
-			isa = PBXGroup;
-			children = (
-				4A0BC9A01ACAF2C3000904A2 /* playbig@2x.png */,
-			);
-			path = image;
 			sourceTree = "<group>";
 		};
 		4A15DE1916776BE9004C6733 = {
@@ -198,7 +197,6 @@
 		4A15DE6216776EC7004C6733 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				4A0BC99F1ACAF2C3000904A2 /* image */,
 				4A15DE6316776EC7004C6733 /* media */,
 			);
 			path = Resources;
@@ -243,6 +241,8 @@
 				4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */,
 				4ABF0B0316A0575C0053040A /* ASMediaFocusManager.h */,
 				4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */,
+				4A70C03A1ACD4CC800828AA6 /* ASVideoBehavior.h */,
+				4A70C03B1ACD4CC800828AA6 /* ASVideoBehavior.m */,
 				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
 				4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */,
 				4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */,
@@ -331,7 +331,6 @@
 				4A0BC9971ACAB6CB000904A2 /* asmedia_play@2x.png in Resources */,
 				4A15DE6F16776EC7004C6733 /* 2f.jpg in Resources */,
 				4A15DE7116776EC7004C6733 /* 4f.jpg in Resources */,
-				4A0BC9A11ACAF2C3000904A2 /* playbig@2x.png in Resources */,
 				4A6CBCAA18F59152001C32EB /* 4.jpg in Resources */,
 				4A15DE7216776EC7004C6733 /* 1.jpg in Resources */,
 				4A0BC9951ACAB6CB000904A2 /* asmedia_pause@2x.png in Resources */,
@@ -339,6 +338,8 @@
 				4A15DE7416776EC7004C6733 /* 3.jpg in Resources */,
 				4ABF0AF216A048E50053040A /* MainViewController~iphone.xib in Resources */,
 				4A0BC9801AC9A6AC000904A2 /* ASVideoControlView.xib in Resources */,
+				4A70C03F1ACD4E5300828AA6 /* asmedia_playbig.png in Resources */,
+				4A70C0401ACD4E5300828AA6 /* asmedia_playbig@2x.png in Resources */,
 				4ABF0B1916A2E62E0053040A /* ASMediaFocusController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -392,6 +393,7 @@
 				4A2D149E16AD255800D3CE3D /* ASImageScrollView.m in Sources */,
 				4A0BC97E1AC9A684000904A2 /* ASVideoControlView.m in Sources */,
 				4AFDA6AA18C7179B00A1D0C4 /* ASTransparentView.m in Sources */,
+				4A70C03C1ACD4CC800828AA6 /* ASVideoBehavior.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -56,7 +56,7 @@ static CGFloat const kMaxOffset = 20;
     self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
     self.mediaFocusManager.delegate = self;
     self.mediaFocusManager.elasticAnimation = YES;
-    
+
     // Tells which views need to be focusable. You can put your image views in an array and give it to the focus manager.
     [self.mediaFocusManager installOnViews:self.imageViews];
     
@@ -146,6 +146,7 @@ static CGFloat const kMaxOffset = 20;
     if(cell == nil)
     {
         cell = [MediaCell mediaCell];
+        cell.thumbnailView.tag = indexPath.row + 1;
         [self.mediaFocusManager installOnView:cell.thumbnailView];
     }
     

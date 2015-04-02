@@ -8,6 +8,7 @@
 
 #import "ASMediaFocusManager.h"
 #import "ASMediaFocusController.h"
+#import "ASVideoBehavior.h"
 #import <QuartzCore/QuartzCore.h>
 
 static CGFloat const kAnimateElasticSizeRatio = 0.03;
@@ -22,6 +23,7 @@ static CGFloat const kSwipeOffset = 100;
 @property (nonatomic, strong) UIView *mediaView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
 @property (nonatomic, assign) BOOL isZooming;
+@property (nonatomic, strong) ASVideoBehavior *videoBehavior;
 @end
 
 @implementation ASMediaFocusManager
@@ -39,6 +41,8 @@ static CGFloat const kSwipeOffset = 100;
         self.isZooming = NO;
         self.gestureDisabledDuringZooming = YES;
         self.isDefocusingWithTap = NO;
+        self.addPlayIconOnVideo = YES;
+        self.videoBehavior = [ASVideoBehavior new];
     }
     
     return self;
@@ -55,10 +59,17 @@ static CGFloat const kSwipeOffset = 100;
 - (void)installOnView:(UIView *)view
 {
     UITapGestureRecognizer *tapGesture;
+    NSURL *url;
     
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleFocusGesture:)];
     [view addGestureRecognizer:tapGesture];
     view.userInteractionEnabled = YES;
+    
+    url = [self.delegate mediaFocusManager:self mediaURLForView:view];
+    if(self.addPlayIconOnVideo && [self isVideoURL:url])
+    {
+        [self.videoBehavior addVideoIconToView:view image:self.playImage];
+    }
 }
 
 - (void)installDefocusActionOnFocusViewController:(ASMediaFocusController *)focusViewController

@@ -47,15 +47,19 @@
 // The background color. Defaults to transparent black.
 @property (nonatomic, strong) UIColor *backgroundColor;
 // Enables defocus on vertical swipe. Defaults to YES.
-@property (assign, nonatomic) BOOL defocusOnVerticalSwipe;
+@property (nonatomic, assign) BOOL defocusOnVerticalSwipe;
 // Returns whether the animation has an elastic effect. Defaults to YES.
-@property (assign, nonatomic) BOOL elasticAnimation;
+@property (nonatomic, assign) BOOL elasticAnimation;
 // Returns whether zoom is enabled on fullscreen image. Defaults to YES.
 @property (nonatomic, assign) BOOL zoomEnabled;
 // Returns whether gesture is disabled during zooming. Defaults to YES.
 @property (nonatomic, assign) BOOL gestureDisabledDuringZooming;
-// Returns whether defocuses with tap. Defaults to NO.
-@property (nonatomic) BOOL isDefocusingWithTap;
+// Returns whether defocus is enabled with a tap on view. Defaults to NO.
+@property (nonatomic, assign) BOOL isDefocusingWithTap;
+// Returns wheter a play icon is automatically added to media view which corresponding URL is of video type. Defaults to YES.
+@property (nonatomic, assign) BOOL addPlayIconOnVideo;
+// Image used to show a play icon on video thumbnails. Defaults to nil (uses internal image).
+@property (nonatomic, strong) UIImage *playImage;
 
 // Install focusing gesture on the specified array of views.
 - (void)installOnViews:(NSArray *)views;
