@@ -37,15 +37,21 @@ When focused, an image is shown fullscreen even if the image is smaller than the
 
 All Image sizes are supported.
 
-## Use It
-The prefered way to integrate ASMediaFocusManager is through cocoapods as it uses another pod for the video feature. Add `pod 'ASMediaFocusManager'` to your Podfile.
+## Exemple Project
+See the contained example to get a sample of how `ASMediaFocusManager` can easily be integrated in your project.
 
-You can also copy the whole `ASMediaFocusManager` folder in your project, as well as ASBPlayerScrubbing.
+To build the example, you first need to run `pod install` from the `Example` directory.
+
+## Use It
+The prefered way to integrate `ASMediaFocusManager` is through cocoapods as it is dependent on another pod for the video feature. Add `pod 'ASMediaFocusManager'` to your Podfile.
+
+You can also copy the whole `ASMediaFocusManager` folder in your project, as well as `ASBPlayerScrubbing`.
 
 Then in your project:
 
 * Create a `ASMediaFocusManager`
-* Implement its delegate (`ASMediaFocusDelegate`), the delegate returns mainly a media URL, a media title and a parent view controller. 
+* Implement its delegate `ASMediaFocusDelegate`.
+The delegate returns mainly a media URL, a media title and a parent view controller. 
 * Declare all your views that you want to be focusable by calling `[ASMediaFocusManager installOnViews:]`
 
 ###Implementing
@@ -65,6 +71,14 @@ In your View Controller where some image views need focus feature, add this code
 
 Here is an example of a delegate implementation. Please adapt the code to your context.
 ```objc
+
+- (void)viewDidLoad
+{
+    ...
+    self.mediaNames = @[@"1f.jpg", @"2f.jpg", @"3f.mp4", @"4f.jpg"];
+    ...
+}
+
 #pragma mark - ASMediaFocusDelegate
 // Returns the view controller in which the focus controller is going to be added.
 // This can be any view controller, full screen or not.
@@ -76,15 +90,14 @@ Here is an example of a delegate implementation. Please adapt the code to your c
 // Returns the URL where the media (image or video) is stored. The URL may be local (file://) or distant (http://).
 - (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
 {
-    NSString *path;
+    NSInteger index;
     NSString *name;
     NSURL *url;
-    
-    // Here, images are accessed through their name "1f.jpg", "2f.mp4", …
-    name = [NSString stringWithFormat:@"%df", ([self.imageViews indexOfObject:view] + 1)];
-    path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-    
-    url = [NSURL fileURLWithPath:path];
+
+    // Here, medias are accessed through their name stored in self.mediaNames
+    index = [self.imageViews indexOfObject:view];
+    name = self.mediaNames[index];    
+    url = [[NSBundle mainBundle] URLForResource:name withExtension:nil];
     
     return url;
 }
@@ -143,6 +156,7 @@ Here is an example on how to hide and show the status bar. As the delegate metho
 
 ##Todo
 * Allow the use of your own video control view.
+* Add a play icon on video thumbnail
 * Fix image jump on orientation change when fullscreen image is zoomed (only when parent ViewController supports UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown)
 * Media browsing by horizontal swipe in fullscreen.
 * Close focus view by vertical swipe like in facebook app (partly done thanks to @harishkashyap, Feb 09, 2015).
