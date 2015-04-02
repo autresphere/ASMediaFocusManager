@@ -156,7 +156,7 @@ static CGFloat const kDefaultControlMargin = 5;
     }
     
     if(([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait)
-       || [self isParentSupportingInterfaceOrientation:[UIDevice currentDevice].orientation])
+       || [self isParentSupportingInterfaceOrientation:(UIInterfaceOrientation)[UIDevice currentDevice].orientation])
     {
         transform = CGAffineTransformIdentity;
     }
