@@ -16,7 +16,7 @@ A video player is shown if the media is a video (supported extension are "mp4" a
 
 ![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/videoFocusOnVideo.gif)
 
-![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/videoPlayer.png) 
+![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/videoPlayer.jpg) 
 
 ## Orientation
 The focused view is automatically adapted to the screen orientation even if your main view controller is portrait only.
