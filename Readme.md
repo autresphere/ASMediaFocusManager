@@ -12,11 +12,10 @@ Works on iPhone and iPad.
 ![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/video.gif) 
 
 ## Video
-A video player is shown if the media is a video (supported extension are "mp4" and "mov"). The video player comes with its own controls made of a play/pause button, a slider and time labels. Scrubbing is also available.
-
-![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/videoFocusOnVideo.gif)
+A video player is shown if the media is a video (supported extension are "mp4" and "mov"). The video player comes with its own controls made of a play/pause button, a slider and time labels. Scrubbing is also available thanks to [ASBPlayerScrubbing](https://github.com/autresphere/ASBPlayerScrubbing).
 
 ![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/videoPlayer.jpg) 
+![](https://github.com/autresphere/ASMediaFocusManager/raw/master/Screenshots/videoFocusOnVideo.gif)
 
 ## Orientation
 The focused view is automatically adapted to the screen orientation even if your main view controller is portrait only.
@@ -117,14 +116,43 @@ If you need to focus or defocus a view programmatically, you can call `startFocu
 [self.mediaFocusManager startFocusingView:mediaView];
 ```
 
-###Configure
-Here is the things you can configure:
-
-* focused background color 
-* animation duration
-* enable/disable elastic animation
-* enable/disable zooming by pinch
-* close focused view by tap, vertical swipe or through a "Done" button
+###Properties
+```objc
+@property (nonatomic, assign) NSTimeInterval animationDuration;
+```
+The animation duration. Defaults to 0.5.
+```objc
+@property (nonatomic, strong) UIColor *backgroundColor;
+```
+The background color. Defaults to transparent black.
+```objc
+@property (nonatomic, assign) BOOL defocusOnVerticalSwipe;
+```
+Enables defocus on vertical swipe. Defaults to YES.
+```objc
+@property (nonatomic, assign) BOOL elasticAnimation;
+```
+Returns whether the animation has an elastic effect. Defaults to YES.
+```objc
+@property (nonatomic, assign) BOOL zoomEnabled;
+```
+Returns whether zoom is enabled on fullscreen image. Defaults to YES.
+```objc
+@property (nonatomic, assign) BOOL gestureDisabledDuringZooming;
+```
+Returns whether gesture is disabled during zooming. Defaults to YES.
+```objc
+@property (nonatomic, assign) BOOL isDefocusingWithTap;
+```
+Returns whether defocus is enabled with a tap on view. Defaults to NO.
+```objc
+@property (nonatomic, assign) BOOL addPlayIconOnVideo;
+```
+Returns wheter a play icon is automatically added to video thumbnails. Defaults to YES.
+```objc
+@property (nonatomic, strong) UIImage *playImage;
+```
+Image used to show a play icon on video thumbnails. Defaults to nil (uses internal image).
 
 ### Hiding the status bar
 On iOS 7, if you want to hide or show the status bar when a view is focused or defocused, you can use optional delegate methods `[ASMediaFocusManager mediaFocusManagerWillAppear:]` and `[ASMediaFocusManager mediaFocusManagerWillDisappear:]`.
@@ -156,10 +184,10 @@ Here is an example on how to hide and show the status bar. As the delegate metho
 
 ##Todo
 * Allow the use of your own video control view.
-* Add a play icon on video thumbnail
 * Fix image jump on orientation change when fullscreen image is zoomed (only when parent ViewController supports UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown)
 * Media browsing by horizontal swipe in fullscreen.
 * Close focus view by vertical swipe like in facebook app (partly done thanks to @harishkashyap, Feb 09, 2015).
+* ~~Add a play icon on video thumbnail.~~ (April 2, 2015)
 * ~~Improve the elastic (ie natural) effect on focus and defocus rotation.~~ (April 1, 2015)
 * ~~Support movie media.~~ (April 1, 2015)
 * ~~Hide accessory views (button and label) when view is zoomed.~~ (March 5, 2014)
