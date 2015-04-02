@@ -201,7 +201,6 @@ static CGFloat const kSwipeOffset = 100;
     UIImage *image;
     UIImageView *imageView = nil;
     NSURL *url;
-    NSString *extension;
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(mediaFocusManager:imageViewForView:)])
     {
@@ -238,8 +237,7 @@ static CGFloat const kSwipeOffset = 100;
         }
     }
     
-    extension = url.pathExtension.lowercaseString;
-    if([extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"])
+    if([self isVideoURL:url])
     {
         [viewController showPlayerWithURL:url];
     }
@@ -273,6 +271,14 @@ static CGFloat const kSwipeOffset = 100;
             imageView.image = image;
         });
     }
+}
+
+- (BOOL)isVideoURL:(NSURL *)url
+{
+    NSString *extension;
+    
+    extension = url.pathExtension.lowercaseString;
+    return ([extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"]);
 }
 
 #pragma mark - Focus/Defocus
