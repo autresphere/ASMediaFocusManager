@@ -7,13 +7,35 @@
 //
 
 #import "ASMediaFocusController.h"
+#import "ASVideoControlView.h"
 #import <QuartzCore/QuartzCore.h>
+#import <AVFoundation/AVFoundation.h>
 
 static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
+static CGFloat const kDefaultControlMargin = 5;
+
+@interface PlayerView : UIView
+
+@end
+
+@implementation PlayerView
+
++ (Class)layerClass {
+    return [AVPlayerLayer class];
+}
+- (AVPlayer*)player {
+    return [(AVPlayerLayer *)[self layer] player];
+}
+- (void)setPlayer:(AVPlayer *)player {
+    [(AVPlayerLayer *)[self layer] setPlayer:player];
+}
+
+@end
 
 @interface ASMediaFocusController () <UIScrollViewDelegate>
 
 @property (nonatomic, assign) UIDeviceOrientation previousOrientation;
+@property (nonatomic, strong) AVPlayer *player;
 
 @end
 
@@ -24,9 +46,22 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         self.doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
         self.doubleTapGesture.numberOfTapsRequired = 2;
+        self.controlMargin = kDefaultControlMargin;
+        
+        self.tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(handleTap:)];
+        [self.tapGesture requireGestureRecognizerToFail:self.doubleTapGesture];
+        [self.view addGestureRecognizer:self.tapGesture];
     }
 
     return self;
+}
+
+- (void)dealloc
+{
+    if(self.player != nil)
+    {
+        [self.player.currentItem removeObserver:self forKeyPath:@"presentationSize"];
+    }
 }
 
 - (void)viewDidLoad
@@ -85,6 +120,25 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     }
 }
 
+- (void)beginAppearanceTransition:(BOOL)isAppearing animated:(BOOL)animated
+{
+    if(!isAppearing)
+    {
+        self.accessoryView.alpha = 0;
+        self.playerView.alpha = 0;
+    }
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    if(self.playerView != nil)
+    {
+        self.playerView.frame = self.mainImageView.bounds;
+        [self layoutControlView];
+    }
+}
+
 #pragma mark - Public
 - (void)updateOrientationAnimated:(BOOL)animated
 {
@@ -102,7 +156,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     }
     
     if(([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait)
-       || [self isParentSupportingInterfaceOrientation:[UIDevice currentDevice].orientation])
+       || [self isParentSupportingInterfaceOrientation:(UIInterfaceOrientation)[UIDevice currentDevice].orientation])
     {
         transform = CGAffineTransformIdentity;
     }
@@ -165,6 +219,38 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     self.previousOrientation = [UIDevice currentDevice].orientation;
 }
 
+- (void)showPlayerWithURL:(NSURL *)url
+{
+    self.playerView = [[PlayerView alloc] initWithFrame:self.mainImageView.bounds];
+    [self.mainImageView addSubview:self.playerView];
+    self.playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    self.playerView.hidden = YES;
+    self.player = [[AVPlayer alloc] initWithURL:url];
+    
+    ((PlayerView *)self.playerView).player = self.player;
+    [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled
+{
+    if(zoomEnabled && (self.playerView == nil))
+    {
+        [self installZoomView];
+    }
+    [self.view setNeedsLayout];
+    [self showAccessoryView:YES];
+    self.playerView.hidden = NO;
+    [self.player play];
+}
+
+- (void)defocusWillStart
+{
+    [self uninstallZoomView];
+    [self pinAccessoryView];
+    [self.player pause];
+}
+
+#pragma mark - Private
 - (void)installZoomView
 {
     ASImageScrollView *scrollView;
@@ -184,13 +270,21 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 {
     CGRect frame;
     
+    if(self.scrollView == nil)
+        return;
+    
     frame = [self.contentView convertRect:self.scrollView.zoomImageView.frame fromView:self.scrollView];
     self.scrollView.hidden = YES;
     self.mainImageView.hidden = NO;
     self.mainImageView.frame = frame;
 }
 
-- (void)pinAccessoryView:(UIView *)view
+- (BOOL)isAccessoryViewPinned
+{
+    return (self.accessoryView.superview == self.view);
+}
+
+- (void)pinView:(UIView *)view
 {
     CGRect frame;
     
@@ -203,7 +297,7 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 - (void)pinAccessoryView
 {
     // Move the accessory views to the main view in order not to be rotated along with the media.
-    [self pinAccessoryView:self.accessoryView];
+    [self pinView:self.accessoryView];
 }
 
 - (void)showAccessoryView:(BOOL)visible
@@ -225,7 +319,61 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
     return (self.accessoryView.alpha == 1);
 }
 
+- (void)layoutControlView
+{
+    CGRect frame;
+    CGRect videoFrame;
+    CGRect titleFrame;
+    
+    if([self isAccessoryViewPinned])
+        return;
+    
+    if(self.controlView == nil)
+    {
+        ASVideoControlView *controlView;
+        
+        controlView = [ASVideoControlView videoControlView];
+        controlView.translatesAutoresizingMaskIntoConstraints = NO;
+        controlView.scrubbing.player = self.player;
+        self.controlView = controlView;
+        [self.accessoryView addSubview:self.controlView];
+    }
+    
+    videoFrame = [self videoFrame];
+    frame = self.controlView.frame;
+    frame.size.width = self.view.bounds.size.width - self.controlMargin*2;
+    frame.origin.x = self.controlMargin;
+    titleFrame = [self.controlView.superview convertRect:self.titleLabel.frame fromView:self.titleLabel.superview];
+    frame.origin.y =  titleFrame.origin.y - frame.size.height - self.controlMargin;
+    if(videoFrame.size.width > 0)
+    {
+        frame.origin.y = MIN(frame.origin.y, CGRectGetMaxY(videoFrame) - frame.size.height - self.controlMargin);
+    }
+    self.controlView.frame = frame;
+}
+
+- (CGRect)videoFrame
+{
+    CGRect frame;
+    
+    if(CGSizeEqualToSize(self.player.currentItem.presentationSize, CGSizeZero))
+        return CGRectZero;
+    
+    frame = AVMakeRectWithAspectRatioInsideRect(self.player.currentItem.presentationSize, self.playerView.bounds);
+    frame = CGRectIntegral(frame);
+    
+    return frame;
+}
+
 #pragma mark - Actions
+- (void)handleTap:(UITapGestureRecognizer*)gesture
+{
+    if(self.scrollView.zoomScale == self.scrollView.minimumZoomScale)
+    {
+        [self showAccessoryView:![self accessoryViewsVisible]];
+    }
+}
+
 - (void)handleDoubleTap:(UITapGestureRecognizer*)gesture
 {
     CGRect frame = CGRectZero;
@@ -268,12 +416,18 @@ static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView
 {
-    [self showAccessoryView:self.scrollView.zoomScale == self.scrollView.minimumZoomScale];
+    [self showAccessoryView:(self.scrollView.zoomScale == self.scrollView.minimumZoomScale)];
 }
 
 #pragma mark - Notifications
 - (void)orientationDidChangeNotification:(NSNotification *)notification
 {
     [self updateOrientationAnimated:YES];
+}
+
+#pragma mark - KVO
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    [self.view setNeedsLayout];
 }
 @end

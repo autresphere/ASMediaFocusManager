@@ -7,6 +7,7 @@
 //
 
 #import "MainViewController.h"
+#import "MediaCell.h"
 #import <QuartzCore/QuartzCore.h>
 
 static CGFloat const kMaxAngle = 0.1;
@@ -14,6 +15,7 @@ static CGFloat const kMaxOffset = 20;
 
 @interface MainViewController ()
 @property (nonatomic, assign) BOOL statusBarHidden;
+@property (nonatomic, strong) NSArray *mediaNames;
 @end
 
 @implementation MainViewController
@@ -50,8 +52,10 @@ static CGFloat const kMaxOffset = 20;
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    self.mediaNames = @[@"1f.jpg", @"2f.jpg", @"3f.mp4", @"4f.jpg"];
     self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
     self.mediaFocusManager.delegate = self;
+    self.mediaFocusManager.elasticAnimation = YES;
     
     // Tells which views need to be focusable. You can put your image views in an array and give it to the focus manager.
     [self.mediaFocusManager installOnViews:self.imageViews];
@@ -71,16 +75,6 @@ static CGFloat const kMaxOffset = 20;
 }
 
 #pragma mark - ASMediaFocusDelegate
-- (UIImageView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageViewForView:(UIView *)view
-{
-    return (UIImageView *)view;
-}
-
-- (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameForView:(UIView *)view
-{
-    return self.view.bounds;
-}
-
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
 {
     return self;
@@ -88,36 +82,36 @@ static CGFloat const kMaxOffset = 20;
 
 - (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
 {
-    NSString *path;
     NSString *name;
     NSInteger index;
     NSURL *url;
     
     if(self.tableView == nil)
     {
-        index = ([self.imageViews indexOfObject:view] + 1);
+        index = ([self.imageViews indexOfObject:view]);
     }
     else
     {
-        index = view.tag;
+        index = view.tag - 1;
     }
     
-    // Here, images are accessed through their name "1f.jpg", "2f.jpg", …
-    name = [NSString stringWithFormat:@"%ldf", (long)index];
-    path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-    
-    url = [NSURL fileURLWithPath:path];
+    name = self.mediaNames[index];
+    url = [[NSBundle mainBundle] URLForResource:[name stringByDeletingPathExtension] withExtension:name.pathExtension];
     
     return url;
 }
 
 - (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
 {
-    NSString *title;
+    BOOL isVideo;
+    NSURL *url;
+    NSString *extension;
     
-    title = [NSString stringWithFormat:@"Image %@", [self mediaFocusManager:mediaFocusManager mediaURLForView:view].lastPathComponent];
+    url = [self mediaFocusManager:mediaFocusManager mediaURLForView:view];
+    extension = url.pathExtension.lowercaseString;
+    isVideo = [extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"];
     
-    return @"Of course, you can zoom in and out on the image.";
+    return (isVideo?@"Videos are also supported.":@"Of course, you can zoom in and out on the image.");
 }
 
 - (void)mediaFocusManagerWillAppear:(ASMediaFocusManager *)mediaFocusManager
@@ -138,30 +132,31 @@ static CGFloat const kMaxOffset = 20;
     }
 }
 
-- (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager
-{
-    NSLog(@"The view has been dismissed");
-}
-
 #pragma mark - UITableViewDataSource
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    static NSString *cellIdentifier = @"MediaCell";
+    MediaCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     NSString *path;
     UIImage *image;
+    BOOL isVideo;
+    NSString *name;
+    NSString *extension;
     
     if(cell == nil)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-        [self.mediaFocusManager installOnView:cell.imageView];
+        cell = [MediaCell mediaCell];
+        [self.mediaFocusManager installOnView:cell.thumbnailView];
     }
     
-    path = [NSString stringWithFormat:@"%ld.jpg", indexPath.row + 1];
+    name = self.mediaNames[indexPath.row];
+    extension = name.pathExtension.lowercaseString;
+    isVideo = ([extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"]);
+    cell.playView.hidden = !isVideo;
+    path = [NSString stringWithFormat:@"%ld.jpg", (unsigned long)indexPath.row + 1];
     image = [UIImage imageNamed:path];
-    cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    cell.imageView.image = image;
-    cell.imageView.tag = indexPath.row + 1;
+    cell.thumbnailView.image = image;
+    cell.thumbnailView.tag = indexPath.row + 1;
     
     return cell;
 }
@@ -173,6 +168,6 @@ static CGFloat const kMaxOffset = 20;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    return self.mediaNames.count;
 }
 @end
