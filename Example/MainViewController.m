@@ -140,6 +140,8 @@ static CGFloat const kMaxOffset = 20;
     NSString *path;
     UIImage *image;
     BOOL isVideo;
+    NSString *name;
+    NSString *extension;
     
     if(cell == nil)
     {
@@ -147,9 +149,11 @@ static CGFloat const kMaxOffset = 20;
         [self.mediaFocusManager installOnView:cell.thumbnailView];
     }
     
-    isVideo = [[self.mediaNames[indexPath.row] pathExtension] isEqualToString:@"mp4"];
+    name = self.mediaNames[indexPath.row];
+    extension = name.pathExtension.lowercaseString;
+    isVideo = ([extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"]);
     cell.playView.hidden = !isVideo;
-    path = [NSString stringWithFormat:@"%d.jpg", indexPath.row + 1];
+    path = [NSString stringWithFormat:@"%ld.jpg", (unsigned long)indexPath.row + 1];
     image = [UIImage imageNamed:path];
     cell.thumbnailView.image = image;
     cell.thumbnailView.tag = indexPath.row + 1;
