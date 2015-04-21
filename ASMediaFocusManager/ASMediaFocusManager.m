@@ -18,7 +18,7 @@ static CGFloat const kAnimateElasticThirdMoveSizeRatio = 0.2;
 static CGFloat const kAnimationDuration = 0.5;
 static CGFloat const kSwipeOffset = 100;
 
-@interface ASMediaFocusManager ()
+@interface ASMediaFocusManager () <UIGestureRecognizerDelegate>
 // The media view being focused.
 @property (nonatomic, strong) UIView *mediaView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
@@ -39,6 +39,7 @@ static CGFloat const kSwipeOffset = 100;
         self.elasticAnimation = YES;
         self.zoomEnabled = YES;
         self.isZooming = NO;
+        self.focusOnPinch = NO;
         self.gestureDisabledDuringZooming = YES;
         self.isDefocusingWithTap = NO;
         self.addPlayIconOnVideo = YES;
@@ -64,6 +65,10 @@ static CGFloat const kSwipeOffset = 100;
     tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleFocusGesture:)];
     [view addGestureRecognizer:tapGesture];
     view.userInteractionEnabled = YES;
+
+    UIPinchGestureRecognizer *pinchRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchFocusGesture:)];
+    pinchRecognizer.delegate = self;
+    [view addGestureRecognizer:pinchRecognizer];
     
     url = [self.delegate mediaFocusManager:self mediaURLForView:view];
     if(self.addPlayIconOnVideo && [self isVideoURL:url])
@@ -529,6 +534,14 @@ static CGFloat const kSwipeOffset = 100;
 }
 
 #pragma mark - Gestures
+
+- (void)handlePinchFocusGesture:(UIPinchGestureRecognizer *)gesture
+{
+    if (gesture.state == UIGestureRecognizerStateBegan && !self.isZooming) {
+        [self startFocusingView:gesture.view];
+    }
+}
+
 - (void)handleFocusGesture:(UIGestureRecognizer *)gesture
 {
     [self startFocusingView:gesture.view];
@@ -537,6 +550,14 @@ static CGFloat const kSwipeOffset = 100;
 - (void)handleDefocusGesture:(UIGestureRecognizer *)gesture
 {
     [self endFocusing];
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    if ([gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]]) {
+        return self.focusOnPinch;
+    }
+    return YES;
 }
 
 #pragma mark - Dismiss on swipe

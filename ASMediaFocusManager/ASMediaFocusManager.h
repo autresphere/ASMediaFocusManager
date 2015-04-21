@@ -48,6 +48,8 @@
 @property (nonatomic, strong) UIColor *backgroundColor;
 // Enables defocus on vertical swipe. Defaults to YES.
 @property (nonatomic, assign) BOOL defocusOnVerticalSwipe;
+// Enables focus on pinch gesture. Defaults to NO.
+@property (assign, nonatomic) BOOL focusOnPinch;
 // Returns whether the animation has an elastic effect. Defaults to YES.
 @property (nonatomic, assign) BOOL elasticAnimation;
 // Returns whether zoom is enabled on fullscreen image. Defaults to YES.

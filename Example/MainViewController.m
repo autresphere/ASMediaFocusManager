@@ -56,6 +56,7 @@ static CGFloat const kMaxOffset = 20;
     self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
     self.mediaFocusManager.delegate = self;
     self.mediaFocusManager.elasticAnimation = YES;
+    self.mediaFocusManager.focusOnPinch = YES;
 
     // Tells which views need to be focusable. You can put your image views in an array and give it to the focus manager.
     [self.mediaFocusManager installOnViews:self.imageViews];
