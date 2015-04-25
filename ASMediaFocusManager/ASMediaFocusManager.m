@@ -537,7 +537,7 @@ static CGFloat const kSwipeOffset = 100;
 
 - (void)handlePinchFocusGesture:(UIPinchGestureRecognizer *)gesture
 {
-    if (gesture.state == UIGestureRecognizerStateBegan && !self.isZooming) {
+    if (gesture.state == UIGestureRecognizerStateBegan && !self.isZooming && gesture.scale > 1) {
         [self startFocusingView:gesture.view];
     }
 }
