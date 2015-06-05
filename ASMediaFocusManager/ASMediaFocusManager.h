@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ASMediaInfo.h"
 
 @class ASMediaFocusManager;
 
@@ -14,14 +15,15 @@
 
 // Returns the view controller in which the focus controller is going to be added. This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager;
-// Returns the URL where the media (image or video) is stored. The URL may be local (file://) or distant (http://).
-- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view;
-// Returns the title for this media view. Return nil if you don't want any title to appear.
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
+
+// Returns the media info (url & title) for the given view. This is used over mediaURLForView: if it is implemented.
+- (ASMediaInfo *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaInfoForView:(UIView *)view;
 
 @optional
-// Returns an image view that represents the media view. This image from this view is used in the focusing animation view. It is usually a small image. If not implemented, default is the initial media view in case it's an UIImageview.
-- (UIImageView *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager imageViewForView:(UIView *)view;
+
+// Returns a list of media info objects that can be displayed in a horizontally-paged carousel. If the object returned by mediaInfoForView is in the returned list, it will be the first thing shown, and the user can swipe left or right from it depending on its location in the list. If the object returned by that is not in the returned list, it will be prepended to the beginning, and all items in this list will be accessible by swiping to the right.
+- (NSArray *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaInfoListForView:(UIView *)view;
+
 // Returns the final focused frame for this media view. This frame is usually a full screen frame. If not implemented, default is the parent view controller's view frame.
 - (CGRect)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager finalFrameForView:(UIView *)view;
 
@@ -33,6 +35,8 @@
 - (void)mediaFocusManagerWillDisappear:(ASMediaFocusManager *)mediaFocusManager;
 // Called when the view has be dismissed by the 'done' button or by gesture.
 - (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager;
+// called after a swipe shows a new media info item.
+- (void)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager didSwipeToMediaInfo:(ASMediaInfo *)info;
 // Called before mediaURLForView to check if image is already on memory.
 - (UIImage*)mediaFocusManager:(ASMediaFocusManager*)mediaFocusManager cachedImageForView:(UIView*)view;
 

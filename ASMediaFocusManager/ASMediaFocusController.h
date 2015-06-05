@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "ASImageScrollView.h"
+#import "ASMediaInfo.h"
+
+@class ASMediaFocusController;
+
+@protocol ASMediaFocusControllerDelegate <NSObject>
+- (void)focusController:(ASMediaFocusController *)controller accessoryViewShown:(BOOL)visible;
+@end
 
 @interface ASMediaFocusController : UIViewController
 
@@ -21,11 +28,16 @@
 @property (strong, nonatomic) UIView *playerView;
 @property (strong, nonatomic) UIView *controlView;
 @property (assign, nonatomic) CGFloat controlMargin;
+@property (strong, nonatomic) ASMediaInfo *info;
+@property (weak, nonatomic) id<ASMediaFocusControllerDelegate> delegate;
 
-- (void)updateOrientationAnimated:(BOOL)animated;
 - (void)showPlayerWithURL:(NSURL *)url;
-
+- (void)setInfo:(ASMediaInfo *)info withCachedImage:(UIImage *)cachedImage;
 - (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled;
 - (void)defocusWillStart;
+- (BOOL)accessoryViewCanShow;
+
+- (void)pauseVideo;
+- (void)playVideo;
 
 @end
