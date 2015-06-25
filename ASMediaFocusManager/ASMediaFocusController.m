@@ -135,11 +135,27 @@ static char const kPlayerPresentationSizeContext;
                 }];
             }
         }
+
+        if (info.accessoryView.superview != self.accessoryView) {
+            self.titleLabel.hidden = YES;
+
+            [self.accessoryView addSubview:info.accessoryView];
+
+            [info.accessoryView sizeToFit];
+            CGFloat accessoryHeight = info.accessoryView.frame.size.height;
+            info.accessoryView.frame = CGRectMake(0,
+                                                  CGRectGetMaxY(self.accessoryView.bounds) - accessoryHeight,
+                                                  self.accessoryView.frame.size.width,
+                                                  accessoryHeight);
+
+            info.accessoryView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
+        }
     }
 }
 
 - (void)showPlayerWithURL:(NSURL *)url
 {
+    [self.playerView removeFromSuperview];
     self.playerView = [[PlayerView alloc] initWithFrame:self.mainImageView.bounds];
     [self.mainImageView addSubview:self.playerView];
     self.playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;

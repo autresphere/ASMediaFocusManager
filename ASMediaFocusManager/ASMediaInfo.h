@@ -21,5 +21,7 @@
 @property (nonatomic, strong, readonly) UIImage *initialImage;
 /** The content mode to use for the image view in the focus controller. Defaults to UIViewContentModeScaleAspectFit. */
 @property (nonatomic, assign) UIViewContentMode contentMode;
+/** Optional property to show a view pinned to the bottom of the focused area of the media. If present, this view is shown in place of the title. */
+@property (nonatomic, strong) UIView *accessoryView;
 
 @end
