@@ -9,11 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "ASImageScrollView.h"
 #import "ASMediaInfo.h"
+#import "ASMediaFocusManager.h"
 
 @class ASMediaFocusController;
 
 @protocol ASMediaFocusControllerDelegate <NSObject>
 - (void)focusController:(ASMediaFocusController *)controller accessoryViewShown:(BOOL)visible;
+- (BOOL)focusController:(ASMediaFocusController *)controller shouldLoadMediaDirectly:(ASMediaInfo *)info;
+- (void)focusController:(ASMediaFocusController *)controller loadMedia:(ASMediaInfo *)info completion:(ASMediaLoadCompletion)completion;
 @end
 
 @interface ASMediaFocusController : UIViewController

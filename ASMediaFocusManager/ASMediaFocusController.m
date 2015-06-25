@@ -123,9 +123,17 @@ static char const kPlayerPresentationSizeContext;
         else
         {
             __weak __typeof(self) weakSelf = self;
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [weakSelf loadImageFromURL:info.mediaURL];
-            });
+            if ([self.delegate focusController:self shouldLoadMediaDirectly:info]) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [weakSelf loadImageFromURL:info.mediaURL];
+                });
+            } else {
+                [self.delegate focusController:self loadMedia:info completion:^(UIImage *result, NSError *error) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        [weakSelf decodeAndDisplayImage:result];
+                    });
+                }];
+            }
         }
     }
 }
@@ -144,23 +152,28 @@ static char const kPlayerPresentationSizeContext;
 
 - (void)loadImageFromURL:(NSURL *)url
 {
-    NSData *data;
     NSError *error = nil;
+    NSData *data = [NSData dataWithContentsOfURL:url options:0 error:&error];;
 
-    data = [NSData dataWithContentsOfURL:url options:0 error:&error];
     if(error != nil)
     {
         NSLog(@"Warning: Unable to load image at %@. %@", url, error);
     }
     else
     {
-        UIImage *image = [[[UIImage alloc] initWithData:data] as_decodedImage];
-        __weak __typeof(self) weakSelf = self;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.mainImageView.image = image;
-            [weakSelf.scrollView displayImage:image];
-        });
+        UIImage *image = [[UIImage alloc] initWithData:data];
+        [self decodeAndDisplayImage:image];
     }
+}
+
+- (void)decodeAndDisplayImage:(UIImage *)image
+{
+    image = [image as_decodedImage];
+    __weak __typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        weakSelf.mainImageView.image = image;
+        [weakSelf.scrollView displayImage:image];
+    });
 }
 
 - (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled

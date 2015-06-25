@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "ASMediaInfo.h"
 
+typedef void(^ASMediaLoadCompletion)(id media, NSError *error);
+
 @class ASMediaFocusManager;
 
 @protocol ASMediasFocusDelegate <NSObject>
@@ -39,6 +41,8 @@
 - (void)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager didSwipeToMediaInfo:(ASMediaInfo *)info;
 // Called before mediaURLForView to check if image is already on memory.
 - (UIImage*)mediaFocusManager:(ASMediaFocusManager*)mediaFocusManager cachedImageForView:(UIView*)view;
+
+- (void)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager loadMediaForInfo:(ASMediaInfo *)info completion:(ASMediaLoadCompletion)completion;
 
 @end
 

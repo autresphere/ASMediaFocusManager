@@ -551,6 +551,20 @@ static CGFloat const kSwipeOffset = 100;
                      completion:nil];
 }
 
+- (BOOL)focusController:(ASMediaFocusController *)controller shouldLoadMediaDirectly:(ASMediaInfo *)info
+{
+    if ([self.delegate respondsToSelector:@selector(mediaFocusManager:loadMediaForInfo:completion:)]) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
+- (void)focusController:(ASMediaFocusController *)controller loadMedia:(ASMediaInfo *)info completion:(ASMediaLoadCompletion)completion
+{
+    [self.delegate mediaFocusManager:self loadMediaForInfo:info completion:completion];
+}
+
 #pragma mark - UIPageViewControllerDataSource
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
