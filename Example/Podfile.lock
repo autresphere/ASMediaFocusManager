@@ -1,0 +1,10 @@
+PODS:
+  - ASBPlayerScrubbing (0.1)
+
+DEPENDENCIES:
+  - ASBPlayerScrubbing
+
+SPEC CHECKSUMS:
+  ASBPlayerScrubbing: 0fc5e76aad6fdbcf14380734fb7f2c127cd28b66
+
+COCOAPODS: 0.37.1
