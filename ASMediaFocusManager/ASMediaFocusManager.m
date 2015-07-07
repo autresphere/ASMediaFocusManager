@@ -337,6 +337,7 @@ static CGFloat const kSwipeOffset = 100;
     imageView.center = center;
     imageView.transform = mediaView.transform;
     imageView.bounds = mediaView.bounds;
+    imageView.layer.cornerRadius = mediaView.layer.cornerRadius;
     
     self.isZooming = YES;
     
@@ -394,6 +395,10 @@ static CGFloat const kSwipeOffset = 100;
                          [imageView.layer removeAllAnimations];
                          imageView.transform = CGAffineTransformIdentity;
                          imageView.frame = frame;
+
+                         if (mediaView.layer.cornerRadius > 0) {
+                             [self animateCornerRadiusOfView:imageView withDuration:duration from:mediaView.layer.cornerRadius to:0.0f];
+                         }
                      }
                      completion:^(BOOL finished) {
                          [UIView animateWithDuration:(self.elasticAnimation?self.animationDuration*kAnimateElasticDurationRatio/3:0)
@@ -430,6 +435,16 @@ static CGFloat const kSwipeOffset = 100;
                                                                }];
                                           }];
                      }];
+}
+
+- (void)animateCornerRadiusOfView:(UIView *)view withDuration:(NSTimeInterval)duration from:(float)initialValue to:(float)finalValue {
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"cornerRadius"];
+    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    animation.fromValue = [NSNumber numberWithFloat:initialValue];
+    animation.toValue = [NSNumber numberWithFloat:finalValue];
+    animation.duration = duration;
+    [view.layer setCornerRadius:finalValue];
+    [view.layer addAnimation:animation forKey:@"cornerRadius"];
 }
 
 - (void)updateAnimatedView:(UIView *)view fromFrame:(CGRect)initialFrame toFrame:(CGRect)finalFrame
@@ -485,6 +500,11 @@ static CGFloat const kSwipeOffset = 100;
                      }];
     
     duration = (self.elasticAnimation?self.animationDuration*(1-kAnimateElasticDurationRatio):self.animationDuration);
+    
+    if (self.mediaView.layer.cornerRadius > 0) {
+        [self animateCornerRadiusOfView:contentView withDuration:duration from:0.0f to:self.mediaView.layer.cornerRadius];
+    }
+    
     [UIView animateWithDuration:duration
                           delay:0
                         options:0
