@@ -8,11 +8,14 @@
 
 #import "ASMediaFocusController.h"
 #import "ASVideoControlView.h"
+#import "NSURL+ASMediaFocusManager.h"
+#import "UIImage+ASMediaFocusManager.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AVFoundation/AVFoundation.h>
 
-static NSTimeInterval const kDefaultOrientationAnimationDuration = 0.4;
+
 static CGFloat const kDefaultControlMargin = 5;
+static char const kPlayerPresentationSizeContext;
 
 @interface PlayerView : UIView
 
@@ -41,9 +44,9 @@ static CGFloat const kDefaultControlMargin = 5;
 
 @implementation ASMediaFocusController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)init
 {
-    if ((self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+    if ((self = [super init])) {
         self.doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
         self.doubleTapGesture.numberOfTapsRequired = 2;
         self.controlMargin = kDefaultControlMargin;
@@ -73,53 +76,6 @@ static CGFloat const kDefaultControlMargin = 5;
     self.accessoryView.alpha = 0;
 }
 
-- (void)viewDidUnload
-{
-    [self setMainImageView:nil];
-    [self setContentView:nil];
-    [super viewDidUnload];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationDidChangeNotification:) name:UIDeviceOrientationDidChangeNotification object:nil];
-    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
-    [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
-}
-
-- (BOOL)isParentSupportingInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    switch(toInterfaceOrientation)
-    {
-        case UIInterfaceOrientationPortrait:
-            return [self.parentViewController supportedInterfaceOrientations] & UIInterfaceOrientationMaskPortrait;
-            
-        case UIInterfaceOrientationPortraitUpsideDown:
-            return [self.parentViewController supportedInterfaceOrientations] & UIInterfaceOrientationMaskPortraitUpsideDown;
-            
-        case UIInterfaceOrientationLandscapeLeft:
-            return [self.parentViewController supportedInterfaceOrientations] & UIInterfaceOrientationMaskLandscapeLeft;
-            
-        case UIInterfaceOrientationLandscapeRight:
-            return [self.parentViewController supportedInterfaceOrientations] & UIInterfaceOrientationMaskLandscapeRight;
-            
-        case UIInterfaceOrientationUnknown:
-            return YES;
-    }
-}
-
 - (void)beginAppearanceTransition:(BOOL)isAppearing animated:(BOOL)animated
 {
     if(!isAppearing)
@@ -139,88 +95,67 @@ static CGFloat const kDefaultControlMargin = 5;
     }
 }
 
-#pragma mark - Public
-- (void)updateOrientationAnimated:(BOOL)animated
+- (void)viewDidAppear:(BOOL)animated
 {
-    CGAffineTransform transform;
-    CGRect frame;
-    NSTimeInterval duration = kDefaultOrientationAnimationDuration;
-    
-    if([UIDevice currentDevice].orientation == self.previousOrientation)
-        return;
-    
-    if((UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && UIDeviceOrientationIsLandscape(self.previousOrientation))
-       || (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && UIDeviceOrientationIsPortrait(self.previousOrientation)))
-    {
-        duration *= 2;
-    }
-    
-    if(([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait)
-       || [self isParentSupportingInterfaceOrientation:(UIInterfaceOrientation)[UIDevice currentDevice].orientation])
-    {
-        transform = CGAffineTransformIdentity;
-    }
-    else
-    {
-        switch ([UIDevice currentDevice].orientation)
+    [super viewDidAppear:animated];
+    [self.player play];
+}
+
+#pragma mark - Public
+
+- (void)setInfo:(ASMediaInfo *)info withCachedImage:(UIImage *)cachedImage
+{
+    if (_info != info) {
+        _info = info;
+
+        self.titleLabel.text = info.title;
+        if (cachedImage) {
+            self.mainImageView.image = cachedImage;
+        } else {
+            self.mainImageView.image = info.initialImage;
+        }
+        self.mainImageView.contentMode = info.contentMode;
+
+        if(info.mediaURL.as_isVideoURL)
         {
-            case UIDeviceOrientationLandscapeRight:
-                if(self.parentViewController.interfaceOrientation == UIInterfaceOrientationPortrait)
-                {
-                    transform = CGAffineTransformMakeRotation(-M_PI_2);
-                }
-                else
-                {
-                    transform = CGAffineTransformMakeRotation(M_PI_2);
-                }
-                break;
-                
-            case UIDeviceOrientationLandscapeLeft:
-                if(self.parentViewController.interfaceOrientation == UIInterfaceOrientationPortrait)
-                {
-                    transform = CGAffineTransformMakeRotation(M_PI_2);
-                }
-                else
-                {
-                    transform = CGAffineTransformMakeRotation(-M_PI_2);
-                }
-                break;
-                
-            case UIDeviceOrientationPortrait:
-                transform = CGAffineTransformIdentity;
-                break;
-                
-            case UIDeviceOrientationPortraitUpsideDown:
-                transform = CGAffineTransformMakeRotation(M_PI);
-                break;
-                
-            case UIDeviceOrientationFaceDown:
-            case UIDeviceOrientationFaceUp:
-            case UIDeviceOrientationUnknown:
-                return;
+            [self showPlayerWithURL:info.mediaURL];
+        }
+        else
+        {
+            __weak __typeof(self) weakSelf = self;
+            if ([self.delegate focusController:self shouldLoadMediaDirectly:info]) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [weakSelf loadImageFromURL:info.mediaURL];
+                });
+            } else {
+                [self.delegate focusController:self loadMedia:info completion:^(UIImage *result, NSError *error) {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        [weakSelf decodeAndDisplayImage:result];
+                    });
+                }];
+            }
+        }
+
+        if (info.accessoryView.superview != self.accessoryView) {
+            self.titleLabel.hidden = YES;
+
+            [self.accessoryView addSubview:info.accessoryView];
+
+            [info.accessoryView sizeToFit];
+            CGFloat accessoryHeight = info.accessoryView.frame.size.height;
+            info.accessoryView.frame = CGRectMake(0,
+                                                  CGRectGetMaxY(self.accessoryView.bounds) - accessoryHeight,
+                                                  self.accessoryView.frame.size.width,
+                                                  accessoryHeight);
+
+            info.accessoryView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         }
     }
-    
-    if(animated)
-    {
-        frame = self.contentView.frame;
-        [UIView animateWithDuration:duration
-                         animations:^{
-                             self.contentView.transform = transform;
-                             self.contentView.frame = frame;
-                         }];
-    }
-    else
-    {
-        frame = self.contentView.frame;
-        self.contentView.transform = transform;
-        self.contentView.frame = frame;
-    }
-    self.previousOrientation = [UIDevice currentDevice].orientation;
 }
 
 - (void)showPlayerWithURL:(NSURL *)url
 {
+    [self.playerView removeFromSuperview];
     self.playerView = [[PlayerView alloc] initWithFrame:self.mainImageView.bounds];
     [self.mainImageView addSubview:self.playerView];
     self.playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
@@ -228,7 +163,33 @@ static CGFloat const kDefaultControlMargin = 5;
     self.player = [[AVPlayer alloc] initWithURL:url];
     
     ((PlayerView *)self.playerView).player = self.player;
-    [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
+    [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:(void*)&kPlayerPresentationSizeContext];
+}
+
+- (void)loadImageFromURL:(NSURL *)url
+{
+    NSError *error = nil;
+    NSData *data = [NSData dataWithContentsOfURL:url options:0 error:&error];;
+
+    if(error != nil)
+    {
+        NSLog(@"Warning: Unable to load image at %@. %@", url, error);
+    }
+    else
+    {
+        UIImage *image = [[UIImage alloc] initWithData:data];
+        [self decodeAndDisplayImage:image];
+    }
+}
+
+- (void)decodeAndDisplayImage:(UIImage *)image
+{
+    image = [image as_decodedImage];
+    __weak __typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        weakSelf.mainImageView.image = image;
+        [weakSelf.scrollView displayImage:image];
+    });
 }
 
 - (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled
@@ -240,7 +201,7 @@ static CGFloat const kDefaultControlMargin = 5;
     [self.view setNeedsLayout];
     [self showAccessoryView:YES];
     self.playerView.hidden = NO;
-    [self.player play];
+    // player will play when instructed to by the media focus manager.
 }
 
 - (void)defocusWillStart
@@ -248,6 +209,16 @@ static CGFloat const kDefaultControlMargin = 5;
     [self uninstallZoomView];
     [self pinAccessoryView];
     [self.player pause];
+}
+
+- (void)pauseVideo
+{
+    [self.player pause];
+}
+
+- (void)playVideo
+{
+    [self.player play];
 }
 
 #pragma mark - Private
@@ -312,6 +283,8 @@ static CGFloat const kDefaultControlMargin = 5;
                          self.accessoryView.alpha = (visible?1:0);
                      }
                      completion:nil];
+
+    [self.delegate focusController:self accessoryViewShown:visible];
 }
 
 - (BOOL)accessoryViewsVisible
@@ -368,7 +341,7 @@ static CGFloat const kDefaultControlMargin = 5;
 #pragma mark - Actions
 - (void)handleTap:(UITapGestureRecognizer*)gesture
 {
-    if(self.scrollView.zoomScale == self.scrollView.minimumZoomScale)
+    if ([self accessoryViewCanShow])
     {
         [self showAccessoryView:![self accessoryViewsVisible]];
     }
@@ -408,7 +381,14 @@ static CGFloat const kDefaultControlMargin = 5;
     
 }
 
+- (BOOL)accessoryViewCanShow
+{
+    return (self.scrollView.zoomScale == self.scrollView.minimumZoomScale);
+}
+
+
 #pragma mark - UIScrollViewDelegate
+
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
     return self.scrollView.zoomImageView;
@@ -416,18 +396,17 @@ static CGFloat const kDefaultControlMargin = 5;
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView
 {
-    [self showAccessoryView:(self.scrollView.zoomScale == self.scrollView.minimumZoomScale)];
-}
-
-#pragma mark - Notifications
-- (void)orientationDidChangeNotification:(NSNotification *)notification
-{
-    [self updateOrientationAnimated:YES];
+    [self showAccessoryView:[self accessoryViewCanShow]];
 }
 
 #pragma mark - KVO
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    [self.view setNeedsLayout];
+    if (context == &kPlayerPresentationSizeContext) {
+        [self.view setNeedsLayout];
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 @end

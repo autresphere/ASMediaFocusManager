@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00DBB4761B223C0100A64046 /* ASMediaInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 00DBB4751B223C0100A64046 /* ASMediaInfo.m */; };
+		00DBB47E1B2607E900A64046 /* NSURL+ASMediaFocusManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 00DBB47D1B2607E900A64046 /* NSURL+ASMediaFocusManager.m */; };
+		00DBB4811B2608A100A64046 /* UIImage+ASMediaFocusManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 00DBB4801B2608A100A64046 /* UIImage+ASMediaFocusManager.m */; };
+		00DBB4841B260C4E00A64046 /* ASMediaRotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 00DBB4831B260C4E00A64046 /* ASMediaRotatingViewController.m */; };
 		4A0BC97B1AC9846F000904A2 /* 3f.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC97A1AC9846F000904A2 /* 3f.mp4 */; };
 		4A0BC97E1AC9A684000904A2 /* ASVideoControlView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A0BC97D1AC9A684000904A2 /* ASVideoControlView.m */; };
 		4A0BC9801AC9A6AC000904A2 /* ASVideoControlView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A0BC97F1AC9A6AC000904A2 /* ASVideoControlView.xib */; };
@@ -48,6 +52,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		00DBB4741B223C0100A64046 /* ASMediaInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASMediaInfo.h; sourceTree = "<group>"; };
+		00DBB4751B223C0100A64046 /* ASMediaInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaInfo.m; sourceTree = "<group>"; };
+		00DBB47C1B2607E900A64046 /* NSURL+ASMediaFocusManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+ASMediaFocusManager.h"; sourceTree = "<group>"; };
+		00DBB47D1B2607E900A64046 /* NSURL+ASMediaFocusManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+ASMediaFocusManager.m"; sourceTree = "<group>"; };
+		00DBB47F1B2608A100A64046 /* UIImage+ASMediaFocusManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ASMediaFocusManager.h"; sourceTree = "<group>"; };
+		00DBB4801B2608A100A64046 /* UIImage+ASMediaFocusManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ASMediaFocusManager.m"; sourceTree = "<group>"; };
+		00DBB4821B260C4E00A64046 /* ASMediaRotatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASMediaRotatingViewController.h; sourceTree = "<group>"; };
+		00DBB4831B260C4E00A64046 /* ASMediaRotatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaRotatingViewController.m; sourceTree = "<group>"; };
 		3FD5F869702ABB49C37B7985 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		4A0BC97A1AC9846F000904A2 /* 3f.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 3f.mp4; sourceTree = "<group>"; };
 		4A0BC97C1AC9A684000904A2 /* ASVideoControlView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASVideoControlView.h; sourceTree = "<group>"; };
@@ -236,20 +248,28 @@
 		4ABF0B0016A0575C0053040A /* ASMediaFocusManager */ = {
 			isa = PBXGroup;
 			children = (
+				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
+				4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */,
 				4ABF0B0116A0575C0053040A /* ASMediaFocusController.h */,
 				4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */,
 				4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */,
 				4ABF0B0316A0575C0053040A /* ASMediaFocusManager.h */,
 				4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */,
+				00DBB4741B223C0100A64046 /* ASMediaInfo.h */,
+				00DBB4751B223C0100A64046 /* ASMediaInfo.m */,
+				00DBB4821B260C4E00A64046 /* ASMediaRotatingViewController.h */,
+				00DBB4831B260C4E00A64046 /* ASMediaRotatingViewController.m */,
+				4AFDA6A818C7179B00A1D0C4 /* ASTransparentView.h */,
+				4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */,
 				4A70C03A1ACD4CC800828AA6 /* ASVideoBehavior.h */,
 				4A70C03B1ACD4CC800828AA6 /* ASVideoBehavior.m */,
-				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
-				4A2D149D16AD255800D3CE3D /* ASImageScrollView.m */,
-				4AFDA6A918C7179B00A1D0C4 /* ASTransparentView.m */,
-				4AFDA6A818C7179B00A1D0C4 /* ASTransparentView.h */,
 				4A0BC97C1AC9A684000904A2 /* ASVideoControlView.h */,
 				4A0BC97D1AC9A684000904A2 /* ASVideoControlView.m */,
 				4A0BC97F1AC9A6AC000904A2 /* ASVideoControlView.xib */,
+				00DBB47C1B2607E900A64046 /* NSURL+ASMediaFocusManager.h */,
+				00DBB47D1B2607E900A64046 /* NSURL+ASMediaFocusManager.m */,
+				00DBB47F1B2608A100A64046 /* UIImage+ASMediaFocusManager.h */,
+				00DBB4801B2608A100A64046 /* UIImage+ASMediaFocusManager.m */,
 				4A0BC98F1ACAB6CB000904A2 /* Resources */,
 			);
 			name = ASMediaFocusManager;
@@ -387,9 +407,13 @@
 				4A15DE3516776BE9004C6733 /* main.m in Sources */,
 				4A15DE3916776BE9004C6733 /* AppDelegate.m in Sources */,
 				4A0BC99D1ACAF13D000904A2 /* MediaCell.m in Sources */,
+				00DBB4841B260C4E00A64046 /* ASMediaRotatingViewController.m in Sources */,
 				4A7F15F21684635100ADC5D6 /* MainViewController.m in Sources */,
 				4ABF0B0516A0575C0053040A /* ASMediaFocusController.m in Sources */,
+				00DBB4761B223C0100A64046 /* ASMediaInfo.m in Sources */,
+				00DBB4811B2608A100A64046 /* UIImage+ASMediaFocusManager.m in Sources */,
 				4ABF0B0616A0575C0053040A /* ASMediaFocusManager.m in Sources */,
+				00DBB47E1B2607E900A64046 /* NSURL+ASMediaFocusManager.m in Sources */,
 				4A2D149E16AD255800D3CE3D /* ASImageScrollView.m in Sources */,
 				4A0BC97E1AC9A684000904A2 /* ASVideoControlView.m in Sources */,
 				4AFDA6AA18C7179B00A1D0C4 /* ASTransparentView.m in Sources */,

@@ -8,6 +8,7 @@
 
 #import "MainViewController.h"
 #import "MediaCell.h"
+#import "NSURL+ASMediaFocusManager.h"
 #import <QuartzCore/QuartzCore.h>
 
 static CGFloat const kMaxAngle = 0.1;
@@ -15,7 +16,7 @@ static CGFloat const kMaxOffset = 20;
 
 @interface MainViewController ()
 @property (nonatomic, assign) BOOL statusBarHidden;
-@property (nonatomic, strong) NSArray *mediaNames;
+@property (nonatomic, strong) NSArray *mediaInfoItems;
 @end
 
 @implementation MainViewController
@@ -51,8 +52,12 @@ static CGFloat const kMaxOffset = 20;
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    
-    self.mediaNames = @[@"1f.jpg", @"2f.jpg", @"3f.mp4", @"4f.jpg"];
+
+    self.mediaInfoItems = @[[self mediaInfoForName:@"1f.jpg" image:[UIImage imageNamed:@"1.jpg"]],
+                            [self mediaInfoForName:@"2f.jpg" image:[UIImage imageNamed:@"2.jpg"]],
+                            [self mediaInfoForName:@"3f.mp4" image:[UIImage imageNamed:@"3.jpg"]],
+                            [self mediaInfoForName:@"4f.jpg" image:[UIImage imageNamed:@"4.jpg"]],
+                            ];
     self.mediaFocusManager = [[ASMediaFocusManager alloc] init];
     self.mediaFocusManager.delegate = self;
     self.mediaFocusManager.elasticAnimation = YES;
@@ -66,8 +71,8 @@ static CGFloat const kMaxOffset = 20;
 
 - (NSUInteger)supportedInterfaceOrientations
 {
-    //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
-     return UIInterfaceOrientationMaskAll;
+    return UIInterfaceOrientationMaskPortrait;// | UIInterfaceOrientationMaskPortraitUpsideDown;
+//     return UIInterfaceOrientationMaskAll;
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -76,17 +81,27 @@ static CGFloat const kMaxOffset = 20;
 }
 
 #pragma mark - ASMediaFocusDelegate
+
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
 {
     return self;
 }
 
-- (NSURL *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaURLForView:(UIView *)view
+- (ASMediaInfo *)mediaInfoForName:(NSString *)name image:(UIImage *)image
 {
-    NSString *name;
+    NSURL *url = [[NSBundle mainBundle] URLForResource:[name stringByDeletingPathExtension] withExtension:name.pathExtension];
+
+    NSString *title = (url.as_isVideoURL ? @"Videos are also supported." : @"Of course, you can zoom in and out on the image.");
+
+    ASMediaInfo *info = [[ASMediaInfo alloc] initWithURL:url initialImage:image title:title];
+
+    return info;
+}
+
+- (ASMediaInfo *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaInfoForView:(UIView *)view
+{
     NSInteger index;
-    NSURL *url;
-    
+
     if(self.tableView == nil)
     {
         index = ([self.imageViews indexOfObject:view]);
@@ -95,24 +110,13 @@ static CGFloat const kMaxOffset = 20;
     {
         index = view.tag - 1;
     }
-    
-    name = self.mediaNames[index];
-    url = [[NSBundle mainBundle] URLForResource:[name stringByDeletingPathExtension] withExtension:name.pathExtension];
-    
-    return url;
+
+    return self.mediaInfoItems[index];
 }
 
-- (NSString *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager titleForView:(UIView *)view;
+- (NSArray *)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager mediaInfoListForView:(UIView *)view
 {
-    BOOL isVideo;
-    NSURL *url;
-    NSString *extension;
-    
-    url = [self mediaFocusManager:mediaFocusManager mediaURLForView:view];
-    extension = url.pathExtension.lowercaseString;
-    isVideo = [extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"];
-    
-    return (isVideo?@"Videos are also supported.":@"Of course, you can zoom in and out on the image.");
+    return self.mediaInfoItems;
 }
 
 - (void)mediaFocusManagerWillAppear:(ASMediaFocusManager *)mediaFocusManager
@@ -138,26 +142,18 @@ static CGFloat const kMaxOffset = 20;
 {
     static NSString *cellIdentifier = @"MediaCell";
     MediaCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    NSString *path;
-    UIImage *image;
-    BOOL isVideo;
-    NSString *name;
-    NSString *extension;
-    
+
     if(cell == nil)
     {
         cell = [MediaCell mediaCell];
         cell.thumbnailView.tag = indexPath.row + 1;
         [self.mediaFocusManager installOnView:cell.thumbnailView];
     }
-    
-    name = self.mediaNames[indexPath.row];
-    extension = name.pathExtension.lowercaseString;
-    isVideo = ([extension isEqualToString:@"mp4"] || [extension isEqualToString:@"mov"]);
-    cell.playView.hidden = !isVideo;
-    path = [NSString stringWithFormat:@"%ld.jpg", (unsigned long)indexPath.row + 1];
-    image = [UIImage imageNamed:path];
-    cell.thumbnailView.image = image;
+
+    ASMediaInfo *info = self.mediaInfoItems[indexPath.row];
+
+    cell.playView.hidden = !info.mediaURL.as_isVideoURL;
+    cell.thumbnailView.image = info.initialImage;
     cell.thumbnailView.tag = indexPath.row + 1;
     
     return cell;
@@ -170,6 +166,6 @@ static CGFloat const kMaxOffset = 20;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return self.mediaNames.count;
+    return self.mediaInfoItems.count;
 }
 @end
