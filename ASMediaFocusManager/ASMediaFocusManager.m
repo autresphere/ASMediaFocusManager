@@ -217,7 +217,7 @@ static CGFloat const kSwipeOffset = 100;
 
     if ([self.delegate respondsToSelector:@selector(mediaFocusManager:mediaInfoListForView:)]) {
         NSArray *mediaInfoItems = [self.delegate mediaFocusManager:self mediaInfoListForView:mediaView];
-        if ([mediaInfoItems indexOfObject:mediaInfo] == NSNotFound) {
+        if ([mediaInfoItems indexOfObjectIdenticalTo:mediaInfo] == NSNotFound) {
             NSMutableArray *mutableItems = [mediaInfoItems mutableCopy];
             [mutableItems insertObject:mediaInfo atIndex:0];
             self.mediaInfoItems = mutableItems;
@@ -590,7 +590,7 @@ static CGFloat const kSwipeOffset = 100;
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
 {
     ASMediaInfo *currentInfo = self.focusViewController.info;
-    NSUInteger index = [self.mediaInfoItems indexOfObject:currentInfo];
+    NSUInteger index = [self.mediaInfoItems indexOfObjectIdenticalTo:currentInfo];
 
     if (index == 0) {
         return nil;
@@ -606,7 +606,7 @@ static CGFloat const kSwipeOffset = 100;
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
     ASMediaInfo *currentInfo = self.focusViewController.info;
-    NSUInteger index = [self.mediaInfoItems indexOfObject:currentInfo];
+    NSUInteger index = [self.mediaInfoItems indexOfObjectIdenticalTo:currentInfo];
 
     if (index >= self.mediaInfoItems.count - 1) {
         return nil;
