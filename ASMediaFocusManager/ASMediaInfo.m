@@ -12,16 +12,22 @@
 
 - (instancetype)initWithURL:(NSURL *)mediaURL initialImage:(UIImage *)image
 {
-    return [self initWithURL:mediaURL initialImage:image title:nil];
+    return [self initWithURL:mediaURL initialImage:image overlayImage:nil title:nil];
 }
 
-- (instancetype)initWithURL:(NSURL *)mediaURL initialImage:(UIImage *)image title:(NSString *)title
+- (instancetype)initWithURL:(NSURL *)mediaURL initialImage:(UIImage *)image overlayImage:(UIImage *)overlayImage
+{
+    return [self initWithURL:mediaURL initialImage:image overlayImage:overlayImage title:nil];
+}
+
+- (instancetype)initWithURL:(NSURL *)mediaURL initialImage:(UIImage *)image overlayImage:(UIImage *)overlayImage title:(NSString *)title
 {
     self = [super init];
     if (self) {
         _mediaURL = [mediaURL copy];
         _title = [title copy];
         _initialImage = image;
+        _overlayImage = overlayImage;
         _contentMode = UIViewContentModeScaleAspectFit;
     }
     return self;
@@ -39,7 +45,7 @@
 
 - (NSUInteger)hash
 {
-    return self.mediaURL.hash ^ self.title.hash ^ self.initialImage.hash;
+    return self.mediaURL.hash ^ self.title.hash ^ self.initialImage.hash ^ self.overlayImage.hash;
 }
 
 @end

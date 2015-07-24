@@ -11,7 +11,8 @@
 @interface ASMediaInfo : NSObject
 
 - (instancetype)initWithURL:(NSURL *)mediaURL initialImage:(UIImage *)image;
-- (instancetype)initWithURL:(NSURL *)mediaURL initialImage:(UIImage *)image title:(NSString *)title;
+- (instancetype)initWithURL:(NSURL *)mediaURL initialImage:(UIImage *)image overlayImage:(UIImage *)overlayImage;
+- (instancetype)initWithURL:(NSURL *)mediaURL initialImage:(UIImage *)image overlayImage:(UIImage *)overlayImage title:(NSString *)title;
 
 /** the URL where the media (image or video) is stored. The URL may be local (file://) or distant (http://). */
 @property (nonatomic, copy, readonly) NSURL *mediaURL;
@@ -19,6 +20,8 @@
 @property (nonatomic, copy, readonly) NSString *title;
 /** The initial image to display in the focus controller before the media URL's image/video is loaded. */
 @property (nonatomic, strong, readonly) UIImage *initialImage;
+/** the overlay image (e.g. video play icon) for this media view. Set to nil if you don't want any overlay image to appear. */
+@property (nonatomic, copy, readonly) UIImage *overlayImage;
 /** The content mode to use for the image view in the focus controller. Defaults to UIViewContentModeScaleAspectFit. */
 @property (nonatomic, assign) UIViewContentMode contentMode;
 /** Optional property to show a view pinned to the bottom of the focused area of the media. If present, this view is shown in place of the title. */
