@@ -58,7 +58,7 @@ static CGFloat const kSwipeOffset = 100;
     return self;
 }
 
-- (ASMediaFocusManager *)focusViewController
+- (ASMediaFocusController *)focusViewController
 {
     return self.mediaPageViewController.viewControllers.firstObject;
 }
@@ -86,22 +86,6 @@ static CGFloat const kSwipeOffset = 100;
     if(self.addPlayIconOnVideo && info.mediaURL.as_isVideoURL)
     {
         [self.videoBehavior addVideoIconToView:view image:self.playImage];
-    }
-}
-
-- (void)installDefocusActionOnFocusViewController:(ASMediaFocusController *)focusViewController
-{
-    // We need the view to be loaded.
-    if(focusViewController.view)
-    {
-        if(self.isDefocusingWithTap)
-        {
-            UITapGestureRecognizer *tapGesture;
-            
-            tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDefocusGesture:)];
-            [tapGesture requireGestureRecognizerToFail:focusViewController.doubleTapGesture];
-            [focusViewController.view addGestureRecognizer:tapGesture];
-        }
     }
 }
 
@@ -177,7 +161,8 @@ static CGFloat const kSwipeOffset = 100;
     ASMediaFocusController *viewController = [[ASMediaFocusController alloc] init];
     viewController.delegate = self;
     [viewController setInfo:mediaInfo withCachedImage:cachedImage];
-
+    [self installTapGestureOnFocusViewController:viewController];
+    
     if (self.defocusOnVerticalSwipe)
     {
         [self installSwipeGestureOnFocusViewController:viewController];
@@ -495,7 +480,30 @@ static CGFloat const kSwipeOffset = 100;
     return YES;
 }
 
-#pragma mark - Dismiss on swipe
+#pragma mark - Focus ViewController Gestures
+
+#pragma mark Tap
+
+- (void)installTapGestureOnFocusViewController:(ASMediaFocusController *)focusViewController
+{
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnFocusViewController:)];
+    [tapGesture requireGestureRecognizerToFail:focusViewController.doubleTapGesture];
+    [focusViewController.view addGestureRecognizer:tapGesture];
+}
+
+- (void)handleTapOnFocusViewController:(UITapGestureRecognizer *)tapGesture
+{
+    if ([self.delegate respondsToSelector:@selector(mediaFocusManager:didTapOnMediaInfo:)]) {
+        if(self.isDefocusingWithTap) {
+            [self endFocusing];
+        }
+        else {
+            [self.delegate mediaFocusManager:self didTapOnMediaInfo:self.focusViewController.info];
+        }
+    }
+}
+
+#pragma mark Dismiss on swipe
 
 - (void)installSwipeGestureOnFocusViewController:(ASMediaFocusController *)focusViewController
 {

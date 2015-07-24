@@ -39,6 +39,8 @@ typedef void(^ASMediaLoadCompletion)(id media, NSError *error);
 - (void)mediaFocusManagerDidDisappear:(ASMediaFocusManager *)mediaFocusManager;
 // called after a swipe shows a new media info item.
 - (void)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager didSwipeToMediaInfo:(ASMediaInfo *)info;
+// called after a swipe shows a new media info item.
+- (void)mediaFocusManager:(ASMediaFocusManager *)mediaFocusManager didTapOnMediaInfo:(ASMediaInfo *)info;
 // Called before mediaURLForView to check if image is already on memory.
 - (UIImage*)mediaFocusManager:(ASMediaFocusManager*)mediaFocusManager cachedImageForView:(UIView*)view;
 
