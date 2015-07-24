@@ -122,17 +122,19 @@
     if(self.zoomImageView == nil)
     {
         self.zoomScale = 1.0;
-        
+
         // make a new UIImageView for the new image
         self.zoomImageView = [[UIImageView alloc] initWithImage:image];
-        [self addSubview:self.zoomImageView];        
+        [self addSubview:self.zoomImageView];
     }
     else
     {
         self.zoomImageView.image = image;
+        self.zoomImageView.bounds = CGRectMake(0, 0, image.size.width, image.size.height);
     }
-    
+
     [self configureForImageSize:image.size];
+
 }
 
 - (void)configureForImageSize:(CGSize)imageSize
@@ -145,6 +147,12 @@
 
 - (void)setMaxMinZoomScalesForCurrentBounds
 {
+    if (_imageSize.width == 0 || _imageSize.height == 0) {
+        self.minimumZoomScale = 0;
+        self.maximumZoomScale = 0;
+        return;
+    }
+
     CGSize boundsSize = self.bounds.size;
     CGFloat maxScale = 1;
     
@@ -170,10 +178,7 @@
     self.minimumZoomScale = minScale;
 }
 
-#pragma mark -
-#pragma mark Methods called during rotation to preserve the zoomScale and the visible portion of the image
-
-#pragma mark - Rotation support
+#pragma mark - Methods called during rotation to preserve the zoomScale and the visible portion of the image
 
 - (void)prepareToResize
 {
