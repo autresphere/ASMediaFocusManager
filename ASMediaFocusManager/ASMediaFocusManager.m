@@ -23,10 +23,17 @@ static CGFloat const kSwipeOffset = 100;
 @property (nonatomic, strong) UIView *mediaView;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
 @property (nonatomic, assign) BOOL isZooming;
+@property (nonatomic, strong) NSString *closeTitle;
 @property (nonatomic, strong) ASVideoBehavior *videoBehavior;
 @end
 
 @implementation ASMediaFocusManager
+
+- (id)initWithCloseTitle:(NSString *)title
+{
+    self.closeTitle = title;
+    return [self init];
+}
 
 - (id)init
 {
@@ -44,6 +51,10 @@ static CGFloat const kSwipeOffset = 100;
         self.isDefocusingWithTap = NO;
         self.addPlayIconOnVideo = YES;
         self.videoBehavior = [ASVideoBehavior new];
+        
+        if (!self.closeTitle) {
+            self.closeTitle = NSLocalizedString(@"Done", @"Done");
+        }
     }
     
     return self;
@@ -102,7 +113,7 @@ static CGFloat const kSwipeOffset = 100;
     UIButton *doneButton;
     
     doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [doneButton setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
+    [doneButton setTitle:self.closeTitle forState:UIControlStateNormal];
     [doneButton addTarget:self action:@selector(handleDefocusGesture:) forControlEvents:UIControlEventTouchUpInside];
     doneButton.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
     [doneButton sizeToFit];

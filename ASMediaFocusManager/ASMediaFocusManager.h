@@ -63,6 +63,8 @@
 // Image used to show a play icon on video thumbnails. Defaults to nil (uses internal image).
 @property (nonatomic, strong) UIImage *playImage;
 
+//Init with custom close button title
+- (id)initWithCloseTitle:(NSString *)title;
 // Install focusing gesture on the specified array of views.
 - (void)installOnViews:(NSArray *)views;
 // Install focusing gesture on the specified view.
