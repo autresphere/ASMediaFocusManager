@@ -62,6 +62,8 @@
 @property (nonatomic, assign) BOOL addPlayIconOnVideo;
 // Image used to show a play icon on video thumbnails. Defaults to nil (uses internal image).
 @property (nonatomic, strong) UIImage *playImage;
+// Use media view screen shot on end focus animation. Usable if the media view as some kind of custom layer, for exemaple a mask layer. Defaults to NO
+@property (nonatomic, assign) BOOL useMediaViewScreenShotOnEndFocusAnimation;
 
 // Install focusing gesture on the specified array of views.
 - (void)installOnViews:(NSArray *)views;
