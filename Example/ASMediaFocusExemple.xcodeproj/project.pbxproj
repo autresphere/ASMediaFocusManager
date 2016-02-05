@@ -39,6 +39,8 @@
 		4A70C03F1ACD4E5300828AA6 /* asmedia_playbig.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A70C03D1ACD4E5300828AA6 /* asmedia_playbig.png */; };
 		4A70C0401ACD4E5300828AA6 /* asmedia_playbig@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4A70C03E1ACD4E5300828AA6 /* asmedia_playbig@2x.png */; };
 		4A7F15F21684635100ADC5D6 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A7F15F01684635100ADC5D6 /* MainViewController.m */; };
+		4AB1D6EE1C64B7F9008B11D4 /* ASMediaFocusBasicToolbar.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4AB1D6ED1C64B7F9008B11D4 /* ASMediaFocusBasicToolbar.xib */; };
+		4AB1D6F11C64B8C5008B11D4 /* ASMediaFocusBasicToolbarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4AB1D6F01C64B8C5008B11D4 /* ASMediaFocusBasicToolbarController.m */; };
 		4ABF0AF216A048E50053040A /* MainViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4ABF0AF016A048E50053040A /* MainViewController~iphone.xib */; };
 		4ABF0B0516A0575C0053040A /* ASMediaFocusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */; };
 		4ABF0B0616A0575C0053040A /* ASMediaFocusManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */; };
@@ -90,6 +92,9 @@
 		4A70C03E1ACD4E5300828AA6 /* asmedia_playbig@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "asmedia_playbig@2x.png"; sourceTree = "<group>"; };
 		4A7F15EF1684635100ADC5D6 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = ../MainViewController.h; sourceTree = "<group>"; };
 		4A7F15F01684635100ADC5D6 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = ../MainViewController.m; sourceTree = "<group>"; };
+		4AB1D6ED1C64B7F9008B11D4 /* ASMediaFocusBasicToolbar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ASMediaFocusBasicToolbar.xib; sourceTree = "<group>"; };
+		4AB1D6EF1C64B8C5008B11D4 /* ASMediaFocusBasicToolbarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASMediaFocusBasicToolbarController.h; sourceTree = "<group>"; };
+		4AB1D6F01C64B8C5008B11D4 /* ASMediaFocusBasicToolbarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaFocusBasicToolbarController.m; sourceTree = "<group>"; };
 		4ABF0AF116A048E50053040A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/MainViewController~iphone.xib"; sourceTree = "<group>"; };
 		4ABF0B0116A0575C0053040A /* ASMediaFocusController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASMediaFocusController.h; sourceTree = "<group>"; };
 		4ABF0B0216A0575C0053040A /* ASMediaFocusController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASMediaFocusController.m; sourceTree = "<group>"; };
@@ -241,6 +246,9 @@
 				4ABF0B1816A2E62E0053040A /* ASMediaFocusController.xib */,
 				4ABF0B0316A0575C0053040A /* ASMediaFocusManager.h */,
 				4ABF0B0416A0575C0053040A /* ASMediaFocusManager.m */,
+				4AB1D6EF1C64B8C5008B11D4 /* ASMediaFocusBasicToolbarController.h */,
+				4AB1D6F01C64B8C5008B11D4 /* ASMediaFocusBasicToolbarController.m */,
+				4AB1D6ED1C64B7F9008B11D4 /* ASMediaFocusBasicToolbar.xib */,
 				4A70C03A1ACD4CC800828AA6 /* ASVideoBehavior.h */,
 				4A70C03B1ACD4CC800828AA6 /* ASVideoBehavior.m */,
 				4A2D149C16AD255800D3CE3D /* ASImageScrollView.h */,
@@ -277,6 +285,7 @@
 				4A15DE2116776BE9004C6733 /* Frameworks */,
 				4A15DE2216776BE9004C6733 /* Resources */,
 				764B321F18597B26589B9E18 /* Copy Pods Resources */,
+				E668E07107BFC31EB572A61D /* Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -293,7 +302,7 @@
 		4A15DE1B16776BE9004C6733 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = AutreSphere;
 			};
 			buildConfigurationList = 4A15DE1E16776BE9004C6733 /* Build configuration list for PBXProject "ASMediaFocusExemple" */;
@@ -324,6 +333,7 @@
 				4A0BC9941ACAB6CB000904A2 /* asmedia_pause.png in Resources */,
 				4A15DE3316776BE9004C6733 /* InfoPlist.strings in Resources */,
 				4A15DE3B16776BE9004C6733 /* Default.png in Resources */,
+				4AB1D6EE1C64B7F9008B11D4 /* ASMediaFocusBasicToolbar.xib in Resources */,
 				4A15DE3D16776BE9004C6733 /* Default@2x.png in Resources */,
 				4A15DE3F16776BE9004C6733 /* Default-568h@2x.png in Resources */,
 				4A15DE4816776BE9004C6733 /* MainViewController~ipad.xib in Resources */,
@@ -377,6 +387,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		E668E07107BFC31EB572A61D /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -385,6 +410,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4A15DE3516776BE9004C6733 /* main.m in Sources */,
+				4AB1D6F11C64B8C5008B11D4 /* ASMediaFocusBasicToolbarController.m in Sources */,
 				4A15DE3916776BE9004C6733 /* AppDelegate.m in Sources */,
 				4A0BC99D1ACAF13D000904A2 /* MediaCell.m in Sources */,
 				4A7F15F21684635100ADC5D6 /* MainViewController.m in Sources */,
@@ -438,6 +464,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -487,6 +514,7 @@
 				GCC_PREFIX_HEADER = "ASMediaFocus/ASMediaFocusExemple-Prefix.pch";
 				INFOPLIST_FILE = "ASMediaFocus/ASMediaFocusExemple-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.autresphere.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ASMediaFocusExemple;
 				WRAPPER_EXTENSION = app;
 			};
@@ -500,6 +528,7 @@
 				GCC_PREFIX_HEADER = "ASMediaFocus/ASMediaFocusExemple-Prefix.pch";
 				INFOPLIST_FILE = "ASMediaFocus/ASMediaFocusExemple-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.autresphere.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ASMediaFocusExemple;
 				WRAPPER_EXTENSION = app;
 			};

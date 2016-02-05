@@ -153,6 +153,10 @@ Returns wheter a play icon is automatically added to video thumbnails. Defaults 
 @property (nonatomic, strong) UIImage *playImage;
 ```
 Image used to show a play icon on video thumbnails. Defaults to nil (uses internal image).
+```objc
+@property (nonatomic, strong) UIViewController *topAccessoryController;
+```
+Controller used to show custom accessories. If none is specified a default controller is used with a simple close button.
 
 ### Hiding the status bar
 On iOS 7, if you want to hide or show the status bar when a view is focused or defocused, you can use optional delegate methods `[ASMediaFocusManager mediaFocusManagerWillAppear:]` and `[ASMediaFocusManager mediaFocusManagerWillDisappear:]`.
