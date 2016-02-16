@@ -94,7 +94,7 @@ static CGFloat const kDefaultControlMargin = 5;
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskPortrait;
 }
