@@ -49,7 +49,7 @@ You can also copy the whole `ASMediaFocusManager` folder in your project, as wel
 Then in your project:
 
 * Create a `ASMediaFocusManager`
-* Implement its delegate `ASMediaFocusDelegate`.
+* Implement its delegate `ASMediasFocusDelegate`.
 The delegate returns mainly a media URL, a media title and a parent view controller. 
 * Declare all your views that you want to be focusable by calling `[ASMediaFocusManager installOnViews:]`
 
@@ -78,7 +78,7 @@ Here is an example of a delegate implementation. Please adapt the code to your c
     ...
 }
 
-#pragma mark - ASMediaFocusDelegate
+#pragma mark - ASMediasFocusDelegate
 // Returns the view controller in which the focus controller is going to be added.
 // This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager

@@ -75,7 +75,7 @@ static CGFloat const kMaxOffset = 20;
     return self.statusBarHidden;
 }
 
-#pragma mark - ASMediaFocusDelegate
+#pragma mark - ASMediasFocusDelegate
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
 {
     return self;
