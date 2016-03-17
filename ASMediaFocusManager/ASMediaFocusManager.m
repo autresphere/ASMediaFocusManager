@@ -645,4 +645,11 @@ static CGFloat const kSwipeOffset = 100;
                      }];
 }
 
+#pragma mark - Customization
+- (void)setDefaultDoneButtonText:(NSString *)text withColor:(UIColor *)color
+{
+    [((ASMediaFocusBasicToolbarController *) self.topAccessoryController).doneButton setTitle:text forState:UIControlStateNormal];
+    [((ASMediaFocusBasicToolbarController *) self.topAccessoryController).doneButton setTitleColor:color forState:UIControlStateNormal];
+}
+
 @end
