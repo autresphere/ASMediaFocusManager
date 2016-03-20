@@ -74,4 +74,7 @@
 // Start the close animation on the current focused view.
 - (void)endFocusing;
 
+// Set minimal customization to default "Done" button. (Text and Color)
+- (void)setDefaultDoneButtonText:(NSString *)text withColor:(UIColor *)color;
+
 @end
