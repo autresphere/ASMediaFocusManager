@@ -17,4 +17,5 @@ Pod::Spec.new do |s|
   s.frameworks = 'UIKit', 'Foundation', 'CoreGraphics', 'AVFoundation'
   s.requires_arc = true
   s.dependency 'ASBPlayerScrubbing', '~> 0.1'
+  s.dependency 'SDWebImage', '~> 3.7'
 end
