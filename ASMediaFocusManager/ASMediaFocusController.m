@@ -135,7 +135,6 @@ static CGFloat const kDefaultControlMargin = 5;
     if(self.playerView != nil)
     {
         self.playerView.frame = self.mainImageView.bounds;
-        [self layoutControlView];
     }
 }
 
@@ -225,10 +224,13 @@ static CGFloat const kDefaultControlMargin = 5;
     [self.mainImageView addSubview:self.playerView];
     self.playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.playerView.hidden = YES;
-    self.player = [[AVPlayer alloc] initWithURL:url];
     
-    ((PlayerView *)self.playerView).player = self.player;
-    [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.player = [[AVPlayer alloc] initWithURL:url];
+        ((PlayerView *)self.playerView).player = self.player;
+        [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
+        [self layoutControlView];
+    });
 }
 
 - (void)focusDidEndWithZoomEnabled:(BOOL)zoomEnabled
