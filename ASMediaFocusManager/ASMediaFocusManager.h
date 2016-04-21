@@ -71,6 +71,8 @@ typedef void(^ASMediaLoadCompletion)(id media, NSError *error);
 // Image used to show a play icon on video thumbnails. Defaults to nil (uses internal image).
 @property (nonatomic, strong) UIImage *playImage;
 
+@property (nonatomic, assign, readonly) NSUInteger currentlyVisibleMediaIndex;
+
 // Install focusing gesture on the specified array of views.
 - (void)installOnViews:(NSArray *)views;
 // Install focusing gesture on the specified view.

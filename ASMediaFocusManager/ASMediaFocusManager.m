@@ -186,6 +186,12 @@ static CGFloat const kSwipeOffset = 100;
     return viewController;
 }
 
+- (NSUInteger)currentlyVisibleMediaIndex
+{
+    ASMediaInfo *currentInfo = self.focusViewController.info;
+    return [self.mediaInfoItems indexOfObject:currentInfo];
+}
+
 #pragma mark - Focus/Defocus
 - (void)startFocusingView:(UIView *)mediaView
 {
