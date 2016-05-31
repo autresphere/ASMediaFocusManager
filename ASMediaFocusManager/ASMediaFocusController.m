@@ -35,6 +35,7 @@ static CGFloat const kDefaultControlMargin = 5;
 @interface ASMediaFocusController () <UIScrollViewDelegate>
 
 @property (nonatomic, assign) UIDeviceOrientation previousOrientation;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, strong) AVPlayer *player;
 
 @end
@@ -225,19 +226,25 @@ static CGFloat const kDefaultControlMargin = 5;
     self.playerView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     self.playerView.hidden = YES;
     
-    // install loading spinner
-    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    activityIndicator.frame = [UIScreen mainScreen].bounds;
-    activityIndicator.hidesWhenStopped = YES;
-    [self.view addSubview:activityIndicator];
-    [activityIndicator startAnimating];
+    if (![url isFileURL]) // probably remote url
+    {
+        // install loading spinner
+        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        self.activityIndicator.frame = [UIScreen mainScreen].bounds;
+        self.activityIndicator.hidesWhenStopped = YES;
+        [self.view addSubview:self.activityIndicator];
+        [self.activityIndicator startAnimating];
+    }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         self.player = [[AVPlayer alloc] initWithURL:url];
         ((PlayerView *)self.playerView).player = self.player;
         [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
         [self layoutControlView];
-        [activityIndicator stopAnimating];
+        if (self.activityIndicator != nil)
+        {
+            [self.activityIndicator stopAnimating];
+        }
     });
 }
 
