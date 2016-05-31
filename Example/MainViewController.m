@@ -64,7 +64,7 @@ static CGFloat const kMaxOffset = 20;
     [self addSomeRandomTransformOnThumbnailViews];
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
      return UIInterfaceOrientationMaskAll;
