@@ -241,10 +241,7 @@ static CGFloat const kDefaultControlMargin = 5;
         ((PlayerView *)self.playerView).player = self.player;
         [self.player.currentItem addObserver:self forKeyPath:@"presentationSize" options:NSKeyValueObservingOptionNew context:nil];
         [self layoutControlView];
-        if (self.activityIndicator != nil)
-        {
-            [self.activityIndicator stopAnimating];
-        }
+        [self.activityIndicator stopAnimating];
     });
 }
 
