@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
   }
   s.platform = :ios, '6.0'
   s.source_files = 'ASMediaFocusManager/*.{h,m}'
-  s.resources = ['ASMediaFocusManager/*.xib', 'ASMediaFocusManager/Resources/*.png']
+  s.resource_bundle = { 'ASMediaFocusManager' => ['ASMediaFocusManager/*.xib', 'ASMediaFocusManager/Resources/*.png'] }
   s.frameworks = 'UIKit', 'Foundation', 'CoreGraphics', 'AVFoundation'
   s.requires_arc = true
   s.dependency 'ASBPlayerScrubbing', '~> 0.1'
