@@ -174,7 +174,7 @@ static CGFloat const kSwipeOffset = 100;
         cachedImage = [self.delegate mediaFocusManager:self cachedImageForView:mediaView];
     }
 
-    ASMediaFocusController *viewController = [[ASMediaFocusController alloc] init];
+    ASMediaFocusController *viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
     viewController.delegate = self;
     [viewController setInfo:mediaInfo withCachedImage:cachedImage];
 
