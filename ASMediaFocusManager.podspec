@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "ASMediaFocusManager"
-  s.version = "0.5"
+  s.version = "0.6"
   s.license = 'MIT'
   s.summary = "Animate your iOS image and video views to fullscreen on a simple tap."
   s.authors = {
@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.homepage = "https://github.com/autresphere/ASMediaFocusManager"
   s.source = {
     :git => "https://github.com/autresphere/ASMediaFocusManager.git",
-    :tag => "0.5"
+    :tag => "0.6"
   }
   s.platform = :ios, '6.0'
   s.source_files = 'ASMediaFocusManager/*.{h,m}'

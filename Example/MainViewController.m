@@ -64,7 +64,7 @@ static CGFloat const kMaxOffset = 20;
     [self addSomeRandomTransformOnThumbnailViews];
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
      return UIInterfaceOrientationMaskAll;
@@ -75,7 +75,7 @@ static CGFloat const kMaxOffset = 20;
     return self.statusBarHidden;
 }
 
-#pragma mark - ASMediaFocusDelegate
+#pragma mark - ASMediasFocusDelegate
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
 {
     return self;
@@ -117,6 +117,10 @@ static CGFloat const kMaxOffset = 20;
 
 - (void)mediaFocusManagerWillAppear:(ASMediaFocusManager *)mediaFocusManager
 {
+    /*
+     *  Call here setDefaultDoneButtonText, if you want to change the text and color of default "Done" button
+     *  eg: [self.mediaFocusManager setDefaultDoneButtonText:@"Panda" withColor:[UIColor purpleColor]];
+     */
     self.statusBarHidden = YES;
     if([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)])
     {

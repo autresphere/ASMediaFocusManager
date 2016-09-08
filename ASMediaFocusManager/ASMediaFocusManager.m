@@ -9,6 +9,7 @@
 #import "ASMediaFocusManager.h"
 #import "ASMediaFocusController.h"
 #import "ASVideoBehavior.h"
+#import "ASMediaFocusBasicToolbarController.h"
 #import <QuartzCore/QuartzCore.h>
 
 static CGFloat const kAnimateElasticSizeRatio = 0.03;
@@ -101,20 +102,18 @@ static CGFloat const kSwipeOffset = 100;
 
 - (void)setupAccessoryViewOnFocusViewController:(ASMediaFocusController *)focusViewController
 {
-    UIButton *doneButton;
-    
-    doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [doneButton setTitle:NSLocalizedString(@"Done", @"Done") forState:UIControlStateNormal];
-    [doneButton addTarget:self action:@selector(handleDefocusGesture:) forControlEvents:UIControlEventTouchUpInside];
-    doneButton.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
-    [doneButton sizeToFit];
-    doneButton.frame = CGRectInset(doneButton.frame, -20, -4);
-    doneButton.layer.borderWidth = 2;
-    doneButton.layer.cornerRadius = 4;
-    doneButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    doneButton.center = CGPointMake(focusViewController.accessoryView.bounds.size.width - doneButton.bounds.size.width/2 - 10, doneButton.bounds.size.height/2 + 20);
-    doneButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin;
-    [focusViewController.accessoryView addSubview:doneButton];
+    if(self.topAccessoryController == nil)
+    {
+        ASMediaFocusBasicToolbarController *defaultController = [[ASMediaFocusBasicToolbarController alloc] initWithNibName:@"ASMediaFocusBasicToolbar" bundle:nil];
+        defaultController.view.backgroundColor = [UIColor clearColor];
+        [defaultController.doneButton addTarget:self action:@selector(endFocusing) forControlEvents:UIControlEventTouchUpInside];
+        self.topAccessoryController = defaultController;
+    }
+
+    CGRect frame = self.topAccessoryController.view.frame;
+    frame.size.width = focusViewController.accessoryView.frame.size.width;
+    self.topAccessoryController.view.frame = frame;
+    [focusViewController.accessoryView addSubview:self.topAccessoryController.view];
 }
 
 #pragma mark - Utilities
@@ -664,6 +663,13 @@ static CGFloat const kSwipeOffset = 100;
                                               }
                                           }];
                      }];
+}
+
+#pragma mark - Customization
+- (void)setDefaultDoneButtonText:(NSString *)text withColor:(UIColor *)color
+{
+    [((ASMediaFocusBasicToolbarController *) self.topAccessoryController).doneButton setTitle:text forState:UIControlStateNormal];
+    [((ASMediaFocusBasicToolbarController *) self.topAccessoryController).doneButton setTitleColor:color forState:UIControlStateNormal];
 }
 
 @end

@@ -7,3 +7,7 @@ build/
 *.mode2v3
 *.xcworkspace
 xcuserdata
+
+# CocoaPods
+Pods
+Podfile.lock

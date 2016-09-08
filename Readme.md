@@ -49,7 +49,7 @@ You can also copy the whole `ASMediaFocusManager` folder in your project, as wel
 Then in your project:
 
 * Create a `ASMediaFocusManager`
-* Implement its delegate `ASMediaFocusDelegate`.
+* Implement its delegate `ASMediasFocusDelegate`.
 The delegate returns mainly a media URL, a media title and a parent view controller. 
 * Declare all your views that you want to be focusable by calling `[ASMediaFocusManager installOnViews:]`
 
@@ -78,7 +78,7 @@ Here is an example of a delegate implementation. Please adapt the code to your c
     ...
 }
 
-#pragma mark - ASMediaFocusDelegate
+#pragma mark - ASMediasFocusDelegate
 // Returns the view controller in which the focus controller is going to be added.
 // This can be any view controller, full screen or not.
 - (UIViewController *)parentViewControllerForMediaFocusManager:(ASMediaFocusManager *)mediaFocusManager
@@ -153,6 +153,10 @@ Returns wheter a play icon is automatically added to video thumbnails. Defaults 
 @property (nonatomic, strong) UIImage *playImage;
 ```
 Image used to show a play icon on video thumbnails. Defaults to nil (uses internal image).
+```objc
+@property (nonatomic, strong) UIViewController *topAccessoryController;
+```
+Controller used to show custom accessories. If none is specified a default controller is used with a simple close button.
 
 ### Hiding the status bar
 On iOS 7, if you want to hide or show the status bar when a view is focused or defocused, you can use optional delegate methods `[ASMediaFocusManager mediaFocusManagerWillAppear:]` and `[ASMediaFocusManager mediaFocusManagerWillDisappear:]`.
