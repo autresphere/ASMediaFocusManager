@@ -25,6 +25,7 @@ static CGFloat const kSwipeOffset = 100;
 @property (nonatomic, strong) ASMediaFocusController *focusViewController;
 @property (nonatomic, assign) BOOL isZooming;
 @property (nonatomic, strong) ASVideoBehavior *videoBehavior;
+@property (nonatomic, strong) UIImage *defocusAnimationImage;
 @end
 
 @implementation ASMediaFocusManager
@@ -44,6 +45,7 @@ static CGFloat const kSwipeOffset = 100;
         self.gestureDisabledDuringZooming = YES;
         self.isDefocusingWithTap = NO;
         self.addPlayIconOnVideo = YES;
+        self.useMediaViewScreenshotOnDefocusAnimation = NO;
         self.videoBehavior = [ASVideoBehavior new];
     }
     
@@ -243,6 +245,16 @@ static CGFloat const kSwipeOffset = 100;
     viewController.titleLabel.text = [self.delegate mediaFocusManager:self titleForView:mediaView];
     viewController.mainImageView.image = image;
     viewController.mainImageView.contentMode = imageView.contentMode;
+    
+    if (self.useMediaViewScreenshotOnDefocusAnimation) {
+        // Take and save screenshot to use in the end focus animation
+        UIGraphicsBeginImageContextWithOptions(mediaView.frame.size, NO, [UIScreen mainScreen].scale);
+        [mediaView drawViewHierarchyInRect:mediaView.bounds afterScreenUpdates:NO];
+        UIImage *screenshotImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        
+        self.defocusAnimationImage = screenshotImage;
+    }
     
     if ([self.delegate respondsToSelector:@selector(mediaFocusManager:cachedImageForView:)]) {
         UIImage *image = [self.delegate mediaFocusManager:self cachedImageForView:mediaView];
@@ -488,6 +500,10 @@ static CGFloat const kSwipeOffset = 100;
     
     [self.focusViewController defocusWillStart];
     
+    if (self.useMediaViewScreenshotOnDefocusAnimation) {
+        self.focusViewController.mainImageView.image = self.defocusAnimationImage;
+    }
+    
     [UIView animateWithDuration:self.animationDuration
                      animations:^{
                          self.focusViewController.view.backgroundColor = [UIColor clearColor];
@@ -603,6 +619,10 @@ static CGFloat const kSwipeOffset = 100;
     [self.focusViewController defocusWillStart];
     offset = (gesture.direction == UISwipeGestureRecognizerDirectionUp?-kSwipeOffset:kSwipeOffset);
     contentView = self.focusViewController.mainImageView;
+    
+    if (self.useMediaViewScreenshotOnDefocusAnimation) {
+        self.focusViewController.mainImageView.image = self.defocusAnimationImage;
+    }
     
     [UIView animateWithDuration:duration
                      animations:^{

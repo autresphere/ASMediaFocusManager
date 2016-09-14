@@ -64,6 +64,8 @@
 @property (nonatomic, strong) UIImage *playImage;
 // Controller used to show custom accessories. If none is specified a default controller is used with a simple close button.
 @property (nonatomic, strong) UIViewController *topAccessoryController;
+// Use media view screen shot on defocus animation. Usable if the media view as some kind of custom layer, for exemaple a mask layer. Defaults to NO.
+@property (nonatomic, assign) BOOL useMediaViewScreenshotOnDefocusAnimation;
 
 // Install focusing gesture on the specified array of views.
 - (void)installOnViews:(NSArray *)views;
