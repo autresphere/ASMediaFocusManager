@@ -272,6 +272,7 @@ static CGFloat const kSwipeOffset = 100;
     {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self loadImageFromURL:url onImageView:viewController.mainImageView];
+            viewController.mainImageView.hidden = NO;
         });
     }
     
