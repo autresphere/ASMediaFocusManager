@@ -53,7 +53,7 @@ Then in your project:
 The delegate returns mainly a media URL, a media title and a parent view controller. 
 * Declare all your views that you want to be focusable by calling `[ASMediaFocusManager installOnViews:]`
 
-###Implementing
+### Implementing
 In your View Controller where some image views need focus feature, add this code.
 
 ```objc
@@ -116,7 +116,7 @@ If you need to focus or defocus a view programmatically, you can call `startFocu
 [self.mediaFocusManager startFocusingView:mediaView];
 ```
 
-###Properties
+### Properties
 ```objc
 @property (nonatomic, assign) NSTimeInterval animationDuration;
 ```
@@ -186,7 +186,7 @@ Here is an example on how to hide and show the status bar. As the delegate metho
 ```
 
 
-##Todo
+## Todo
 * Allow the use of your own video control view.
 * Fix image jump on orientation change when fullscreen image is zoomed (only when parent ViewController supports UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown)
 * Media browsing by horizontal swipe in fullscreen.
