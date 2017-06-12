@@ -22,7 +22,7 @@
 {
     NSArray *objects;
     
-    objects = [[NSBundle mainBundle] loadNibNamed:@"ASVideoControlView" owner:nil options:nil];
+    objects = [[NSBundle bundleForClass:[ASVideoControlView class]] loadNibNamed:@"ASVideoControlView" owner:nil options:nil];
     
     return objects[0];
 }

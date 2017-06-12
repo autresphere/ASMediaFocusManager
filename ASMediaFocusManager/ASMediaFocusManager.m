@@ -104,7 +104,7 @@ static CGFloat const kSwipeOffset = 100;
 {
     if(self.topAccessoryController == nil)
     {
-        ASMediaFocusBasicToolbarController *defaultController = [[ASMediaFocusBasicToolbarController alloc] initWithNibName:@"ASMediaFocusBasicToolbar" bundle:nil];
+        ASMediaFocusBasicToolbarController *defaultController = [[ASMediaFocusBasicToolbarController alloc] initWithNibName:@"ASMediaFocusBasicToolbar" bundle:[NSBundle bundleForClass:[ASMediaFocusManager class]]];
         defaultController.view.backgroundColor = [UIColor clearColor];
         [defaultController.doneButton addTarget:self action:@selector(endFocusing) forControlEvents:UIControlEventTouchUpInside];
         self.topAccessoryController = defaultController;
@@ -239,7 +239,7 @@ static CGFloat const kSwipeOffset = 100;
         return nil;
     }
 
-    viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:nil];
+    viewController = [[ASMediaFocusController alloc] initWithNibName:nil bundle:[NSBundle bundleForClass:[ASMediaFocusManager class]]];
     [self installDefocusActionOnFocusViewController:viewController];
     
     viewController.titleLabel.text = [self.delegate mediaFocusManager:self titleForView:mediaView];
