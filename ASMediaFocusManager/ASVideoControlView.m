@@ -29,6 +29,7 @@
 
 - (void)awakeFromNib
 {
+    [super awakeFromNib];
     [self.scrubbing addObserver:self forKeyPath:@"player" options:NSKeyValueObservingOptionNew context:nil];
 }
 
