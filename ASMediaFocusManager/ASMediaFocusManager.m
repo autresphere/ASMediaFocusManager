@@ -11,6 +11,7 @@
 #import "ASVideoBehavior.h"
 #import "ASMediaFocusBasicToolbarController.h"
 #import <QuartzCore/QuartzCore.h>
+#import <SDWebImage/UIImageView+WebCache.h>
 
 static CGFloat const kAnimateElasticSizeRatio = 0.03;
 static CGFloat const kAnimateElasticDurationRatio = 0.6;
@@ -117,64 +118,6 @@ static CGFloat const kSwipeOffset = 100;
 }
 
 #pragma mark - Utilities
-// Taken from https://github.com/rs/SDWebImage/blob/master/SDWebImage/SDWebImageDecoder.m
-- (UIImage *)decodedImageWithImage:(UIImage *)image
-{
-    if (image.images) {
-        // Do not decode animated images
-        return image;
-    }
-    
-    CGImageRef imageRef = image.CGImage;
-    CGSize imageSize = CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef));
-    CGRect imageRect = (CGRect){.origin = CGPointZero, .size = imageSize};
-    
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
-    
-    int infoMask = (bitmapInfo & kCGBitmapAlphaInfoMask);
-    BOOL anyNonAlpha = (infoMask == kCGImageAlphaNone ||
-                        infoMask == kCGImageAlphaNoneSkipFirst ||
-                        infoMask == kCGImageAlphaNoneSkipLast);
-    
-    // CGBitmapContextCreate doesn't support kCGImageAlphaNone with RGB.
-    // https://developer.apple.com/library/mac/#qa/qa1037/_index.html
-    if (infoMask == kCGImageAlphaNone && CGColorSpaceGetNumberOfComponents(colorSpace) > 1) {
-        // Unset the old alpha info.
-        bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-        
-        // Set noneSkipFirst.
-        bitmapInfo |= kCGImageAlphaNoneSkipFirst;
-    }
-    // Some PNGs tell us they have alpha but only 3 components. Odd.
-    else if (!anyNonAlpha && CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
-        // Unset the old alpha info.
-        bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-        bitmapInfo |= kCGImageAlphaPremultipliedFirst;
-    }
-    
-    // It calculates the bytes-per-row based on the bitsPerComponent and width arguments.
-    CGContextRef context = CGBitmapContextCreate(NULL,
-                                                 imageSize.width,
-                                                 imageSize.height,
-                                                 CGImageGetBitsPerComponent(imageRef),
-                                                 0,
-                                                 colorSpace,
-                                                 bitmapInfo);
-    CGColorSpaceRelease(colorSpace);
-    
-    // If failed, return undecompressed image
-    if (!context) return image;
-    
-    CGContextDrawImage(context, imageRect, imageRef);
-    CGImageRef decompressedImageRef = CGBitmapContextCreateImage(context);
-    
-    CGContextRelease(context);
-    
-    UIImage *decompressedImage = [UIImage imageWithCGImage:decompressedImageRef scale:image.scale orientation:image.imageOrientation];
-    CGImageRelease(decompressedImageRef);
-    return decompressedImage;
-}
 
 - (CGRect)rectInsetsForRect:(CGRect)frame ratio:(CGFloat)ratio
 {
@@ -270,35 +213,12 @@ static CGFloat const kSwipeOffset = 100;
     }
     else
     {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self loadImageFromURL:url onImageView:viewController.mainImageView];
+        [viewController.mainImageView sd_setImageWithURL:url placeholderImage:image completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             viewController.mainImageView.hidden = NO;
-        });
+        }];
     }
     
     return viewController;
-}
-
-- (void)loadImageFromURL:(NSURL *)url onImageView:(UIImageView *)imageView
-{
-    NSData *data;
-    NSError *error = nil;
-    
-    data = [NSData dataWithContentsOfURL:url options:0 error:&error];
-    if(error != nil)
-    {
-        NSLog(@"Warning: Unable to load image at %@. %@", url, error);
-    }
-    else
-    {
-        UIImage *image;
-        
-        image = [[UIImage alloc] initWithData:data];
-        image = [self decodedImageWithImage:image];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            imageView.image = image;
-        });
-    }
 }
 
 - (BOOL)isVideoURL:(NSURL *)url
